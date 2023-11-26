@@ -1,8 +1,15 @@
 import {useState} from 'react'
+import Register from '../components/auth/Register'
+import Login from '../components/auth/Login'
 
-export const AuthPage = () => {
-  const [newUser,setNewUser] = useState(false)  
+export default function AuthPage() {
+  const [newUser,setNewUser] = useState(true)  
   return (
-    <div>AuthPage</div>
+    <div className="main-div w-full h-screen flex justify-center items-center">
+      {
+        newUser?<Register/>:<Login/>
+      }
+    </div>
   )
 }
+
