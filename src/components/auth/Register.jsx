@@ -94,7 +94,7 @@ export default function Register({ setNewUser }) {
                 <button type="button" onClick={() => login()} className="border-green-300 border-2 p-2 w-full flex justify-center items-center space-x-2" ><FcGoogle size={21} /><span>Sign up with Google</span></button>
             </div>
             <div className="already w-full my-4 flex justify-center items-center">
-                <h1 className="text-xs">Already have an account? <span className="font-bold cursor-pointer" onClick={()=>setNewUser(false)}>Signup</span></h1>
+                <h1 className="text-xs">Already have an account? <span className="font-bold cursor-pointer" onClick={()=>setNewUser(false)}>Login</span></h1>
             </div>
             {otpDiv && <OtpComp setOtpDiv={setOtpDiv} requestBody={requestToSend} setLoader={setLoader} />}
         </div>

@@ -7,7 +7,7 @@ export default function AuthPage() {
   return (
     <div className="main-div w-full h-screen flex justify-center items-center">
       {
-        newUser?<Register setNewUser={setNewUser}/>:<Login/>
+        newUser?<Register setNewUser={setNewUser}/>:<Login setNewUser={setNewUser}/>
       }
     </div>
   )
