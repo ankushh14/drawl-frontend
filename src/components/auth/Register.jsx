@@ -6,10 +6,11 @@ import { FcGoogle } from "react-icons/fc"
 import { getToken } from "../../api/getToken";
 import { isValidEmail, isValidFullname, isValidPassword } from "../../utils/validation/auth.validation";
 import { userRegister } from "../../api/auth";
-import PropTypes from "prop-types"
 import { showToastMessage } from "../../utils/toasts/showToast";
+import Proptypes from "prop-types"
+import OtpComp from "../../utils/otp/OtpComp";
 
-export default function Register({setAuthSignup}) {
+export default function Register({ setNewUser }) {
     const [fullname, setFullname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -17,8 +18,10 @@ export default function Register({setAuthSignup}) {
     const [emailDesc, setEmailDesc] = useState("")
     const [passwordDesc, setPasswordDesc] = useState("")
     const [loader, setLoader] = useState(false);
+    const [otpDiv, setOtpDiv] = useState(false)
+    const [requestToSend, setRequestToSend] = useState({})
     const login = useGoogleLogin({
-        onSuccess: async(tokenResponse) =>{
+        onSuccess: async (tokenResponse) => {
             try {
                 const userData = await getToken(tokenResponse.access_token)
                 setFullname(userData.returnData.fullname)
@@ -27,39 +30,40 @@ export default function Register({setAuthSignup}) {
             } catch (error) {
                 console.log(error.message)
             }
-        } ,
+        },
     });
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         let requestBody = {
-          fullname: "",
-          email: "",
-          password: ""
+            fullname: "",
+            email: "",
+            password: ""
         }
         const fullnameValidity = isValidFullname(fullname);
         if (fullnameValidity.valid) {
-          requestBody.fullname = fullname
+            requestBody.fullname = fullname
         } else {
-          return setFullnameDesc(fullnameValidity.message)
+            return setFullnameDesc(fullnameValidity.message)
         }
         const emailValidity = isValidEmail(email);
         if (emailValidity.valid) {
-          requestBody.email = email
+            requestBody.email = email
         } else {
-          return setEmailDesc(emailValidity.message)
+            return setEmailDesc(emailValidity.message)
         }
         const passwordValidity = isValidPassword(password);
         if (passwordValidity.valid) {
-          requestBody.password = password
+            requestBody.password = password
         } else {
-          return setPasswordDesc(passwordValidity.message)
+            return setPasswordDesc(passwordValidity.message)
         }
         setLoader(true)
         const data = await userRegister(requestBody);
         showToastMessage(data.message, data.info);
-        setLoader(false)
-        setAuthSignup(false);
-      }
+        setRequestToSend(requestBody)
+        return setOtpDiv(true)
+    }
 
     return (
         <div className="regitser-div w-[90%] md:w-[70%] lg:w-[45%] rounded-md shadow shadow-[#6d6d6d60] p-5">
@@ -87,12 +91,16 @@ export default function Register({setAuthSignup}) {
                 <h1 className="text-xs text-slate-500">Or</h1>
             </div>
             <div className="google-login-div w-full p-1 flex justify-center items-center my-2">
-                <button type="button" onClick={()=>login()} className="border-green-300 border-2 p-2 w-full flex justify-center items-center space-x-2" ><FcGoogle size={21}/><span>Sign up with Google</span></button>
+                <button type="button" onClick={() => login()} className="border-green-300 border-2 p-2 w-full flex justify-center items-center space-x-2" ><FcGoogle size={21} /><span>Sign up with Google</span></button>
             </div>
+            <div className="already w-full my-4 flex justify-center items-center">
+                <h1 className="text-xs">Already have an account? <span className="font-bold cursor-pointer" onClick={()=>setNewUser(false)}>Signup</span></h1>
+            </div>
+            {otpDiv && <OtpComp setOtpDiv={setOtpDiv} requestBody={requestToSend} setLoader={setLoader} />}
         </div>
     )
 }
 
-Register.propTypes={
-    setAuthSignup : PropTypes.func
+Register.propTypes = {
+    setNewUser: Proptypes.func
 }
