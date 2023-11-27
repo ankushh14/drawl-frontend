@@ -1,20 +1,6 @@
 import axios from "axios";
 import { ServerUrl,headers } from "../data/auth.data";
 
-const googleAuthTokenValidation = async (authToken) => {
-    try {
-        const userData = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${authToken}`);
-        const {name,email} = userData.data
-        let returnObj = {
-            fullname:name,
-            email
-        }
-        return returnObj
-    } catch (error) {
-        throw new Error("Invalid Token")
-    }
-}
-
 const userRegister = async(requestBody)=>{
     try {
         const data = await axios.post(`${ServerUrl}auth/register`, requestBody, {
@@ -49,4 +35,4 @@ const userLogin = async(requestBody)=>{
 }
 
 
-export {googleAuthTokenValidation,userRegister,verifyUser,userLogin}
+export {userRegister,verifyUser,userLogin}

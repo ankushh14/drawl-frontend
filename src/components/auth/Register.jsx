@@ -7,6 +7,7 @@ import { getToken } from "../../api/getToken";
 import { isValidEmail, isValidFullname, isValidPassword } from "../../utils/validation/auth.validation";
 import { userRegister } from "../../api/auth";
 import PropTypes from "prop-types"
+import { showToastMessage } from "../../utils/toasts/showToast";
 
 export default function Register({setAuthSignup}) {
     const [fullname, setFullname] = useState("");
@@ -55,7 +56,7 @@ export default function Register({setAuthSignup}) {
         }
         setLoader(true)
         const data = await userRegister(requestBody);
-        showToastMessage("Registration Complete!", data.info);
+        showToastMessage(data.message, data.info);
         setLoader(false)
         setAuthSignup(false);
       }
