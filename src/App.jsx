@@ -4,8 +4,9 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import AuthPage from "./pages/AuthPage"
 
 function App() {
+  const Client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID
   return (
-    // <GoogleOAuthProvider clientId={import.meta.env.CLIENT_ID}>
+    <GoogleOAuthProvider clientId={`${Client_id}`}>
     <BrowserRouter>
       {/* <MainLoader/> */}
       <Routes>
@@ -13,7 +14,7 @@ function App() {
         <Route path="/auth" element={<AuthPage />} />
       </Routes>
     </BrowserRouter>
-    // </GoogleOAuthProvider>
+    </GoogleOAuthProvider>
   )
 }
 
