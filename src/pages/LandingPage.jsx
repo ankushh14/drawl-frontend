@@ -1,7 +1,7 @@
-import React from 'react'
 
-export const LandingPage = () => {
+export default function LandingPage() {
   return (
     <div>LandingPage</div>
   )
 }
+

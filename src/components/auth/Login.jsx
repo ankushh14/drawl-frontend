@@ -7,6 +7,8 @@ import Proptypes from "prop-types"
 import { useGoogleLogin } from '@react-oauth/google';
 import { userLogin } from "../../api/auth";
 import { isValidEmail, isValidPassword } from "../../utils/validation/auth.validation";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -16,8 +18,10 @@ export default function Login({setNewUser}) {
   const [emailDesc, setEmailDesc] = useState("")
   const [passwordDesc, setPasswordDesc] = useState("")
   const [loader, setLoader] = useState(false);
+  const { login } = useAuth()
+  const navigate = useNavigate()
 
-  const login = useGoogleLogin({
+  const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
         try {
           let requestBody = {
@@ -25,9 +29,12 @@ export default function Login({setNewUser}) {
           }
           const data = await userLogin(requestBody)
           showToastMessage(data.message,data.info)
-          //continue
+          setLoader(false)
+          login(data)
+          return navigate("/home")
         } catch (error) {
             console.log(error.message)
+            return setLoader(false)
         }
     },
 });
@@ -52,6 +59,9 @@ export default function Login({setNewUser}) {
         setLoader(true)
         const data = await userLogin(requestBody);
         showToastMessage(data.message, data.info);
+        setLoader(false)
+        login(data)
+        return navigate("/home")
   }
   return (
     <div className="regitser-div w-[90%] md:w-[70%] lg:w-[45%] rounded-md shadow shadow-[#6d6d6d60] p-5">
@@ -69,14 +79,14 @@ export default function Login({setNewUser}) {
             <InputIcons type={"password"} />
         </div>
         <div className={"submit-btn w-full px-1 my-3"}>
-            <button type={"submit"} className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-full flex justify-center space-x-1 items-center  disabled:bg-slate-700`} disabled={loader}>{<span>Login</span>}</button>
+            <button type={"submit"} className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-full flex justify-center space-x-1 items-center  disabled:bg-slate-700`} disabled={loader}><span>Login</span></button>
         </div>
     </form>
     <div className="w-full text-center p-1">
         <h1 className="text-xs text-slate-500">Or</h1>
     </div>
     <div className="google-login-div w-full p-1 flex justify-center items-center my-2">
-        <button type="button" onClick={() => login()} className="border-green-300 border-2 p-2 w-full flex justify-center items-center space-x-2" ><FcGoogle size={21} /><span>Login with Google</span></button>
+        <button type="button" onClick={() => googleLogin()} className="border-green-300 border-2 p-2 w-full flex justify-center items-center space-x-2" ><FcGoogle size={21} /><span>Login with Google</span></button>
     </div>
     <div className="already w-full my-4 flex justify-center items-center">
         <h1 className="text-xs">New to nexusMeetHub? <span className="font-bold cursor-pointer" onClick={()=>setNewUser(true)}>Signup</span></h1>

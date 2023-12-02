@@ -3,11 +3,16 @@ import PropTypes from "prop-types"
 import { useCallback, useEffect, useState } from "react"
 import { verifyUser,userRegister } from "../../api/auth";
 import { showToastMessage } from "../toasts/showToast";
+import { useAuth } from "../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function OtpComp({ setOtpDiv,requestBody,setLoader }) {
     const [count, setCount] = useState(59);
     const [otp,setOtp] = useState("")
+    const [verifyLoader,setVerifyLoader] = useState(false)
+    const {login} = useAuth()
     const timeOutCallback = useCallback(() => setCount(curr => curr-1), [setCount]);
+    const navigate = useNavigate()
 
     useEffect(() => {
         count > 0 && setTimeout(timeOutCallback, 1000);
@@ -17,14 +22,16 @@ export default function OtpComp({ setOtpDiv,requestBody,setLoader }) {
         let body = {
             otp
         }
+        setVerifyLoader(true)
         const data = await verifyUser(body)
         showToastMessage(data.message, data.info);
-        if(!data.valid){
+        if(data.valid === false){
             setLoader(false)
             return setOtpDiv(false)
         }
         setLoader(false)
-        return setOtpDiv(false)
+        login(data)
+        return navigate("/home")
     }
 
     const resetTimer = ()=>{
@@ -52,7 +59,7 @@ export default function OtpComp({ setOtpDiv,requestBody,setLoader }) {
                     <button className="text-xs text-red-400 hover:text-red-500 disabled:text-red-300 border-none" disabled = {count===0?false:true} onClick={handleReset} >Resend Code</button>
                 </div>
                 <div className="verify-code w-full my-4 flex justify-center items-center">
-                    <button type={"button"} onClick={handleVerify} className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-[80%] flex justify-center space-x-1 items-center  disabled:bg-slate-700`}>{<span>Verify</span>}</button>
+                    <button type={"button"} onClick={handleVerify} className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-[80%] flex justify-center space-x-1 items-center  disabled:bg-slate-700`} disabled = {verifyLoader}><span>Verify</span></button>
                 </div>
                 <div className="verify-code w-full my-4 mt-8 flex justify-center items-center">
                     <h1 className="text-xs text-blue-500">0:{count<10 && "0"}{count}</h1>
@@ -64,6 +71,6 @@ export default function OtpComp({ setOtpDiv,requestBody,setLoader }) {
 
 OtpComp.propTypes = {
     setOtpDiv: PropTypes.func,
-    requestBody: PropTypes.string,
+    requestBody: PropTypes.object,
     setLoader : PropTypes.func
 }

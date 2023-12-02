@@ -62,7 +62,11 @@ export default function Register({ setNewUser }) {
         const data = await userRegister(requestBody);
         showToastMessage(data.message, data.info);
         setRequestToSend(requestBody)
-        return setOtpDiv(true)
+        if(data.info === "success"){
+            setLoader(false)
+            return setOtpDiv(true)
+        }else 
+            return setLoader(false)
     }
 
     return (
@@ -84,7 +88,7 @@ export default function Register({ setNewUser }) {
                     <InputIcons type={"password"} />
                 </div>
                 <div className={"submit-btn w-full px-1 my-3"}>
-                    <button type={"submit"} className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-full flex justify-center space-x-1 items-center  disabled:bg-slate-700`} disabled={loader}>{<span>Submit</span>}</button>
+                    <button type={"submit"} className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-full flex justify-center space-x-1 items-center  disabled:bg-slate-700`} disabled={loader}><span>Submit</span></button>
                 </div>
             </form>
             <div className="w-full text-center p-1">
