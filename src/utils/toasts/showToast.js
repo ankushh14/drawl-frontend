@@ -5,10 +5,6 @@ const showToastMessage = (toastMessage,info)=>{
         toast.success(toastMessage, {
         });
         }
-        else if(info === "warning"){
-            toast.warning(toastMessage, {
-            });
-        }
         else if(info === "error"){
             toast.error(toastMessage, {
             });

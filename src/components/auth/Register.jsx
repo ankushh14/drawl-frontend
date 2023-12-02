@@ -88,14 +88,14 @@ export default function Register({ setNewUser }) {
                     <InputIcons type={"password"} />
                 </div>
                 <div className={"submit-btn w-full px-1 my-3"}>
-                    <button type={"submit"} className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-full flex justify-center space-x-1 items-center  disabled:bg-slate-700`} disabled={loader}><span>Submit</span></button>
+                    <button type={"submit"} className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-full flex justify-center space-x-1 items-center active:scale-95  disabled:bg-slate-700`} disabled={loader}><span>Submit</span></button>
                 </div>
             </form>
             <div className="w-full text-center p-1">
                 <h1 className="text-xs text-slate-500">Or</h1>
             </div>
             <div className="google-login-div w-full p-1 flex justify-center items-center my-2">
-                <button type="button" onClick={() => login()} className="border-green-300 border-2 p-2 w-full flex justify-center items-center space-x-2" ><FcGoogle size={21} /><span>Sign up with Google</span></button>
+                <button type="button" onClick={() => login()} className="border-green-300 border-2 p-2 w-full flex justify-center items-center space-x-2 active:scale-95 transition-all duration-500" ><FcGoogle size={21} /><span>Sign up with Google</span></button>
             </div>
             <div className="already w-full my-4 flex justify-center items-center">
                 <h1 className="text-xs">Already have an account? <span className="font-bold cursor-pointer" onClick={()=>setNewUser(false)}>Login</span></h1>

@@ -5,6 +5,7 @@ import AuthPage from "./pages/AuthPage"
 import { Toaster } from 'react-hot-toast';
 import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
+import AuthenticatedValidate from "./utils/validation/AuthenticatedValidate";
 
 
 function App() {
@@ -17,7 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/auth" element={<AuthPage />} />
-          <Route>
+          <Route element = {<AuthenticatedValidate/>}>
             <Route path="/home" element={<HomePage />} />
           </Route>
         </Routes>

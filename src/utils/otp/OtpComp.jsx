@@ -59,7 +59,7 @@ export default function OtpComp({ setOtpDiv,requestBody,setLoader }) {
                     <button className="text-xs text-red-400 hover:text-red-500 disabled:text-red-300 border-none" disabled = {count===0?false:true} onClick={handleReset} >Resend Code</button>
                 </div>
                 <div className="verify-code w-full my-4 flex justify-center items-center">
-                    <button type={"button"} onClick={handleVerify} className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-[80%] flex justify-center space-x-1 items-center  disabled:bg-slate-700`} disabled = {verifyLoader}><span>Verify</span></button>
+                    <button type={"button"} onClick={handleVerify} className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-[80%] flex justify-center space-x-1 items-center active:scale-95 disabled:bg-slate-700`} disabled = {verifyLoader}><span>Verify</span></button>
                 </div>
                 <div className="verify-code w-full my-4 mt-8 flex justify-center items-center">
                     <h1 className="text-xs text-blue-500">0:{count<10 && "0"}{count}</h1>
