@@ -6,6 +6,8 @@ import { Toaster } from 'react-hot-toast';
 import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
 import AuthenticatedValidate from "./utils/validation/AuthenticatedValidate";
+import PublicOutlet from "./utils/validation/PublicOutlet";
+import MainLayout from "./utils/layouts/MainLayout";
 
 
 function App() {
@@ -17,9 +19,13 @@ function App() {
         <Toaster />
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route element = {<PublicOutlet/>}>
           <Route path="/auth" element={<AuthPage />} />
+          </Route>
           <Route element = {<AuthenticatedValidate/>}>
+            <Route element = {<MainLayout/>}>
             <Route path="/home" element={<HomePage />} />
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

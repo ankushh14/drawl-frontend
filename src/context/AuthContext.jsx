@@ -5,7 +5,7 @@ import PropTypes from "prop-types"
 const initialState = {
     user : {},
     token : null,
-    authenticated : false,
+    authenticated : true,
     status : STATUS.IDLE,
     expiresAt : null
 }
