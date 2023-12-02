@@ -8,12 +8,14 @@ import HomePage from "./pages/HomePage";
 import AuthenticatedValidate from "./utils/validation/AuthenticatedValidate";
 import PublicOutlet from "./utils/validation/PublicOutlet";
 import MainLayout from "./utils/layouts/MainLayout";
+import { ThemeProvider } from "./context/ThemeContext";
 
 
 function App() {
   const Client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID
   return (
     <GoogleOAuthProvider clientId={`${Client_id}`}>
+      <ThemeProvider>
       <BrowserRouter>
         {/* <MainLoader/> */}
         <Toaster />
@@ -29,6 +31,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      </ThemeProvider>
     </GoogleOAuthProvider>
   )
 }
