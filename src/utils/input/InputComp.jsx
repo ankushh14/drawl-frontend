@@ -8,10 +8,10 @@ export default function InputComp({type,description,label,placeholder,name,requi
                   label
               }
               {
-                  !required?" *":""
+                  required?" *":""
               }
           </label>
-          <input type={type} placeholder={placeholder} id={name} name={name} className={`w-full font-kalam p-3 text-xs outline-none border-slate-500 border-b focus:border-b-[2px] ${description !=="" && "border-b-red-500 border-b-[2px]"}`} required={required} value={stateVar} onChange={(e)=>{setStatevar(e.target.value)}} onFocus={()=>descriptionControlFunc("")} autoComplete="off"/>
+          <input type={type} placeholder={placeholder} id={name} name={name} className={`w-full bg-inherit text-inherit font-kalam p-3 text-xs outline-none border-slate-500 border-b focus:border-b-[2px] ${description !=="" && "border-b-red-500 border-b-[2px]"}`} required={false} value={stateVar} onChange={(e)=>{setStatevar(e.target.value)}} onFocus={()=>descriptionControlFunc("")} autoComplete="off"/>
           {
               description!== "" && <span className={"description text-xs text-red-500"}>{description}</span>
           }
