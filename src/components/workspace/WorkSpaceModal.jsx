@@ -1,10 +1,12 @@
 import PropTypes from "prop-types"
 import { IoClose } from "react-icons/io5";
 import InputComp from "../../utils/input/InputComp";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import useTheme from "../../hooks/useTheme";
 import { IoSearch } from "react-icons/io5";
 import InputIcons from "../../utils/input/InputIcons";
+import { useDebounce } from "@uidotdev/usehooks";
+import { findMembers } from "../../api/workspace";
 
 
 export default function WorkSpaceModal({ openModal }) {
@@ -12,16 +14,63 @@ export default function WorkSpaceModal({ openModal }) {
     const [name, setName] = useState("")
     const [nameDescription, setNameDescription] = useState("")
     const [description, setDescription] = useState("")
-    const [members, setMembers] = useState(["ankushshenoy97@gmail.com", "arghyadprasad", "arghyadprasad", "arghyadprasad", "arghyadprasad", "arghyadprasad"])
+    const [members, setMembers] = useState([])
     const [individual, setIndividual] = useState("")
+    const [searchDescription, setSearchDescription] = useState("")
     const [password, setPassword] = useState("");
     const [passwordDesc, setPasswordDesc] = useState("")
-    const [searchDescription, setSearchDescription] = useState("")
+    const [searchResults,setSearchResults] = useState([])
+    const [searchDisable,setSearchDisable] = useState(false)
     const modalCloseHandle = (e) => {
         if (e.target.id === "Modal-background") {
             openModal(false)
         }
     }
+
+    const debouncedSearch = useDebounce(individual,500)
+    const searchMembers = useCallback(async()=>{
+        if(debouncedSearch == "" || undefined){
+            return
+        }
+        let requestBody = {
+            email : debouncedSearch
+        }
+        const data = await findMembers(requestBody)
+        return setSearchResults(data.data)
+    },[debouncedSearch])
+
+    useEffect(()=>{
+        searchMembers()
+    },[searchMembers])
+
+    const checkMembers = useCallback(()=>{
+        if(members?.length > 6){
+            setSearchDisable(true)
+            return setSearchDescription("Maximum of only 6 members can be added")
+        }else{
+            return
+        }
+    },[members])
+
+    const handleSelection = (email)=>{
+        setIndividual("")
+        if(members.includes(email)){
+            setSearchResults([])
+            return setSearchDescription("Member already selected")
+        }
+        setMembers((prev)=>[...prev,email])
+        return setSearchResults([])
+    }
+
+    const handleDeletion = (item)=>{
+        const newMembers = members.filter((elem)=>elem !== item)
+        return setMembers(newMembers)
+    }
+
+    useEffect(()=>{
+        checkMembers()
+    },[checkMembers])
+
     return (
         <div id="Modal-background" className="Modal-background fixed top-0 left-0 right-0 bottom-0 bg-[#5c5b5b5d] flex justify-center items-center" onClick={modalCloseHandle}>
 
@@ -40,12 +89,23 @@ export default function WorkSpaceModal({ openModal }) {
                     <div className="workspace-members w-full p-2 flex flex-col">
                         <div className="search-div relative">
                             <IoSearch className="absolute right-4 text-inherit bottom-[44%]" size={13} />
-                            <InputComp type={"text"} placeholder={"Search for collaborators..."} name={"members"} label={"Collaborators"} required={false} stateVar={individual} setStatevar={setIndividual} description={searchDescription} descriptionControlFunc={setSearchDescription} />
+                            <InputComp disable = {searchDisable} type={"text"} placeholder={"Search for collaborators..."} name={"members"} label={"Collaborators"} required={false} stateVar={individual} setStatevar={setIndividual} description={searchDescription} descriptionControlFunc={setSearchDescription} />
+                            <div className={`search-results-div absolute z-30 ${searchResults.length === 0 && "hidden"} top-[80%] ${!darkMode ? "bg-white text-black" : "bg-black text-white"}  w-full  flex flex-col justify-center items-center rounded-md border border-slate-500`}>
+                            {
+                                searchResults.map((item,index)=>{
+                                    return (
+                                        <div className={` ${darkMode ? "hover:bg-slate-500" : "hover:bg-slate-200"} bg-inherit text-inherit border-slate-500 text-xs w-full border-b last:border-b-0 p-2 cursor-pointer flex items-center rounded-t-md last:rounded-b-md last:rounded-t-none transition-colors duration-300 `} onClick={()=>handleSelection(item.email)} key={index}>
+                                            <img src={item.profile} className="w-5 h-5 mr-4 rounded-full" alt="profile"/>{item.email}
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
                         </div>
                         <div className="member-div w-full p-2 flex items-center flex-wrap">
                             {
                                 members.map((item, index) => {
-                                    return <div className={`${darkMode ? "bg-white text-black" : "bg-black text-white"} flex justify-center items-center rounded-md text-xs px-3 pr-1 py-1 m-2`} key={index}><span>{item}</span><IoClose className="ml-2 cursor-pointer" size={15} /></div>
+                                    return <div className={`${darkMode ? "bg-white text-black" : "bg-black text-white"} flex justify-center items-center rounded-md text-xs px-3 pr-1 py-1 m-2`} key={index}><span>{item}</span><IoClose className="ml-2 cursor-pointer" size={15} onClick={()=>handleDeletion(item)} /></div>
                                 })
                             }
                         </div>
