@@ -60,8 +60,12 @@ export default function Login({setNewUser}) {
         const data = await userLogin(requestBody);
         showToastMessage(data.message, data.info);
         setLoader(false)
-        login(data)
-        return navigate("/home")
+        if(data.info === "success"){
+            login(data)
+            return navigate("/home")
+        }else{
+            return
+        }
   }
   return (
     <div className="regitser-div w-[90%] md:w-[70%] lg:w-[45%] rounded-md shadow shadow-[#6d6d6d60] p-5">
