@@ -106,7 +106,6 @@ export default function WorkSpaceModal({ openModal }) {
             }
         }
         const response = await createWorkspace(requestBody)
-        console.log(response)
         if(response.valid){
             showToastMessage(response.message,response.info)
             return openModal(false)
@@ -159,7 +158,7 @@ export default function WorkSpaceModal({ openModal }) {
                         <InputIcons type={"password"} />
                     </div>
                     <div className="create-workspace w-full p-2">
-                        <button type="submit" className={`${darkMode ? "bg-white text-black" : "bg-black text-white"} border border-black rounded-md px-8 py-3 flex justify-center items-center text-xs w-full md:w-[60%] lg:w-[40%] active:scale-95 transition-all duration-500`}>Create workspace</button>
+                        <button type="submit" className={`${darkMode ? "bg-white text-black" : "bg-black text-white"} border border-black rounded-md px-8 py-3 flex justify-center items-center text-xs w-full active:scale-95 transition-all duration-500`}>Create workspace</button>
                     </div>
                 </form>
             </div>

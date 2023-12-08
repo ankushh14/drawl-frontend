@@ -25,4 +25,16 @@ const createWorkspace = async(requestBody)=>{
     }
 }
 
-export {findMembers,createWorkspace}
+const getWorkspaces = async(requestBody)=>{
+    try {
+        const data = await axios.post(`${ServerUrl}workspace/getworkspaces`,requestBody,{
+            ...headers,
+            withCredentials:true
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
+
+export {findMembers,createWorkspace,getWorkspaces}
