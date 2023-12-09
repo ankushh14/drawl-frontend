@@ -21,7 +21,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className={`navbar w-full flex justify-between items-center p-2 transition-colors duration-500 border-b-2 ${darkMode?"bg-black  text-white border-b-white":"bg-white text-black border-b-black"}`}>
+    <div className={`navbar w-full flex justify-between items-center p-2 transition-colors duration-500 border-b-2 ${darkMode?"bg-black  text-white border-b-white":"bg-white text-black border-b-[#d3d3d3]"}`}>
         <div className="logo-div">
             <h1>
                 nexusMeetHub
