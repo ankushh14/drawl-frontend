@@ -32,7 +32,7 @@ export default function HomePage() {
   },[getworkspaces])
 
   return (
-    <div className={`relative md:static w-full h-[93.7vh] md:h-full md:bg-[#d3d3d3] md:min-h-screen flex flex-col md:flex-row  ${darkMode?"bg-black":"bg-white"}`}>
+    <div className={`relative md:static w-full h-[93.7vh] md:h-full md:min-h-screen flex flex-col md:flex-row  ${darkMode?"bg-black":"bg-white"}`}>
 
       {
         workspaces.length>0?

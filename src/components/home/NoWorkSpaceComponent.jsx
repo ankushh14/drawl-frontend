@@ -9,7 +9,7 @@ export default function NoWorkSpaceComponent({openModal}) {
             </p>
             <div className="btns-div w-[80%] md:w-[40%] lg:w-[30%] flex flex-col space-y-2">
                 <button type="button" onClick={()=>openModal(true)} className={`${darkMode ? "bg-white text-black" : "bg-black text-white"} border border-black rounded-md px-8 py-3 flex justify-center items-center  active:scale-95 transition-all duration-500`}>Create a new workspace</button>
-                {/* <button type="button" className={`${darkMode ? "bg-white text-black" : "bg-black text-white"} border border-black rounded-md px-8 py-3 flex justify-center items-center  active:scale-95 transition-all duration-500`}>Join a workspace</button> */}
+                <button type="button" className={`${darkMode ? "bg-white text-black" : "bg-black text-white"} border border-black rounded-md px-8 py-3 flex justify-center items-center  active:scale-95 transition-all duration-500`}>Join a workspace</button>
             </div>
         </div>
     )
