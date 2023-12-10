@@ -13,6 +13,7 @@ export default function Navbar() {
   const [themeInLocal,setThemeInLocal] = useLocalStorage("darkTheme",false)
   const [nav,setNav] = useState(false)
   const [notifications,setNotifications] = useState(false)
+  const [ping,setPing] = useState(false)
   const changeInTheme = useCallback(()=>{
     setDarkMode(themeInLocal)
   },[setDarkMode,themeInLocal])
@@ -36,15 +37,20 @@ export default function Navbar() {
         <div className="theme-toggle-div">
           <ThemeToggle onClick={toggleTheme}/>
         </div>
-        <div className="common-div">
+        <div className="common-div relative">
           <IoIosNotifications size={20} className="cursor-pointer" onClick={()=>setNotifications((prev)=>!prev)}/>
+          {
+            ping && 
+          <div className="notification-ball absolute bottom-0 right-0 w-[0.55rem] animate-pulse h-[0.55rem] rounded-full bg-[#63f58c]">
+          </div>
+          }
+          <NotificationComponent openController={setNotifications} noti = {notifications} setPing={setPing}/>
         </div>
         <div className="hamburger-div flex flex-col cursor-pointer justify-center items-center space-y-[0.15rem] w-[1.5rem]  p-1" onClick={()=>setNav((prev)=>!prev)}>
           <span className={`w-full h-[0.2rem] rounded-xl transition-all duration-500 ${darkMode?"bg-white":"bg-black"} ${nav?"translate-y-[0.168rem] rotate-45":"rotate-0"} `}></span>
           <span className={`w-full h-[0.2rem] rounded-xl transition-all duration-500 ${darkMode?"bg-white":"bg-black"} ${nav?"-translate-y-[0.168rem] -rotate-45":"rotate-0"}`}></span>
         </div>
         </div>
-        <NotificationComponent openController={setNotifications} noti = {notifications}/>
     </div>
   )
 }

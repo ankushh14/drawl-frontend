@@ -13,4 +13,16 @@ const getNotifications = async(reqBody)=>{
     }
 }
 
-export {getNotifications}
+const sendResponse = async(reqBody)=>{
+    try {
+        const data = await axios.post(`${ServerUrl}notifications/response`,reqBody,{
+            ...headers,
+            withCredentials:true
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
+
+export {getNotifications,sendResponse}
