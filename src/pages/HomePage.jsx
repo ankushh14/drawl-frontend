@@ -7,25 +7,29 @@ import { getWorkspaces } from "../api/workspace"
 import { useAuth } from "../hooks/useAuth"
 import { showToastMessage } from "../utils/toasts/showToast"
 import WorkspacesInHome from "../components/home/WorkspacesInHome"
+import STATUS from "../utils/status"
 
 export default function HomePage() {
   const {darkMode} = useTheme()
-  const {user} = useAuth()
+  const {user,updateStatus} = useAuth()
   const [workspaces,setWorkspaces] = useState([])
   const [createModal,setCreateModal] = useState(false)
 
   const getworkspaces = useCallback(async()=>{
+    updateStatus(STATUS.PENDING)
     const requestBody = {
       owner : user.email
     }
     const response = await getWorkspaces(requestBody)
     if(response.valid){
+      updateStatus(STATUS.SUCCESS)
       return setWorkspaces(response.data)
     }else{
+      updateStatus(STATUS.SUCCESS)
       return showToastMessage(response.message,response.info)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[user,createModal])
+  },[user,updateStatus,createModal])
 
   useEffect(()=>{
     getworkspaces()

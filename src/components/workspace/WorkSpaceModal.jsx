@@ -11,6 +11,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { createWorkspace } from "../../api/workspace";
 import { isValidPassword } from "../../utils/validation/auth.validation";
 import { showToastMessage } from "../../utils/toasts/showToast";
+import STATUS from "../../utils/status";
 
 
 export default function WorkSpaceModal({ openModal }) {
@@ -25,7 +26,7 @@ export default function WorkSpaceModal({ openModal }) {
     const [passwordDesc, setPasswordDesc] = useState("")
     const [searchResults, setSearchResults] = useState([])
     const [searchDisable, setSearchDisable] = useState(false)
-    const { user } = useAuth()
+    const { user,updateStatus } = useAuth()
     const modalCloseHandle = (e) => {
         if (e.target.id === "Modal-background") {
             openModal(false)
@@ -108,6 +109,7 @@ export default function WorkSpaceModal({ openModal }) {
         const response = await createWorkspace(requestBody)
         if(response.valid){
             showToastMessage(response.message,response.info)
+            updateStatus(STATUS.SUCCESS)
             return openModal(false)
         }else{
             return showToastMessage(response.message,response.info)

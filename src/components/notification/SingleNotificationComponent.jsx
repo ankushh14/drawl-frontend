@@ -2,22 +2,26 @@ import PropTypes from "prop-types"
 import { IoCheckmarkSharp, IoCloseSharp } from "react-icons/io5";
 import { sendResponse } from "../../api/notification";
 import { showToastMessage } from "../../utils/toasts/showToast";
+import { useAuth } from "../../hooks/useAuth";
+import STATUS from "../../utils/status";
 
 export default function SingleNotificationComponent({item,setNotificationRefresh}) {
-
+    const { updateStatus } = useAuth()
     const handleResponse = async(answer = undefined)=>{
         if(answer === undefined){
             return 
         }
+        updateStatus(STATUS.PENDING)
         let requestBody = {
             notificationID : item._id,
             answer
         }
         const response = await sendResponse(requestBody)
+        updateStatus(STATUS.SUCCESS)
         if(response.valid){
             return setNotificationRefresh((prev)=>!prev)
         }else{
-            showToastMessage("Some error occured",response.info)
+            return showToastMessage("Some error occured",response.info)
         }
     }
 
