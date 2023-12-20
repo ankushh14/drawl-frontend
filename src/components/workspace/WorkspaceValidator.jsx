@@ -6,12 +6,13 @@ import { useAuth } from "../../hooks/useAuth";
 import STATUS from "../../utils/status";
 import WorkspacePassword from "./WorkspacePassword";
 import { showToastMessage } from "../../utils/toasts/showToast";
+import Innerworkspacelayout from "./Innerworkspacelayout";
 
 
 export default function WorkspaceValidator() {
     const navigate = useNavigate()
-    const {updateStatus} = useAuth()
-    const {enter,passwordStatus} = useWorkspace()
+    const {updateStatus,user} = useAuth()
+    const {enter,passwordStatus,owner} = useWorkspace()
     const id = useParams()
 
     const getWorkspace = useCallback(async () => {
@@ -35,6 +36,6 @@ export default function WorkspaceValidator() {
     },[getWorkspace])
 
     return (
-        passwordStatus ? <WorkspacePassword/> : <div>Welcome to the workspace guys</div>
+        (passwordStatus && owner !== user.email ) ? <WorkspacePassword/> : <Innerworkspacelayout/>
     )
 }
