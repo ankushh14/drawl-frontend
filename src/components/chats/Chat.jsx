@@ -5,16 +5,16 @@ export default function Chat({ chat }) {
     const {user} = useAuth()
     return (
         <div className="outline-chat my-4 w-full flex flex-col">
-            <div className="w-full p-2 bg-slate-500 rounded-md text-white text-xs ">
+            <div className={`max-w-[80%] p-2 rounded-md text-white text-xs ${user.email === chat.email?"bg-slate-500 self-end":"bg-slate-400 self-start"} `}>
                 {chat.message}
             </div>
-            <div className="prof-div w-full mt-[0.15rem] space-x-2 flex justify-end items-center">
+            <div className={`prof-div w-full mt-[0.20rem] ${user.email === chat.email?"flex-row justify-end":"flex-row-reverse justify-start"} flex justify-end items-center`}>
                 <h1 className="text-[0.65rem] text-slate-500">
                     {
                         user.email === chat.email ? "you":chat.email
                     }
                 </h1>
-                <img src={chat.profile} className="w-5 h-5  rounded-full" alt="profile" />
+                <img src={chat.profile} className="w-5 h-5 mx-1 rounded-full" alt="profile" />
             </div>
         </div>
     )

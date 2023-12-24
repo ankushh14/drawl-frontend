@@ -30,8 +30,12 @@ export default function Login({setNewUser}) {
           const data = await userLogin(requestBody)
           showToastMessage(data.message,data.info)
           setLoader(false)
-          login(data)
-          return navigate("/home")
+          if(data.info === "success"){
+            login(data)
+            return navigate("/home")
+        }else{
+            return
+        }
         } catch (error) {
             console.log(error.message)
             return setLoader(false)
