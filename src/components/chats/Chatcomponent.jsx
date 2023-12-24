@@ -2,28 +2,51 @@ import { FaCircleChevronRight } from "react-icons/fa6";
 import { useWorkspace } from "../../hooks/useWorkspace";
 import useTheme from "../../hooks/useTheme";
 import Chat from "./Chat";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import Collaborators from "./Collaborators";
 
 
 export default function Chatcomponent() {
+  const inputRef = useRef(null)
   const { name } = useWorkspace()
   const {darkMode} = useTheme()
+  const [message,setMessage] = useState('')
   const [chats,setChats] = useState([])
+  const [collaborators,setCollaborators] = useState(false)
+
+  const handleSendMessage = (e)=>{
+    if(e.code === "Enter" && !e.shiftKey){
+      setChats((prev)=>[...prev,message])
+      return setMessage('')
+    }
+  }
+
+  const simulateEnter = ()=>{
+    const enterKeyPressEvent = new KeyboardEvent('keydown', { code: 'Enter', shiftKey: false });
+    console.log(enterKeyPressEvent)
+    return inputRef.current.dispatchEvent(enterKeyPressEvent);
+  }
+
   return (
-    <div className={`w-full absolute md:w-[25%] md:static h-[94vh] border ml-1  flex flex-col border-[#d3d3d3] ${darkMode?"bg-black text-white":"bg-white text-black"}`}>
-        <div className="chat-header w-full p-2 rounded-b-sm border border-inherit">
-          <h1>{name}</h1>
+    <div className={`w-full absolute  md:w-[25%] md:static h-[94vh] border md:ml-1  flex flex-col border-[#d3d3d3] ${darkMode?"bg-black text-white":"bg-white text-black"}`}>
+        <div className="chat-header w-full p-2 rounded-b-sm border border-inherit flex justify-between items-center relative">
+          <h1 className="font-bold">{name}</h1>
+          <button type="button" onClick={()=>setCollaborators((prev)=>!prev)} className="members-div active:scale-95 transition-all duration-500 p-2 w-[30%] flex justify-center items-center rounded-lg bg-slate-500 text-white border-2 border-slate-600 text-xs">
+            <h1>Collaborators</h1>
+          </button>
+          { collaborators && <Collaborators/> }
         </div>
-        <div className="body-chat h-full w-full border-inherit p-2 flex flex-col-reverse">
-          <Chat/>
-          <Chat/>
-          <Chat/>
-          <Chat/>
+        <div className="body-chat h-full w-full border-inherit p-2 flex flex-col overflow-y-scroll">
+          {
+            chats.length > 0 && chats.map((item,index)=>{
+              return <Chat message={item} key={index}/>
+            })
+          }
         </div>
         <div className="w-full justify-self-end py-2 border-y border-inherit">
           <div className="input-div w-full relative p-2">
-            <input type="text" placeholder="Type your message here ..." className="p-2 pr-8 w-full text-xs outline-slate-500 border-2 border-slate-400 rounded-md" />
-            <div className="send-btn cursor-pointer absolute right-4 bottom-4">
+            <input ref={inputRef} type="text" value={message} onChange={(e)=>setMessage(e.target.value)} placeholder="Type your message here ..." className="p-2 pr-8 w-full text-xs text-slate-500 outline-slate-500 border-2 border-slate-400 rounded-md" onKeyDown={handleSendMessage} />
+            <div className="send-btn cursor-pointer absolute right-4 bottom-4" onClick={simulateEnter}>
               <FaCircleChevronRight size={20} className="text-slate-500 bg-inherit"/>
             </div>
           </div>
