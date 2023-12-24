@@ -2,8 +2,11 @@ import { FaCircleChevronRight } from "react-icons/fa6";
 import { useWorkspace } from "../../hooks/useWorkspace";
 import useTheme from "../../hooks/useTheme";
 import Chat from "./Chat";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Collaborators from "./Collaborators";
+import socketIO from "socket.io-client"
+import { useAuth } from "../../hooks/useAuth";
+let io
 
 
 export default function Chatcomponent() {
@@ -13,10 +16,17 @@ export default function Chatcomponent() {
   const [message,setMessage] = useState('')
   const [chats,setChats] = useState([])
   const [collaborators,setCollaborators] = useState(false)
+  const { user } = useAuth()
 
   const handleSendMessage = (e)=>{
     if(e.code === "Enter" && !e.shiftKey){
-      setChats((prev)=>[...prev,message])
+      io.emit('sendMessage',
+      {
+        message : message,
+        email : user.email,
+        profile : user.profile
+      }
+      )
       return setMessage('')
     }
   }
@@ -26,6 +36,20 @@ export default function Chatcomponent() {
     console.log(enterKeyPressEvent)
     return inputRef.current.dispatchEvent(enterKeyPressEvent);
   }
+
+  const updateMessages = useCallback(()=>{
+    io.on('message',(newMessage)=>{
+      setChats((prev)=>[...prev,newMessage])
+    })
+  },[setChats])
+
+  useEffect(()=>{
+    io = socketIO(`${import.meta.env.VITE_CHAT_ENDPOINT}`)
+  })
+
+  useEffect(()=>{
+    updateMessages()
+  },[updateMessages])
 
   return (
     <div className={`w-full absolute  md:w-[25%] md:static h-[94vh] border md:ml-1  flex flex-col border-[#d3d3d3] ${darkMode?"bg-black text-white":"bg-white text-black"}`}>
@@ -39,7 +63,7 @@ export default function Chatcomponent() {
         <div className="body-chat h-full w-full border-inherit p-2 flex flex-col overflow-y-scroll">
           {
             chats.length > 0 && chats.map((item,index)=>{
-              return <Chat message={item} key={index}/>
+              return <Chat chat={item} key={index}/>
             })
           }
         </div>
