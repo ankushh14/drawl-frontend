@@ -6,7 +6,10 @@ export default function Chat({ chat }) {
     return (
         <div className="outline-chat my-4 w-full flex flex-col">
             <div className={`max-w-[80%] p-2 rounded-md text-white text-xs ${user.email === chat.email?"bg-slate-500 self-end":"bg-slate-400 self-start"} `}>
-                {chat.message}
+                <p className='w-full'>{chat.message}</p>
+                <div className="time-div w-full text-end text-[0.45rem] text-slate-300">
+                    {chat.time}
+                </div>
             </div>
             <div className={`prof-div w-full mt-[0.20rem] ${user.email === chat.email?"flex-row justify-end":"flex-row-reverse justify-start"} flex justify-end items-center`}>
                 <h1 className="text-[0.65rem] text-slate-500">

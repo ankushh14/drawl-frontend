@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Collaborators from "./Collaborators";
 import socketIO from "socket.io-client"
 import { useAuth } from "../../hooks/useAuth";
+import getTime from "../../utils/getTime";
 let io
 
 
@@ -31,11 +32,13 @@ export default function Chatcomponent() {
 
   const handleSendMessage = (e)=>{
     if(e.code === "Enter" && !e.shiftKey && message.length>0){
+      const time = getTime()
       io.emit('sendMessage',
       {
         message : message,
         email : user.email,
-        profile : user.profile
+        profile : user.profile,
+        time
       }
       )
       return setMessage('')
