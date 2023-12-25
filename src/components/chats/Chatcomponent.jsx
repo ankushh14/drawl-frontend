@@ -17,9 +17,20 @@ export default function Chatcomponent() {
   const [chats,setChats] = useState([])
   const [collaborators,setCollaborators] = useState(false)
   const { user } = useAuth()
+  const { ID } = useWorkspace()
+
+  useEffect(()=>{
+    io = socketIO(`${import.meta.env.VITE_CHAT_ENDPOINT}`,{
+      query : {
+        workspaceID : ID,
+        email : user.email
+      }
+    })
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
 
   const handleSendMessage = (e)=>{
-    if(e.code === "Enter" && !e.shiftKey){
+    if(e.code === "Enter" && !e.shiftKey && message.length>0){
       io.emit('sendMessage',
       {
         message : message,
@@ -33,9 +44,10 @@ export default function Chatcomponent() {
 
   const simulateEnter = ()=>{
     const enterKeyPressEvent = new KeyboardEvent('keydown', { code: 'Enter', shiftKey: false });
-    console.log(enterKeyPressEvent)
-    return inputRef.current.dispatchEvent(enterKeyPressEvent);
+    return handleSendMessage(enterKeyPressEvent)
   }
+
+
 
   const updateMessages = useCallback(()=>{
     io.on('message',(newMessage)=>{
@@ -43,12 +55,9 @@ export default function Chatcomponent() {
     })
   },[setChats])
 
-  useEffect(()=>{
-    io = socketIO(`${import.meta.env.VITE_CHAT_ENDPOINT}`)
-  })
 
   useEffect(()=>{
-    updateMessages()
+   updateMessages()
   },[updateMessages])
 
   return (
