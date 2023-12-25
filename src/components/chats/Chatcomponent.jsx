@@ -17,6 +17,7 @@ export default function Chatcomponent() {
   const [message,setMessage] = useState('')
   const [chats,setChats] = useState([])
   const [collaborators,setCollaborators] = useState(false)
+  const [online,setOnline] = useState([])
   const { user } = useAuth()
   const { ID } = useWorkspace()
 
@@ -27,6 +28,10 @@ export default function Chatcomponent() {
         email : user.email
       }
     })
+
+    return ()=>{
+      io.disconnect()
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
 
@@ -58,6 +63,16 @@ export default function Chatcomponent() {
     })
   },[setChats])
 
+  const updateOnline = useCallback(()=>{
+    io.on('getOnline',(data)=>{
+      setOnline(data)
+    })
+  },[setOnline])
+
+  useEffect(()=>{
+    updateOnline()
+  },[updateOnline])
+
 
   useEffect(()=>{
    updateMessages()
@@ -70,7 +85,7 @@ export default function Chatcomponent() {
           <button type="button" onClick={()=>setCollaborators((prev)=>!prev)} className="members-div active:scale-95 transition-all duration-500 p-2 w-[30%] flex justify-center items-center rounded-lg bg-slate-500 text-white border-2 border-slate-600 text-xs">
             <h1>Collaborators</h1>
           </button>
-          { collaborators && <Collaborators/> }
+          { collaborators && <Collaborators currentlyOnline={online}/> }
         </div>
         <div className="body-chat h-full w-full border-inherit p-2 flex flex-col overflow-y-scroll">
           {
