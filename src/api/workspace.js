@@ -48,5 +48,16 @@ const getSpecificWorkspace = async(requestBody)=>{
         return { ...error.response.data, info: "error" }
     }
 }
+const getProfiles = async(requestBody)=>{
+    try {
+        const data = await axios.post(`${ServerUrl}workspace/getprofiles`,requestBody,{
+            ...headers,
+            withCredentials:true
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
 
-export {findMembers,createWorkspace,getWorkspaces,getSpecificWorkspace}
+export {findMembers,createWorkspace,getWorkspaces,getSpecificWorkspace,getProfiles}
