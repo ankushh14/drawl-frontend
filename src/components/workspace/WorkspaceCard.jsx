@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom"
 import { MdGroup,MdOutlineDoubleArrow } from "react-icons/md";
 import { getProfiles } from "../../api/workspace";
 import { useCallback, useEffect, useState } from "react";
+import { FaArrowRight } from "react-icons/fa";
+
 
 
 
@@ -10,6 +12,9 @@ export default function WorkspaceCard({ workspace }) {
   const navigate = useNavigate()
   const [profiles,setProfiles] = useState([])
   const [submenu,setSubmenu] = useState(false)
+  const [members,setMembers] = useState(false)
+  const [actualMembers] = useState([...workspace.members,workspace.owner])
+  const [about,setAbout] = useState(false)
   const workspaceRoute = import.meta.env.VITE_WORKSPACES
   const handleNavigate = () => {
     navigate(`/${workspaceRoute}/${workspace.ID}`)
@@ -31,19 +36,19 @@ export default function WorkspaceCard({ workspace }) {
   },[getProfileData])
 
   return (
-    <div className="card w-[300px]  h-[330px] p-2 m-4 px-4 rounded bg-white text-black flex flex-col justify-between shadow shadow-inherit cursor-pointer hover:shadow-md   transition-all duration-500 ease-in-out">
-      <div className="card-body w-full flex flex-col space-y-4">
+    <div className={`card w-[300px]  h-[330px] p-2 m-4 px-4 rounded bg-white text-black flex flex-col justify-between shadow shadow-inherit cursor-pointer hover:shadow-md   transition-all duration-500 ease-in-out [perspective:1000px] [transform-Style:preserve-3d] ${(members || about)?"[transform:rotateY(180deg)]":""}`}>
+      <div className={`card-main w-full flex flex-col space-y-4 ${(members || about)?"hidden opacity-0":"visible opacity-100"}`}>
         <div className="card-header w-full py-1 flex justify-between items-center">
           <h1 className="w-full font-bold">
             {workspace.name}
           </h1>
-          <div className="dots-div flex flex-col relative" onClick={()=>setSubmenu((prev)=>!prev)}>
+          <div className="dots-div flex flex-col relative px-2" onClick={()=>setSubmenu((prev)=>!prev)}>
             <span className="w-[0.15rem] h-[0.15rem] bg-black m-[0.08rem] rounded-full"></span>
             <span className="w-[0.15rem] h-[0.15rem] bg-black m-[0.08rem] rounded-full"></span>
             <span className="w-[0.15rem] h-[0.15rem] bg-black m-[0.08rem] rounded-full"></span>
-            <div className={`absolute w-[100px] flex flex-col cursor-pointer shadow-sm shadow-slate-500 rounded-md p-2 text-xs text-slate-500 bg-white top-4 right-2 transition-all duration-300 ${submenu?"visible opacity-100":"invisible opacity-0"}`}>
-              <div className="w-full border-b border-slate-500 text-center p-1">About</div>
-              <div className="w-full text-center p-1">Members</div>
+            <div className={`absolute w-[100px] flex flex-col cursor-pointer shadow-sm shadow-slate-500 rounded-md p-2 text-xs text-slate-500 bg-white top-5 right-2 transition-all duration-300 ${submenu?"visible opacity-100":"invisible opacity-0"}`}>
+              <div className="w-full border-b border-slate-500 text-center p-1" onClick={()=>setAbout(true)}>About</div>
+              <div className="w-full text-center p-1" onClick={()=>setMembers(true)}>Members</div>
             </div>
           </div>
         </div>
@@ -71,10 +76,28 @@ export default function WorkspaceCard({ workspace }) {
         </div>
       </div>
       </div>
-      <div className="card-footer w-full">
+      <div className={`card-footer w-full ${(members || about)?"hidden":"visible"}`}>
       <h1 className="w-full text-xs font-semibold text-end">
         - created by {workspace.owner}
       </h1>
+      </div>
+      <div className={`about-div w-full ${about?"visible opacity-100":"hidden opacity-0"}`}>
+          <div className="back-btn w-full flex justify-end mb-4">
+            <FaArrowRight size={18} onClick={()=>setAbout(false)}/>
+          </div>
+          <div className="content-about w-full text-xs text-center [transform:rotateY(180deg)]">
+            {workspace.description}
+          </div>
+      </div>
+      <div className={`members-div w-full ${members?"visible opacity-100":"hidden opacity-0"}`}>
+          <div className="back-btn w-full flex justify-end mb-4">
+            <FaArrowRight size={18} onClick={()=>setMembers(false)}/>
+          </div>
+          <div className="content-about w-full text-xs flex flex-col [transform:rotateY(180deg)]">
+            {actualMembers?.map((item,index)=>{
+              return <span className="w-full text-center p-2" key={index}>{item}</span>
+            })}
+          </div>
       </div>
     </div>
   )
