@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from "react";
 export default function WorkspaceCard({ workspace }) {
   const navigate = useNavigate()
   const [profiles,setProfiles] = useState([])
+  const [submenu,setSubmenu] = useState(false)
   const workspaceRoute = import.meta.env.VITE_WORKSPACES
   const handleNavigate = () => {
     navigate(`/${workspaceRoute}/${workspace.ID}`)
@@ -36,10 +37,14 @@ export default function WorkspaceCard({ workspace }) {
           <h1 className="w-full font-bold">
             {workspace.name}
           </h1>
-          <div className="dots-div flex flex-col">
+          <div className="dots-div flex flex-col relative" onClick={()=>setSubmenu((prev)=>!prev)}>
             <span className="w-[0.15rem] h-[0.15rem] bg-black m-[0.08rem] rounded-full"></span>
             <span className="w-[0.15rem] h-[0.15rem] bg-black m-[0.08rem] rounded-full"></span>
             <span className="w-[0.15rem] h-[0.15rem] bg-black m-[0.08rem] rounded-full"></span>
+            <div className={`absolute w-[100px] flex flex-col cursor-pointer shadow-sm shadow-slate-500 rounded-md p-2 text-xs text-slate-500 bg-white top-4 right-2 transition-all duration-300 ${submenu?"visible opacity-100":"invisible opacity-0"}`}>
+              <div className="w-full border-b border-slate-500 text-center p-1">About</div>
+              <div className="w-full text-center p-1">Members</div>
+            </div>
           </div>
         </div>
         <div className="card-body w-full flex flex-col"  onClick={handleNavigate}>

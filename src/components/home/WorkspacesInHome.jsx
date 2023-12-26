@@ -5,7 +5,7 @@ import WorkspaceCard from "../workspace/WorkspaceCard"
 export default function WorkspacesInHome({ workspaces }) {
     const { darkMode } = useTheme()
     return (
-        <div className={`cards-cont flex flex-wrap overflow-y-scroll h-[80%] md:h-auto md:overflow-hidden w-full md:w-[60%] lg:w-[70%]  p-4  ${darkMode ? "bg-black text-white  shadow-white" : "bg-white text-black shadow-slate-500"}`}>
+        <div className={`cards-cont flex flex-wrap overflow-y-scroll justify-center h-[80%] lg:h-auto lg:overflow-hidden w-full  lg:w-[70%]  p-4  ${darkMode ? "bg-black text-white  shadow-white" : "bg-white text-black shadow-slate-500"}`}>
             {
                 workspaces.map((item, index) => {
                     return <WorkspaceCard workspace={item} key={index}/>
