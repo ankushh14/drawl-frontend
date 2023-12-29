@@ -7,7 +7,7 @@ export default function Chat({ chat }) {
         <div className="outline-chat my-4 w-full flex flex-col">
             <div className={`max-w-[80%] p-2 rounded-md text-white text-xs ${user.email === chat.email?"bg-slate-500 self-end":"bg-slate-400 self-start"} `}>
                 <p className='w-full'>{chat.message}</p>
-                <div className="time-div w-full text-end text-[0.45rem] text-slate-300">
+                <div className={`time-div w-full ${user.email === chat.email ? "text-end":"text-start"} text-[0.45rem] text-slate-300`}>
                     {chat.time}
                 </div>
             </div>

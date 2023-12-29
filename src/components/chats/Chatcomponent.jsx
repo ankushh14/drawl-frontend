@@ -7,6 +7,8 @@ import Collaborators from "./Collaborators";
 import socketIO from "socket.io-client"
 import { useAuth } from "../../hooks/useAuth";
 import getTime from "../../utils/getTime";
+import { getChats } from "../../api/chats";
+import {showToastMessage} from "../../utils/toasts/showToast"
 let io
 
 
@@ -15,6 +17,7 @@ export default function Chatcomponent() {
   const { name } = useWorkspace()
   const {darkMode} = useTheme()
   const [message,setMessage] = useState('')
+  const [chatDisable,setChatDisable] = useState(false)
   const [chats,setChats] = useState([])
   const [collaborators,setCollaborators] = useState(false)
   const [online,setOnline] = useState([])
@@ -28,6 +31,7 @@ export default function Chatcomponent() {
         email : user.email
       }
     })
+    getMessages()
 
     return ()=>{
       io.disconnect()
@@ -37,16 +41,24 @@ export default function Chatcomponent() {
 
   const handleSendMessage = (e)=>{
     if(e.code === "Enter" && !e.shiftKey && message.length>0){
+      try {
+      setChatDisable(true)  
       const time = getTime()
       io.emit('sendMessage',
       {
         message : message,
         email : user.email,
         profile : user.profile,
+        id : ID,
         time
       }
-      )
-      return setMessage('')
+      )             
+    } catch (error) {
+        showToastMessage("Some Error Occured","error")
+    }finally{
+      setChatDisable(false)
+      setMessage('')
+    } 
     }
   }
 
@@ -55,7 +67,17 @@ export default function Chatcomponent() {
     return handleSendMessage(enterKeyPressEvent)
   }
 
-
+  const getMessages = useCallback(async()=>{
+    let requestBody = {
+      ID
+    }
+    const data = await getChats(requestBody)
+    if(data.valid){
+      return setChats(data.data)
+    }else{
+      return
+    }
+  },[ID])
 
   const updateMessages = useCallback(()=>{
     io.on('message',(newMessage)=>{
@@ -96,7 +118,7 @@ export default function Chatcomponent() {
         </div>
         <div className="w-full justify-self-end py-2 border-y border-inherit">
           <div className="input-div w-full relative p-2">
-            <input ref={inputRef} type="text" value={message} onChange={(e)=>setMessage(e.target.value)} placeholder="Type your message here ..." className="p-2 pr-8 w-full text-xs text-slate-500 outline-slate-500 border-2 border-slate-400 rounded-md" onKeyDown={handleSendMessage} />
+            <input ref={inputRef} type="text" value={message} onChange={(e)=>setMessage(e.target.value)} disabled = {chatDisable} placeholder="Type your message here ..." className="p-2 pr-8 w-full text-xs text-slate-500 outline-slate-500 border-2 border-slate-400 rounded-md" onKeyDown={handleSendMessage} />
             <div className="send-btn cursor-pointer absolute right-4 bottom-4" onClick={simulateEnter}>
               <FaCircleChevronRight size={20} className="text-slate-500 bg-inherit"/>
             </div>
