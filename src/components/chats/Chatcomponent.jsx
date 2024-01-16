@@ -9,6 +9,7 @@ import { useAuth } from "../../hooks/useAuth";
 import getTime from "../../utils/getTime";
 import { getChats } from "../../api/chats";
 import {showToastMessage} from "../../utils/toasts/showToast"
+// import { IoAlertCircleOutline } from "react-icons/io5";
 let io
 
 
@@ -101,13 +102,16 @@ export default function Chatcomponent() {
   },[updateMessages])
 
   return (
-    <div className={`w-full absolute  md:w-[25%] md:static h-[94vh] border md:ml-1  flex flex-col border-[#d3d3d3] ${darkMode?"bg-black text-white":"bg-white text-black"}`}>
+    <div className={`w-full absolute  md:w-[25%] md:static h-[94vh] border md:ml-[0.12rem]  flex flex-col border-[#d3d3d3] ${darkMode?"bg-[#212529] text-white":"bg-white text-black"}`}>
         <div className="chat-header w-full p-2 rounded-b-sm border border-inherit flex justify-between items-center relative">
           <h1 className="font-bold">{name}</h1>
-          <button type="button" onClick={()=>setCollaborators((prev)=>!prev)} className="members-div active:scale-95 transition-all duration-500 p-2 w-[30%] flex justify-center items-center rounded-lg bg-slate-500 text-white border-2 border-slate-600 text-xs">
+          <div className="header-second-half flex w-[40%] justify-around items-center ">
+          <button type="button" onClick={()=>setCollaborators((prev)=>!prev)} className="members-div active:scale-95 transition-all duration-500 p-2 w-[70%] flex justify-center items-center rounded-lg bg-slate-500 text-white border-2 border-slate-600 text-xs">
             <h1>Collaborators</h1>
           </button>
           { collaborators && <Collaborators currentlyOnline={online}/> }
+          {/* <IoAlertCircleOutline size={24} className="cursor-pointer"/> */}
+          </div>
         </div>
         <div className="body-chat h-full w-full border-inherit p-2 flex flex-col overflow-y-scroll">
           {
