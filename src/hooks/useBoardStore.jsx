@@ -120,7 +120,6 @@ const useBoardStore = ({ roomID, userName }) => {
 
       const presenceId = InstancePresenceRecordType.createId(yClientId)
       const presenceDerivation = createPresenceStateDerivation(userPreferences, presenceId)(store)
-      console.log(presenceDerivation.get())
 
       room.awareness.setLocalStateField('presence', presenceDerivation.get())
 
