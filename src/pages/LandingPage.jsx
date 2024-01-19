@@ -21,7 +21,7 @@ export default function LandingPage() {
       </p>
       </div>
       <div className="btn-dashboard">
-        <button type="button" className="bg-black text-white rounded-md px-8 py-3 flex justify-center items-center hover:text-[#FBFFFF] active:scale-95 transition-all duration-500" onClick={()=>navigate("/home")}>Dashboard<FaArrowRight className="ml-1"/></button>
+        <button type="button" className="bg-black text-white rounded-md px-8 py-3 flex justify-center items-center hover:text-[#FBFFFF] active:scale-95 transition-all duration-500" onClick={()=>navigate("/dashboard")}>Dashboard<FaArrowRight className="ml-1"/></button>
       </div>
     </div>
   )

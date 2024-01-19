@@ -3,13 +3,15 @@ import useTheme from "../../hooks/useTheme"
 import { useLocalStorage } from "@uidotdev/usehooks";
 import ThemeToggle from "../../utils/theme/ThemeToggle";
 import { IoIosNotifications } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import NotificationComponent from "../notification/NotificationComponent";
+import { useAuth } from "../../hooks/useAuth";
 
 
 export default function Navbar() {
   const {darkMode,setDarkMode} = useTheme()
   const navigate = useNavigate()
+  const {user} = useAuth()
   const [themeInLocal,setThemeInLocal] = useLocalStorage("darkTheme",false)
   const [nav,setNav] = useState(false)
   const [notifications,setNotifications] = useState(false)
@@ -27,9 +29,9 @@ export default function Navbar() {
   }
 
   return (
-    <div className={` navbar w-full flex justify-between items-center p-2 transition-colors duration-500 border-b-2 ${darkMode?"bg-black  text-white border-b-white":"bg-white text-black border-b-[#d3d3d3]"}`}>
+    <div className={`navbar w-full flex justify-between items-center p-2 transition-colors duration-500 border-b-2 ${darkMode?"bg-black  text-white border-b-white":"bg-white text-black border-b-[#d3d3d3]"}`}>
         <div className="logo-div">
-            <h1 className="font-Aclonica font-bold cursor-pointer" onClick={()=>navigate("/home")}>
+            <h1 className="font-Aclonica font-bold cursor-pointer" onClick={()=>navigate("/dashboard")}>
                 Nexusmeethub
             </h1>
         </div>
@@ -49,6 +51,15 @@ export default function Navbar() {
           <span className={`w-full h-[0.2rem] rounded-xl transition-all duration-500 ${darkMode?"bg-white":"bg-black"} ${nav?"translate-y-[0.168rem] rotate-45":"rotate-0"} `}></span>
           <span className={`w-full h-[0.2rem] rounded-xl transition-all duration-500 ${darkMode?"bg-white":"bg-black"} ${nav?"-translate-y-[0.168rem] -rotate-45":"rotate-0"}`}></span>
         </div>
+        <ul className={`nav-inside-div flex flex-col text-sm w-full md:w-[320px] absolute ${nav?"top-[2.55rem]":"-top-1/2"} transition-all duration-500 border rounded-md right-0 py-3 px-6 z-30 ${!darkMode?"bg-white text-black border-[#d3d3d3]":"bg-black text-white border-white"}`}>
+          <li className="w-full py-3 flex justify-between text-xs">
+            <span>{user.email}</span>
+            <img src={user.profile} alt={`${user.email} profile`} className={`w-[20px] h-[20px] rounded-full`}/>
+          </li>
+          <NavLink className="w-full border-t border-inherit py-2" to={"/dashboard"} onClick={()=>setNav((prev)=>!prev)}>Dashboard</NavLink>
+          <NavLink className="w-full border-y border-inherit py-2" to={"/profile"} onClick={()=>setNav((prev)=>!prev)}>Profile</NavLink>
+          <button type="button" className={`border border-[#d3d3d3] bg-red-500 text-white rounded-md px-8 py-3 my-3 flex justify-center items-center active:scale-95 transition-all duration-500`}>Logout</button>
+        </ul>
         </div>
         <NotificationComponent openController={setNotifications} noti = {notifications} setPing={setPing}/>
     </div>

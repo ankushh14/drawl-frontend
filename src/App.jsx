@@ -27,7 +27,7 @@ function App() {
           </Route>
           <Route element = {<AuthenticatedValidate/>}>
             <Route element = {<MainLayout/>}>
-            <Route path="/home" element={<HomePage />} />
+            <Route path="/dashboard" element={<HomePage />} />
             <Route path = {`/${workspace}`} element = {<WorkSpaceLayout/>}>
               <Route path={`:id`} element = {<WorkspaceValidator/>}/>
             </Route>

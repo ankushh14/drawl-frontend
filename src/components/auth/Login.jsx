@@ -32,7 +32,7 @@ export default function Login({setNewUser}) {
           setLoader(false)
           if(data.info === "success"){
             login(data)
-            return navigate("/home")
+            return navigate("/dashboard")
         }else{
             return
         }
@@ -66,7 +66,7 @@ export default function Login({setNewUser}) {
         setLoader(false)
         if(data.info === "success"){
             login(data)
-            return navigate("/home")
+            return navigate("/dashboard")
         }else{
             return
         }
