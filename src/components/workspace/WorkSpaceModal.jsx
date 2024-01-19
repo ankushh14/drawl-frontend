@@ -6,9 +6,8 @@ import useTheme from "../../hooks/useTheme";
 import { IoSearch } from "react-icons/io5";
 import InputIcons from "../../utils/input/InputIcons";
 import { useDebounce } from "@uidotdev/usehooks";
-import { findMembers } from "../../api/workspace";
+import { findMembers,createWorkspace } from "../../api/workspace";
 import { useAuth } from "../../hooks/useAuth";
-import { createWorkspace } from "../../api/workspace";
 import { isValidPassword } from "../../utils/validation/auth.validation";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import STATUS from "../../utils/status";
@@ -26,7 +25,7 @@ export default function WorkSpaceModal({ openModal }) {
     const [passwordDesc, setPasswordDesc] = useState("")
     const [searchResults, setSearchResults] = useState([])
     const [searchDisable, setSearchDisable] = useState(false)
-    const { user,updateStatus } = useAuth()
+    const { user,updateStatus,token } = useAuth()
     const modalCloseHandle = (e) => {
         if (e.target.id === "Modal-background") {
             openModal(false)
@@ -41,7 +40,7 @@ export default function WorkSpaceModal({ openModal }) {
         let requestBody = {
             email: debouncedSearch
         }
-        const data = await findMembers(requestBody)
+        const data = await findMembers(requestBody,token)
         let dataToSet = []
         if (user.email) {
             dataToSet = data.data.filter((elem) => elem.email !== user.email)
@@ -49,7 +48,7 @@ export default function WorkSpaceModal({ openModal }) {
             dataToSet = data.data
         }
         return setSearchResults(dataToSet)
-    }, [debouncedSearch, user])
+    }, [debouncedSearch, user,token])
 
     useEffect(() => {
         searchMembers()
@@ -106,7 +105,7 @@ export default function WorkSpaceModal({ openModal }) {
                 return setPasswordDesc(passwordValidity.message)
             }
         }
-        const response = await createWorkspace(requestBody)
+        const response = await createWorkspace(requestBody,token)
         if(response.valid){
             showToastMessage(response.message,response.info)
             updateStatus(STATUS.SUCCESS)

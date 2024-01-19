@@ -9,15 +9,15 @@ export default function NotificationComponent({ noti, openController, setPing })
     const { darkMode } = useTheme()
     const [notifications, setNotifications] = useState([])
     const [notificationRefresh, setNotificationsRefresh] = useState(false)
-    const { user } = useAuth()
+    const { user,token } = useAuth()
 
     const fetchnotifications = useCallback(async () => {
         let requestBody = {
             email: user.email
         }
-        const response = await getNotifications(requestBody)
+        const response = await getNotifications(requestBody,token)
         return setNotifications(response.data)
-    }, [user, setNotifications])
+    }, [user, setNotifications,token])
 
     const checkNotifications = useCallback(() => {
         if (notifications.length > 0) {

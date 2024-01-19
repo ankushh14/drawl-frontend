@@ -6,7 +6,7 @@ import { useAuth } from "../../hooks/useAuth";
 import STATUS from "../../utils/status";
 
 export default function SingleNotificationComponent({item,setNotificationRefresh}) {
-    const { updateStatus } = useAuth()
+    const { updateStatus,token } = useAuth()
     const handleResponse = async(answer = undefined)=>{
         if(answer === undefined){
             return 
@@ -16,7 +16,7 @@ export default function SingleNotificationComponent({item,setNotificationRefresh
             notificationID : item._id,
             answer
         }
-        const response = await sendResponse(requestBody)
+        const response = await sendResponse(requestBody,token)
         updateStatus(STATUS.SUCCESS)
         if(response.valid){
             return setNotificationRefresh((prev)=>!prev)

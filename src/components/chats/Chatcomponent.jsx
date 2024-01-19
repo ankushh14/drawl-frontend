@@ -22,7 +22,7 @@ export default function Chatcomponent() {
   const [chats,setChats] = useState([])
   const [collaborators,setCollaborators] = useState(false)
   const [online,setOnline] = useState([])
-  const { user } = useAuth()
+  const { user,token } = useAuth()
   const { ID } = useWorkspace()
 
   useEffect(()=>{
@@ -70,15 +70,15 @@ export default function Chatcomponent() {
 
   const getMessages = useCallback(async()=>{
     let requestBody = {
-      ID
+      ID,
     }
-    const data = await getChats(requestBody)
+    const data = await getChats(requestBody,token)
     if(data.valid){
       return setChats(data.data)
     }else{
       return
     }
-  },[ID])
+  },[ID,token])
 
   const updateMessages = useCallback(()=>{
     io.on('message',(newMessage)=>{

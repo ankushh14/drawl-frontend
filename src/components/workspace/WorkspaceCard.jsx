@@ -4,12 +4,14 @@ import { MdGroup,MdOutlineDoubleArrow } from "react-icons/md";
 import { getProfiles } from "../../api/workspace";
 import { useCallback, useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
+import { useAuth } from "../../hooks/useAuth";
 
 
 
 
 export default function WorkspaceCard({ workspace }) {
   const navigate = useNavigate()
+  const {token} = useAuth()
   const [profiles,setProfiles] = useState([])
   const [submenu,setSubmenu] = useState(false)
   const [members,setMembers] = useState(false)
@@ -23,13 +25,13 @@ export default function WorkspaceCard({ workspace }) {
     let requestBody = {
       workspaceID : workspace.ID
     }
-    const data = await getProfiles(requestBody)
+    const data = await getProfiles(requestBody,token)
     if(data.valid){
       return setProfiles(data.data)
     }else{
       return
     }
-  },[workspace])
+  },[workspace,token])
 
   useEffect(()=>{
     getProfileData()

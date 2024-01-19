@@ -11,7 +11,7 @@ import Innerworkspacelayout from "./Innerworkspacelayout";
 
 export default function WorkspaceValidator() {
     const navigate = useNavigate()
-    const {updateStatus,user} = useAuth()
+    const {updateStatus,user,token} = useAuth()
     const {enter,passwordStatus,owner} = useWorkspace()
     const id = useParams()
 
@@ -21,7 +21,7 @@ export default function WorkspaceValidator() {
         let requestBody = {
             id
         }
-        const response = await getSpecificWorkspace(requestBody)
+        const response = await getSpecificWorkspace(requestBody,token)
         if(!response.valid){
             showToastMessage(response.message,response.info)
             return navigate('/home')
@@ -29,7 +29,7 @@ export default function WorkspaceValidator() {
         enter(response.data)
         return updateStatus(STATUS.SUCCESS)
 
-    }, [id,updateStatus,enter,navigate])
+    }, [id,updateStatus,enter,navigate,token])
 
     useEffect(()=>{
         getWorkspace()

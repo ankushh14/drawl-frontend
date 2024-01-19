@@ -11,7 +11,7 @@ import STATUS from "../utils/status"
 
 export default function HomePage() {
   const {darkMode} = useTheme()
-  const {user,updateStatus} = useAuth()
+  const {user,updateStatus,token} = useAuth()
   const [workspaces,setWorkspaces] = useState([])
   const [createModal,setCreateModal] = useState(false)
 
@@ -20,7 +20,7 @@ export default function HomePage() {
     const requestBody = {
       owner : user.email
     }
-    const response = await getWorkspaces(requestBody)
+    const response = await getWorkspaces(requestBody,token)
     if(response.valid){
       updateStatus(STATUS.SUCCESS)
       return setWorkspaces(response.data)

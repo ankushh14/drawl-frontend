@@ -1,10 +1,13 @@
 import axios from "axios";
 import { ServerUrl,headers } from "../data/auth.data";
 
-const findMembers = async(reqBody)=>{
+const findMembers = async(reqBody,token)=>{
     try {
         const data = await axios.post(`${ServerUrl}workspace/members`,reqBody,{
-            ...headers,
+            headers:{
+                "Authorization":`Bearer ${token}`,
+                ...headers
+            },
             withCredentials:true
         })
         return { ...data.data, info: "success" }
@@ -13,10 +16,13 @@ const findMembers = async(reqBody)=>{
     }
 }
 
-const createWorkspace = async(requestBody)=>{
+const createWorkspace = async(requestBody,token)=>{
     try {
         const data = await axios.post(`${ServerUrl}workspace/create`,requestBody,{
-            ...headers,
+            headers:{
+                "Authorization":`Bearer ${token}`,
+                ...headers
+            },
             withCredentials:true
         })
         return { ...data.data, info: "success" }
@@ -25,10 +31,13 @@ const createWorkspace = async(requestBody)=>{
     }
 }
 
-const getWorkspaces = async(requestBody)=>{
+const getWorkspaces = async(requestBody,token)=>{
     try {
         const data = await axios.post(`${ServerUrl}workspace/getworkspaces`,requestBody,{
-            ...headers,
+            headers:{
+                "Authorization":`Bearer ${token}`,
+                ...headers
+            },
             withCredentials:true
         })
         return { ...data.data, info: "success" }
@@ -37,10 +46,13 @@ const getWorkspaces = async(requestBody)=>{
     }
 }
 
-const getSpecificWorkspace = async(requestBody)=>{
+const getSpecificWorkspace = async(requestBody,token)=>{
     try {
         const data = await axios.post(`${ServerUrl}workspace/getspecific`,requestBody,{
-            ...headers,
+            headers:{
+                "Authorization":`Bearer ${token}`,
+                ...headers
+            },
             withCredentials:true
         })
         return { ...data.data, info: "success" }
@@ -48,10 +60,13 @@ const getSpecificWorkspace = async(requestBody)=>{
         return { ...error.response.data, info: "error" }
     }
 }
-const getProfiles = async(requestBody)=>{
+const getProfiles = async(requestBody,token)=>{
     try {
         const data = await axios.post(`${ServerUrl}workspace/getprofiles`,requestBody,{
-            ...headers,
+            headers:{
+                "Authorization":`Bearer ${token}`,
+                ...headers
+            },
             withCredentials:true
         })
         return { ...data.data, info: "success" }
