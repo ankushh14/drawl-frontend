@@ -15,7 +15,7 @@ export default function WorkspaceCard({ workspace }) {
   const [profiles,setProfiles] = useState([])
   const [submenu,setSubmenu] = useState(false)
   const [members,setMembers] = useState(false)
-  const [actualMembers] = useState([...workspace.members,workspace.owner])
+  const [actualMembers] = useState([...workspace.members,workspace.owner+" (owner)"])
   const [about,setAbout] = useState(false)
   const workspaceRoute = import.meta.env.VITE_WORKSPACES
   const handleNavigate = () => {

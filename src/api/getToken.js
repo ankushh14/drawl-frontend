@@ -5,7 +5,8 @@ const getToken = async(googleToken)=>{
         const userData = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${googleToken}`);
         const returnData = {
             fullname : userData.data.name,
-            email : userData.data.email
+            email : userData.data.email,
+            profile : userData.data.picture
         }
         return {returnData,valid:true}
     } catch (error) {

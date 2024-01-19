@@ -12,6 +12,7 @@ import OtpComp from "../../utils/otp/OtpComp";
 
 export default function Register({ setNewUser }) {
     const [fullname, setFullname] = useState("");
+    const [profile,setProfile] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [fullnameDesc, setFullnameDesc] = useState("")
@@ -26,6 +27,7 @@ export default function Register({ setNewUser }) {
                 const userData = await getToken(tokenResponse.access_token)
                 setFullname(userData.returnData.fullname)
                 setEmail(userData.returnData.email)
+                setProfile(userData.returnData.profile)
                 return setPasswordDesc("Please enter a valid password")
             } catch (error) {
                 console.log(error.message)
@@ -38,7 +40,8 @@ export default function Register({ setNewUser }) {
         let requestBody = {
             fullname: "",
             email: "",
-            password: ""
+            password: "",
+            profile
         }
         const fullnameValidity = isValidFullname(fullname);
         if (fullnameValidity.valid) {
