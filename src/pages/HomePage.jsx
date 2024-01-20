@@ -8,12 +8,14 @@ import { useAuth } from "../hooks/useAuth"
 import { showToastMessage } from "../utils/toasts/showToast"
 import WorkspacesInHome from "../components/home/WorkspacesInHome"
 import STATUS from "../utils/status"
+import {useWorkspacesUpdate} from "../hooks/useWorkspaceCount"
 
 export default function HomePage() {
   const {darkMode} = useTheme()
   const {user,updateStatus,token} = useAuth()
   const [workspaces,setWorkspaces] = useState([])
   const [createModal,setCreateModal] = useState(false)
+  const {updateWorkspaceCount} = useWorkspacesUpdate()
 
   const getworkspaces = useCallback(async()=>{
     updateStatus(STATUS.PENDING)
@@ -29,7 +31,7 @@ export default function HomePage() {
       return showToastMessage(response.message,response.info)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[user,updateStatus,createModal])
+  },[user,updateWorkspaceCount])
 
   useEffect(()=>{
     getworkspaces()

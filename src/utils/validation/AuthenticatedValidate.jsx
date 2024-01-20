@@ -1,14 +1,14 @@
 import { Outlet,Navigate } from "react-router-dom"
 import { useAuth } from "../../hooks/useAuth"
-import { showToastMessage } from "../toasts/showToast"
+import { WorkspaceCountProvider } from "../../context/UserWorkspaceCountUpdate"
 
 export default function AuthenticatedValidate() {
     const {authenticated} = useAuth()
-    // const navigate = useNavigate()
-    if(authenticated){
-        return <Outlet/>
-    }else{
-        showToastMessage("Please login to continue","error")
-        return <Navigate to={"/auth"}/>
-    }
+    return(
+        <WorkspaceCountProvider>
+            {
+                authenticated?<Outlet/>:<Navigate to={"/auth"}/>
+            }
+        </WorkspaceCountProvider>
+    )
 }

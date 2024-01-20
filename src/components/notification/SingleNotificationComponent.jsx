@@ -3,22 +3,22 @@ import { IoCheckmarkSharp, IoCloseSharp } from "react-icons/io5";
 import { sendResponse } from "../../api/notification";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import { useAuth } from "../../hooks/useAuth";
-import STATUS from "../../utils/status";
+import { useWorkspacesUpdate } from "../../hooks/useWorkspaceCount";
 
 export default function SingleNotificationComponent({item,setNotificationRefresh}) {
-    const { updateStatus,token } = useAuth()
+    const { token } = useAuth()
+    const {setUpdateWorkspaceCount} = useWorkspacesUpdate()
     const handleResponse = async(answer = undefined)=>{
         if(answer === undefined){
             return 
         }
-        updateStatus(STATUS.PENDING)
         let requestBody = {
             notificationID : item._id,
             answer
         }
         const response = await sendResponse(requestBody,token)
-        updateStatus(STATUS.SUCCESS)
         if(response.valid){
+            setUpdateWorkspaceCount((prev)=>!prev)
             return setNotificationRefresh((prev)=>!prev)
         }else{
             return showToastMessage("Some error occured",response.info)
