@@ -38,7 +38,7 @@ export default function WorkspaceCard({ workspace }) {
   },[getProfileData])
 
   return (
-    <div className={`card w-[300px]  h-[330px] p-2 m-4 px-4 rounded bg-white text-black flex flex-col justify-between shadow shadow-inherit cursor-pointer hover:shadow-md   transition-all duration-500 ease-in-out [perspective:1000px] [transform-Style:preserve-3d] ${(members || about)?"[transform:rotateY(180deg)]":""}`}>
+    <div className={`card w-[300px]  h-[330px] p-2 m-4 px-4 rounded bg-white text-black flex flex-col justify-between shadow shadow-inherit cursor-pointer hover:shadow-md overflow-y-scroll transition-all duration-500 ease-in-out [perspective:1000px] [transform-Style:preserve-3d] ${(members || about)?"[transform:rotateY(180deg)]":""}`}>
       <div className={`card-main w-full flex flex-col space-y-4 ${(members || about)?"hidden opacity-0":"visible opacity-100"}`}>
         <div className="card-header w-full py-1 flex justify-between items-center">
           <h1 className="w-full font-bold">
