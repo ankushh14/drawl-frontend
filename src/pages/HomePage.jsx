@@ -17,6 +17,7 @@ export default function HomePage() {
   const [createModal,setCreateModal] = useState(false)
   const {updateWorkspaceCount} = useWorkspacesUpdate()
 
+
   const getworkspaces = useCallback(async()=>{
     updateStatus(STATUS.PENDING)
     const requestBody = {
@@ -27,8 +28,8 @@ export default function HomePage() {
       updateStatus(STATUS.SUCCESS)
       return setWorkspaces(response.data)
     }else{
-      updateStatus(STATUS.SUCCESS)
-      return showToastMessage(response.message,response.info)
+      updateStatus(STATUS.PENDING)
+      return showToastMessage(response.message + ",Please refresh the page",response.info)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[user,updateWorkspaceCount])
