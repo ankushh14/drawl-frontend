@@ -34,5 +34,18 @@ const userLogin = async(requestBody)=>{
     }
 }
 
+const userLogout = async(token)=>{
+    try {
+        await axios.post(`${ServerUrl}auth/logout`,{}, {
+            headers:{
+                ...headers,
+                "Authorization":`Bearer ${token}`
+            }
+        })
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
 
-export {userRegister,verifyUser,userLogin}
+
+export {userRegister,verifyUser,userLogin,userLogout}

@@ -6,16 +6,18 @@ import { IoIosNotifications } from "react-icons/io";
 import { NavLink, useNavigate } from "react-router-dom";
 import NotificationComponent from "../notification/NotificationComponent";
 import { useAuth } from "../../hooks/useAuth";
+import { userLogout } from "../../api/auth";
 
 
 export default function Navbar() {
   const {darkMode,setDarkMode} = useTheme()
   const navigate = useNavigate()
-  const {user} = useAuth()
+  const {user,token,logout} = useAuth()
   const [themeInLocal,setThemeInLocal] = useLocalStorage("darkTheme",false)
   const [nav,setNav] = useState(false)
   const [notifications,setNotifications] = useState(false)
   const [ping,setPing] = useState(false)
+
   const changeInTheme = useCallback(()=>{
     setDarkMode(themeInLocal)
   },[setDarkMode,themeInLocal])
@@ -27,6 +29,11 @@ export default function Navbar() {
   const toggleTheme = ()=>{
     return setThemeInLocal((prev)=>!prev)
   }
+
+  const logoutFunction = useCallback(async()=>{
+    await userLogout(token)
+    return logout()
+  },[token,logout])
 
   return (
     <div className={`navbar w-full flex justify-between items-center p-2 transition-colors duration-500 border-b-2 ${darkMode?"bg-black  text-white border-b-white":"bg-white text-black border-b-[#d3d3d3]"}`}>
@@ -58,7 +65,7 @@ export default function Navbar() {
           </li>
           <NavLink className="w-full border-t border-inherit py-2" to={"/dashboard"} onClick={()=>setNav((prev)=>!prev)}>Dashboard</NavLink>
           <NavLink className="w-full border-y border-inherit py-2" to={"/profile"} onClick={()=>setNav((prev)=>!prev)}>Profile</NavLink>
-          <button type="button" className={`border border-[#d3d3d3] bg-red-500 text-white rounded-md px-8 py-3 my-3 flex justify-center items-center active:scale-95 transition-all duration-500`}>Logout</button>
+          <button type="button" onClick={()=>logoutFunction()} className={`border border-[#d3d3d3] bg-red-500 text-white rounded-md px-8 py-3 my-3 flex justify-center items-center active:scale-95 transition-all duration-500`}>Logout</button>
         </ul>
         </div>
         <NotificationComponent openController={setNotifications} noti = {notifications} setPing={setPing}/>
