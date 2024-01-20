@@ -9,12 +9,14 @@ import { showToastMessage } from "../utils/toasts/showToast"
 import WorkspacesInHome from "../components/home/WorkspacesInHome"
 import STATUS from "../utils/status"
 import {useWorkspacesUpdate} from "../hooks/useWorkspaceCount"
+import JoinWorkspaceModal from "../components/workspace/JoinWorkspaceModal"
 
 export default function HomePage() {
   const {darkMode} = useTheme()
   const {user,updateStatus,token} = useAuth()
   const [workspaces,setWorkspaces] = useState([])
   const [createModal,setCreateModal] = useState(false)
+  const [joinModal,setJoinModal] = useState(false)
   const {updateWorkspaceCount} = useWorkspacesUpdate()
 
 
@@ -45,13 +47,14 @@ export default function HomePage() {
         workspaces.length>0?
         <>
           <WorkspacesInHome workspaces={workspaces}/>
-          <AsideBar openModal = {setCreateModal}/>
+          <AsideBar openModal = {setCreateModal} openJoinModal = {setJoinModal}/>
         </>
         :
-        <NoWorkSpaceComponent openModal={setCreateModal}/>
+        <NoWorkSpaceComponent openModal={setCreateModal} openJoinModal = {setJoinModal}/>
       }
 
       {createModal && <WorkSpaceModal openModal={setCreateModal}/>}
+      {joinModal && <JoinWorkspaceModal openJoinModal={setJoinModal}/>}
     </div>
   )
 }
