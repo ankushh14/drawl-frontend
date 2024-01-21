@@ -122,7 +122,6 @@ export default function WorkSpaceModal({ openModal }) {
         if(response.valid){
             showToastMessage(response.message,response.info)
             setUpdateWorkspaceCount((prev)=>!prev)
-            showToastMessage(response.message,response.info)
             return openModal(false)
         }else{
             return showToastMessage(response.message,response.info)
