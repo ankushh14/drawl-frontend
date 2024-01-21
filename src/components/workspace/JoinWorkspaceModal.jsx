@@ -79,10 +79,10 @@ export default function JoinWorkspaceModal({ openJoinModal }) {
         }
         const response = await joinWorkspace(requestBody,token)
         if(response.valid){
-            showToastMessage(response.message,"success")
+            showToastMessage(response.message,response.info)
             return openJoinModal(false)
         }else{
-            return showToastMessage("Request failed","error")
+            return showToastMessage("Request failed",response.info)
         }
     },[finalSelectedWorkspace,finalWorkspaceID,finalWorkspaceOwner,user,token,openJoinModal])
 
