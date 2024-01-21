@@ -26,9 +26,18 @@ export default function WorkSpaceModal({ openModal }) {
     const [searchDisable, setSearchDisable] = useState(false)
     const { user,token } = useAuth()
     const {setUpdateWorkspaceCount} = useWorkspacesUpdate()
+
     const modalCloseHandle = (e) => {
         if (e.target.id === "Modal-background") {
             openModal(false)
+        }
+    }
+
+    const handleKeyDown = (e)=>{
+        if(e.key === 'Enter'){
+            e.preventDefault()
+            setSearchResults([])
+            return handleSelection(individual)
         }
     }
 
@@ -65,9 +74,13 @@ export default function WorkSpaceModal({ openModal }) {
 
     const handleSelection = (email) => {
         setIndividual("")
+        setSearchDescription("")
         if (members.includes(email)) {
             setSearchResults([])
             return setSearchDescription("Member already selected")
+        }
+        if(!searchResults.find((item)=>item.email === email)){
+            return setSearchDescription("User does not exist")
         }
         setMembers((prev) => [...prev, email])
         return setSearchResults([])
@@ -133,7 +146,7 @@ export default function WorkSpaceModal({ openModal }) {
                     <div className="workspace-members w-full p-2 flex flex-col">
                         <div className="search-div relative">
                             <IoSearch className="absolute right-4 text-inherit bottom-[44%]" size={13} />
-                            <InputComp disable={searchDisable} type={"text"} placeholder={"Search for collaborators..."} name={"members"} label={"Collaborators"} required={false} stateVar={individual} setStatevar={setIndividual} description={searchDescription} descriptionControlFunc={setSearchDescription} />
+                            <InputComp disable={searchDisable} type={"text"} placeholder={"Search for collaborators..."} name={"members"} label={"Collaborators"} required={false} stateVar={individual} setStatevar={setIndividual} description={searchDescription} descriptionControlFunc={setSearchDescription} onKeyDown={handleKeyDown} />
                             <div className={`search-results-div absolute z-30 ${searchResults.length === 0 && "hidden"} top-[80%] ${!darkMode ? "bg-white text-black" : "bg-black text-white"}  w-full  flex flex-col justify-center items-center rounded-md border border-slate-500`}>
                                 {
                                     searchResults.map((item, index) => {
