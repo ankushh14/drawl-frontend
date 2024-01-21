@@ -15,10 +15,38 @@ const findMembers = async(reqBody,token)=>{
         return { ...error.response.data, info: "error" }
     }
 }
+const findWorkspaces = async(reqBody,token)=>{
+    try {
+        const data = await axios.post(`${ServerUrl}workspace/findworkspaces`,reqBody,{
+            headers:{
+                "Authorization":`Bearer ${token}`,
+                ...headers
+            },
+            withCredentials:true
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
 
 const createWorkspace = async(requestBody,token)=>{
     try {
         const data = await axios.post(`${ServerUrl}workspace/create`,requestBody,{
+            headers:{
+                "Authorization":`Bearer ${token}`,
+                ...headers
+            },
+            withCredentials:true
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
+const joinWorkspace = async(requestBody,token)=>{
+    try {
+        const data = await axios.post(`${ServerUrl}workspace/joinworkspace`,requestBody,{
             headers:{
                 "Authorization":`Bearer ${token}`,
                 ...headers
@@ -75,4 +103,4 @@ const getProfiles = async(requestBody,token)=>{
     }
 }
 
-export {findMembers,createWorkspace,getWorkspaces,getSpecificWorkspace,getProfiles}
+export {findMembers,createWorkspace,getWorkspaces,getSpecificWorkspace,getProfiles,findWorkspaces,joinWorkspace}
