@@ -1,7 +1,10 @@
 import { useState,createContext } from "react";
 import PropTypes from 'prop-types'
 
-const WorkspaceCountContext = createContext(false)
+const WorkspaceCountContext = createContext({
+    updateWorkspaceCount : false,
+    setUpdateWorkspaceCount : () =>{}
+})
 
 const WorkspaceCountProvider = ({children})=>{
     const [updateWorkspaceCount,setUpdateWorkspaceCount] = useState(false)

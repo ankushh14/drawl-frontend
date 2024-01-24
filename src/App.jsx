@@ -10,6 +10,7 @@ import PublicOutlet from "./utils/validation/PublicOutlet";
 import MainLayout from "./utils/layouts/MainLayout";
 import WorkSpaceLayout from "./components/workspace/WorkSpaceLayout";
 import WorkspaceValidator from "./components/workspace/WorkspaceValidator";
+import ProfilePage from "./pages/ProfilePage";
 
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
             <Route path = {`/${workspace}`} element = {<WorkSpaceLayout/>}>
               <Route path={`:id`} element = {<WorkspaceValidator/>}/>
             </Route>
+            <Route path="/profile" element = {<ProfilePage/>}/>
             </Route>
           </Route>
         </Routes>
