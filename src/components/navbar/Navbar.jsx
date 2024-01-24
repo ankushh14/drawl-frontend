@@ -58,7 +58,7 @@ export default function Navbar() {
           <span className={`w-full h-[0.2rem] rounded-xl transition-all duration-500 ${darkMode?"bg-white":"bg-black"} ${nav?"translate-y-[0.168rem] rotate-45":"rotate-0"} `}></span>
           <span className={`w-full h-[0.2rem] rounded-xl transition-all duration-500 ${darkMode?"bg-white":"bg-black"} ${nav?"-translate-y-[0.168rem] -rotate-45":"rotate-0"}`}></span>
         </div>
-        <ul className={`nav-inside-div flex flex-col text-sm w-full md:w-[320px] absolute ${nav?"top-[2.55rem]":"-top-1/2"} transition-all duration-500 border rounded-md right-0 py-3 px-6 z-30 ${!darkMode?"bg-white text-black border-[#d3d3d3]":"bg-black text-white border-white"}`}>
+        <ul className={`nav-inside-div flex flex-col text-sm w-full md:w-[320px] top-[2.55rem] absolute ${nav?"h-[214px] border py-3":"h-0 py-0 border-none"} transition-height overflow-hidden duration-500 rounded-md right-0 px-6 z-30 ${!darkMode?"bg-white text-black border-[#d3d3d3]":"bg-black text-white border-white"}`}>
           <li className="w-full py-3 flex justify-between text-xs">
             <span>{user.email}</span>
             <img src={user.profile} alt={`${user.email} profile`} className={`w-[20px] h-[20px] rounded-full`}/>
