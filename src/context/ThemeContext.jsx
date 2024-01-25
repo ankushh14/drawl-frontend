@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types"
 import { createContext } from "react";
 
-const ThemeContext = createContext(false)
+const ThemeContext = createContext({darkMode : false, setDarkMode : ()=>{}})
 
 
 const ThemeProvider = ({ children }) => {
