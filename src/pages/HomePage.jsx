@@ -41,7 +41,7 @@ export default function HomePage() {
   },[getworkspaces])
 
   return (
-    <div className={` static w-full h-[93.7vh] lg:h-full lg:min-h-screen flex flex-col lg:flex-row  ${darkMode?"bg-black":"bg-white"}`}>
+    <div className={` static w-full h-[93.7vh] lg:h-full lg:min-h-[calc(100vh-41px)] flex flex-col lg:flex-row  ${darkMode?"bg-black":"bg-white"}`}>
 
       {
         workspaces.length>0?
