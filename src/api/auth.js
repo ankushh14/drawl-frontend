@@ -1,7 +1,7 @@
 import axios from "axios";
-import { ServerUrl,headers } from "../data/auth.data";
+import { ServerUrl, headers } from "../data/auth.data";
 
-const userRegister = async(requestBody)=>{
+const userRegister = async (requestBody) => {
     try {
         const data = await axios.post(`${ServerUrl}auth/register`, requestBody, {
             headers: headers,
@@ -12,7 +12,7 @@ const userRegister = async(requestBody)=>{
     }
 }
 
-const verifyUser = async(requestBody)=>{
+const verifyUser = async (requestBody) => {
     try {
         const data = await axios.post(`${ServerUrl}auth/verify`, requestBody, {
             headers: headers,
@@ -23,7 +23,7 @@ const verifyUser = async(requestBody)=>{
     }
 }
 
-const userLogin = async(requestBody)=>{
+const userLogin = async (requestBody) => {
     try {
         const data = await axios.post(`${ServerUrl}auth/login`, requestBody, {
             headers: headers,
@@ -34,12 +34,12 @@ const userLogin = async(requestBody)=>{
     }
 }
 
-const userLogout = async(token)=>{
+const userLogout = async (token) => {
     try {
-        await axios.post(`${ServerUrl}auth/logout`,{}, {
-            headers:{
+        await axios.post(`${ServerUrl}auth/logout`, {}, {
+            headers: {
                 ...headers,
-                "Authorization":`Bearer ${token}`
+                "Authorization": `Bearer ${token}`
             }
         })
     } catch (error) {
@@ -48,4 +48,9 @@ const userLogout = async(token)=>{
 }
 
 
-export {userRegister,verifyUser,userLogin,userLogout}
+export {
+    userRegister,
+    verifyUser,
+    userLogin,
+    userLogout
+}

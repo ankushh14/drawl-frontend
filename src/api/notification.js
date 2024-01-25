@@ -1,14 +1,14 @@
 import axios from "axios";
-import { ServerUrl,headers } from "../data/auth.data";
+import { ServerUrl, headers } from "../data/auth.data";
 
-const getNotifications = async(reqBody,token)=>{
+const getNotifications = async (reqBody, token) => {
     try {
-        const data = await axios.post(`${ServerUrl}notifications/get`,reqBody,{
-            headers:{
-                "Authorization":`Bearer ${token}`,
+        const data = await axios.post(`${ServerUrl}notifications/get`, reqBody, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
                 ...headers
             },
-            withCredentials:true
+            withCredentials: true
         })
         return { ...data.data, info: "success" }
     } catch (error) {
@@ -16,14 +16,14 @@ const getNotifications = async(reqBody,token)=>{
     }
 }
 
-const sendResponse = async(reqBody,token)=>{
+const sendResponse = async (reqBody, token) => {
     try {
-        const data = await axios.post(`${ServerUrl}notifications/response`,reqBody,{
-            headers:{
-                "Authorization":`Bearer ${token}`,
+        const data = await axios.post(`${ServerUrl}notifications/response`, reqBody, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
                 ...headers
             },
-            withCredentials:true
+            withCredentials: true
         })
         return { ...data.data, info: "success" }
     } catch (error) {
@@ -31,4 +31,7 @@ const sendResponse = async(reqBody,token)=>{
     }
 }
 
-export {getNotifications,sendResponse}
+export {
+    getNotifications,
+    sendResponse
+}

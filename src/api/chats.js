@@ -1,14 +1,14 @@
 import axios from "axios";
-import { ServerUrl,headers } from "../data/auth.data";
+import { ServerUrl, headers } from "../data/auth.data";
 
-const getChats = async(requestBody,token)=>{
+const getChats = async (requestBody, token) => {
     try {
-        const data = await axios.post(`${ServerUrl}chats/getchats`,requestBody,{
-            headers:{
-                "Authorization":`Bearer ${token}`,
+        const data = await axios.post(`${ServerUrl}chats/getchats`, requestBody, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
                 ...headers
             },
-            withCredentials:true
+            withCredentials: true
         })
         return { ...data.data, info: "success" }
     } catch (error) {
@@ -16,4 +16,6 @@ const getChats = async(requestBody,token)=>{
     }
 }
 
-export {getChats}
+export {
+    getChats
+}
