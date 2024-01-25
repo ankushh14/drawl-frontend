@@ -18,7 +18,10 @@ export default function DeleteWorkspaceModal({workspaceName,workspaceID,ModalOpe
             workspaceID
         }
         const response = await deleteWorkspace(requestBody,token)
-        setUpdateWorkspaceCount((prev)=>!prev)
+        if(response.valid){
+            setUpdateWorkspaceCount((prev)=>!prev)
+            return showToastMessage(response.message,response.info)
+        }
         return showToastMessage(response.message,response.info)
     },[workspaceID,token,setUpdateWorkspaceCount])
 

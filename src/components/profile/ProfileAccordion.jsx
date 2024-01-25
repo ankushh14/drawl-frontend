@@ -3,6 +3,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash, FaRegCopy,FaTrash } from "react-icons/fa";
 import { showToastMessage } from '../../utils/toasts/showToast';
 import DeleteWorkspaceModal from './DeleteWorkspaceModal';
+import { removeMember } from '../../api/workspace';
+import { useAuth } from '../../hooks/useAuth';
+import { useWorkspacesUpdate } from '../../hooks/useWorkspaceCount';
 
 
 export default function ProfileAccordion({ workspaceName, workspacePassword, workspaceMembers,workspaceID }) {
@@ -10,6 +13,8 @@ export default function ProfileAccordion({ workspaceName, workspacePassword, wor
     const [edit, setEdit] = useState(false)
     const [isPopulated, setIsPopulated] = useState(false)
     const [deleteWorkspace,setDeleteWorkspace] = useState(false)
+    const { token } = useAuth()
+    const { setUpdateWorkspaceCount } = useWorkspacesUpdate()
 
     const copyPassword = () => {
         navigator.clipboard.writeText(workspacePassword)
@@ -27,6 +32,19 @@ export default function ProfileAccordion({ workspaceName, workspacePassword, wor
     useEffect(() => {
         checkPopulated()
     }, [checkPopulated])
+
+    const removeWorkspaceMember = useCallback(async(mail)=>{
+        let requestBody = {
+            memberMail : mail,
+            workspaceID
+        }
+        const response = await removeMember(requestBody,token)
+        if(response.valid){
+            setUpdateWorkspaceCount((prev)=>!prev)
+            return showToastMessage(response.message,response.info)
+        }
+        return showToastMessage(response.message,response.info)
+    },[workspaceID,token,setUpdateWorkspaceCount])
 
     return (
             <div className="w-full flex flex-col p-3 rounded-md border shadow shadow-slate-400 mt-2 mb-1 first:mt-0 last:mb-0">
@@ -75,7 +93,7 @@ export default function ProfileAccordion({ workspaceName, workspacePassword, wor
                             workspaceMembers.map((member, index) => {
                                 return <div key={index} className='w-full lg:w-[50%] flex justify-between px-1'>
                                     <h1>{member}</h1>
-                                    <div className="w-fit text-slate-500 cursor-pointer">
+                                    <div className="w-fit text-slate-500 cursor-pointer" onClick={()=>removeWorkspaceMember(member)}>
                                         <FaTrash size={11}/>
                                     </div>
                                 </div>
