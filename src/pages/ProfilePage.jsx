@@ -50,6 +50,7 @@ export default function ProfilePage() {
             </div>
             <div className="workspaces-div w-full lg:w-[50%] flex flex-col">
                 <h1 className="font-bold text-xl mb-2">Your workspaces</h1>
+                { accordionData?.length === 0 && <p className="text-md font-semibold mt-6 text-center w-full">You currently dont own any workspaces</p> }
                 {
                     accordionData?.map((accordion,index)=>{
                         return <ProfileAccordion key={index} workspaceName={accordion.name} workspaceMembers={accordion.members} workspaceID={accordion.ID} workspacePassword={accordion.password}/>
