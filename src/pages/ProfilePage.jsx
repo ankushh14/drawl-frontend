@@ -1,5 +1,5 @@
 import { useAuth } from "../hooks/useAuth"
-import { FaPen } from "react-icons/fa6";
+// import { FaPen } from "react-icons/fa6";
 import { getWorkspaces } from "../api/workspace";
 import { useCallback, useEffect, useState } from "react";
 import { useWorkspacesUpdate } from "../hooks/useWorkspaceCount";
@@ -35,9 +35,9 @@ export default function ProfilePage() {
             <div className="main-profile w-full lg:w-[50%] flex flex-col justify-center items-center p-5 max-h-[400px]">
                 <div className="profile-img-div w-[40%] rounded-full border-8 relative">
                     <img src={user.profile} alt={user.email + "profile image"} className="w-full rounded-full h-full" />
-                    <div className="rounded-full absolute w-7 h-7 cursor-pointer flex justify-center items-center right-0 bg-white">
+                    {/* <div className="rounded-full absolute w-7 h-7 cursor-pointer flex justify-center items-center right-0 bg-white">
                         <FaPen size={14} className="text-black" />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="profile-content-div w-full flex justify-center flex-col items-center pt-4">
                     <div className="fullname-div w-full lg:w-[50%] p-2">
@@ -52,7 +52,7 @@ export default function ProfilePage() {
                 <h1 className="font-bold text-xl mb-2">Your workspaces</h1>
                 {
                     accordionData?.map((accordion,index)=>{
-                        return <ProfileAccordion key={index} workspaceName={accordion.name} workspaceMembers={accordion.members} workspacePassword={accordion.password}/>
+                        return <ProfileAccordion key={index} workspaceName={accordion.name} workspaceMembers={accordion.members} workspaceID={accordion.ID} workspacePassword={accordion.password}/>
                     })
                 }
             </div>

@@ -58,6 +58,20 @@ const joinWorkspace = async(requestBody,token)=>{
         return { ...error.response.data, info: "error" }
     }
 }
+const deleteWorkspace = async(requestBody,token)=>{
+    try {
+        const data = await axios.post(`${ServerUrl}workspace/deleteworkspace`,requestBody,{
+            headers:{
+                "Authorization":`Bearer ${token}`,
+                ...headers
+            },
+            withCredentials:true
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
 
 const getWorkspaces = async(requestBody,token)=>{
     try {
@@ -103,4 +117,4 @@ const getProfiles = async(requestBody,token)=>{
     }
 }
 
-export {findMembers,createWorkspace,getWorkspaces,getSpecificWorkspace,getProfiles,findWorkspaces,joinWorkspace}
+export {findMembers,createWorkspace,getWorkspaces,getSpecificWorkspace,getProfiles,findWorkspaces,joinWorkspace,deleteWorkspace}

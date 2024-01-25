@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types'
 import { useCallback, useEffect, useState } from 'react';
-import { FaEye, FaEyeSlash, FaRegCopy } from "react-icons/fa";
+import { FaEye, FaEyeSlash, FaRegCopy,FaTrash } from "react-icons/fa";
 import { showToastMessage } from '../../utils/toasts/showToast';
+import DeleteWorkspaceModal from './DeleteWorkspaceModal';
 
 
-export default function ProfileAccordion({ workspaceName, workspacePassword, workspaceMembers }) {
+export default function ProfileAccordion({ workspaceName, workspacePassword, workspaceMembers,workspaceID }) {
     const [passwordVisibility, setPasswordVisibility] = useState(true)
     const [edit, setEdit] = useState(false)
     const [isPopulated, setIsPopulated] = useState(false)
+    const [deleteWorkspace,setDeleteWorkspace] = useState(false)
 
     const copyPassword = () => {
         navigator.clipboard.writeText(workspacePassword)
@@ -18,7 +20,7 @@ export default function ProfileAccordion({ workspaceName, workspacePassword, wor
         if (workspaceMembers.length > 0) {
             return setIsPopulated(true)
         } else {
-            return
+            return setIsPopulated(false)
         }
     }, [workspaceMembers, setIsPopulated])
 
@@ -29,12 +31,12 @@ export default function ProfileAccordion({ workspaceName, workspacePassword, wor
     return (
             <div className="w-full flex flex-col p-3 rounded-md border shadow shadow-slate-400 mt-2 mb-1 first:mt-0 last:mb-0">
                 <div className="w-full flex flex-col lg:flex-row pb-2">
-                    <h1 className="w-full md:w-full pb-2 lg:pb-0">
+                    <h1 className="w-full md:w-full pb-2 lg:pb-0 font-semibold">
                         {workspaceName}
                     </h1>
                     <div className="primary-buttons-div w-full md:w-fit flex">
                         <button className={`border text-white bg-slate-400 mx-1 rounded-md px-4 py-2 text-xs lg:text-sm flex justify-center items-center active:scale-95 transition-all duration-500`} onClick={() => setEdit((prev) => !prev)}>{edit ? "Done" : "Edit"}</button>
-                        <button className={`border text-white bg-red-400 mx-1 rounded-md px-4 py-2 text-xs lg:text-sm flex justify-center items-center active:scale-95 transition-all duration-500`}>Delete</button>
+                        <button className={`border text-white bg-red-500 mx-1 rounded-md px-4 py-2 text-xs lg:text-sm flex justify-center items-center active:scale-95 transition-all duration-500`} onClick={()=>setDeleteWorkspace(true)}>Delete</button>
                     </div>
                 </div>
                 <div className={`w-full flex flex-col text-xs border-slate-300  rounded-md transition-height transition-border duration-500 ${edit ? "h-[185px] border" : "h-0 border-none"} overflow-hidden`}>
@@ -71,13 +73,17 @@ export default function ProfileAccordion({ workspaceName, workspacePassword, wor
                             <h1>None</h1>
                             :
                             workspaceMembers.map((member, index) => {
-                                return <div key={index} className='w-full lg:w-[50%]'>
+                                return <div key={index} className='w-full lg:w-[50%] flex justify-between px-1'>
                                     <h1>{member}</h1>
+                                    <div className="w-fit text-slate-500 cursor-pointer">
+                                        <FaTrash size={11}/>
+                                    </div>
                                 </div>
                             })
                     }
                 </div>
             </div>
+            {deleteWorkspace && <DeleteWorkspaceModal workspaceName={workspaceName} ModalOpenController={setDeleteWorkspace} workspaceID={workspaceID}/>}
             </div>
     )
 }
@@ -85,5 +91,6 @@ export default function ProfileAccordion({ workspaceName, workspacePassword, wor
 ProfileAccordion.propTypes = {
     workspaceName: PropTypes.string.isRequired,
     workspacePassword: PropTypes.string.isRequired,
+    workspaceID: PropTypes.string.isRequired,
     workspaceMembers: PropTypes.array.isRequired
 }
