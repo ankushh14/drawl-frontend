@@ -3,6 +3,13 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scrollbar-gutter: stable both-edges;
+}
+
 /* width */
 ::-webkit-scrollbar {
     width: 5px;
