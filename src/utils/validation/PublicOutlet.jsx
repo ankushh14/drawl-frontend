@@ -1,11 +1,12 @@
-import { Navigate, Outlet} from "react-router-dom"
+import { Outlet, useNavigate} from "react-router-dom"
 import { useAuth } from "../../hooks/useAuth"
 
 export default function PublicOutlet() {
+    const navigate = useNavigate()
     const {authenticated} = useAuth()
     if(!authenticated){
         return <Outlet/>
     }else{
-        return <Navigate to={"/dashboard"}/>
+        return navigate(-1)
     }
 }
