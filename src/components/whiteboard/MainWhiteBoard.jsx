@@ -20,7 +20,7 @@ export default function MainWhiteBoard() {
   },[darkMode,setDarkMode])
 
   return (
-    <div className='w-full fixed md:w-[75%] md:static h-[94vh] border'>
+    <div className='w-full fixed md:w-[60%] xl:w-[75%] md:static h-[94vh] border'>
       <Tldraw inferDarkMode = {darkMode} store={store} overrides={{
         menu(editor,menu){
           const newMenu = menu.slice(0,2);
