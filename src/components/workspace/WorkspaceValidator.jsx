@@ -23,7 +23,7 @@ export default function WorkspaceValidator() {
             return enter(response.data)
         }else{
             showToastMessage(response.message,response.info)
-            return navigate('/home')
+            return navigate('/dashboard')
         }
 
     }, [id,enter,navigate,token])
