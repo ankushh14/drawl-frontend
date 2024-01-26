@@ -33,6 +33,19 @@ const userLogin = async (requestBody) => {
         return { ...error.response.data, info: "error" }
     }
 }
+const refreshToken = async () => {
+    try {
+        const data = await axios.post(`${ServerUrl}auth/refresh`, {
+            headers: {
+                ...headers,
+            },
+            withCredentials: true
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
 
 const userLogout = async (token) => {
     try {
@@ -48,9 +61,12 @@ const userLogout = async (token) => {
 }
 
 
+
+
 export {
     userRegister,
     verifyUser,
     userLogin,
-    userLogout
+    userLogout,
+    refreshToken
 }
