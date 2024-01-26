@@ -6,6 +6,6 @@ export default function PublicOutlet() {
     if(!authenticated){
         return <Outlet/>
     }else{
-        return <Navigate to={"/home"}/>
+        return <Navigate to={"/dashboard"}/>
     }
 }
