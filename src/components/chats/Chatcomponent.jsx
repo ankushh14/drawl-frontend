@@ -9,7 +9,8 @@ import { useAuth } from "../../hooks/useAuth";
 import getTime from "../../utils/getTime";
 import { getChats } from "../../api/chats";
 import {showToastMessage} from "../../utils/toasts/showToast"
-// import { IoAlertCircleOutline } from "react-icons/io5";
+import { ImExit } from "react-icons/im";
+import { useNavigate } from "react-router-dom";
 let io
 
 
@@ -24,6 +25,7 @@ export default function Chatcomponent() {
   const [online,setOnline] = useState([])
   const { user,token } = useAuth()
   const { ID } = useWorkspace()
+  const navigate = useNavigate()
 
   useEffect(()=>{
     io = socketIO(`${import.meta.env.VITE_CHAT_ENDPOINT}`,{
@@ -102,15 +104,15 @@ export default function Chatcomponent() {
   },[updateMessages])
 
   return (
-    <div className={`w-full absolute  md:w-[25%] md:static h-[94vh] border md:ml-[0.12rem]  flex flex-col border-[#d3d3d3] ${darkMode?"bg-[#212529] text-white":"bg-white text-black"}`}>
+    <div className={`w-full absolute  md:w-[40%] xl:w-[25%] md:static h-[94vh] border md:ml-[0.12rem]  flex flex-col border-[#d3d3d3] ${darkMode?"bg-[#212529] text-white":"bg-white text-black"}`}>
         <div className="chat-header w-full p-2 rounded-b-sm border border-inherit flex justify-between items-center relative">
           <h1 className="font-bold">{name}</h1>
           <div className="header-second-half flex w-[40%] justify-around items-center ">
           <button type="button" onClick={()=>setCollaborators((prev)=>!prev)} className="members-div active:scale-95 transition-all duration-500 p-2 w-[70%] flex justify-center items-center rounded-lg bg-slate-500 text-white border-2 border-slate-600 text-xs">
-            <h1>Collaborators</h1>
+            Online
           </button>
           { collaborators && <Collaborators currentlyOnline={online}/> }
-          {/* <IoAlertCircleOutline size={24} className="cursor-pointer"/> */}
+          <ImExit size={22} className="cursor-pointer" onClick={()=>navigate("/dashboard")}/>
           </div>
         </div>
         <div className="body-chat h-full w-full border-inherit p-2 flex flex-col overflow-y-scroll">
