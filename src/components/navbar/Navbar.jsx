@@ -7,6 +7,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import NotificationComponent from "../notification/NotificationComponent";
 import { useAuth } from "../../hooks/useAuth";
 import { userLogout } from "../../api/auth";
+import { showToastMessage } from "../../utils/toasts/showToast";
 
 
 export default function Navbar() {
@@ -31,8 +32,13 @@ export default function Navbar() {
   }
 
   const logoutFunction = useCallback(async()=>{
-    await userLogout(token)
-    return logout()
+    const data = await userLogout(token)
+    if(data.valid){
+      showToastMessage(data.message,data.info)
+      return logout()
+    }else{
+      showToastMessage(data.message,data.info)
+    }
   },[token,logout])
 
   return (

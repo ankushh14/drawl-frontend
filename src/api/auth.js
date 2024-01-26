@@ -49,12 +49,13 @@ const refreshToken = async () => {
 
 const userLogout = async (token) => {
     try {
-        await axios.post(`${ServerUrl}auth/logout`, {}, {
+        const data = await axios.post(`${ServerUrl}auth/logout`, {}, {
             headers: {
                 ...headers,
                 "Authorization": `Bearer ${token}`
             }
         })
+        return { ...data.data, info: "success" }
     } catch (error) {
         return { ...error.response.data, info: "error" }
     }
