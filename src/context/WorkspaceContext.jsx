@@ -1,5 +1,6 @@
 import { createContext, useCallback, useMemo, useReducer } from "react";
 import PropTypes from "prop-types"
+import { useIsusingworkspace } from "../hooks/useIsusingworkspace";
 
 
 const initialState = {
@@ -52,20 +53,24 @@ const workspaceReducer = (state,action) =>{
 
 const WorkSpaceProvider = ({children})=>{
     const [state,dispatch] = useReducer(workspaceReducer,initialState)
+    const {setIsUsingworkspace} = useIsusingworkspace()
+
     const enter = useCallback((payload)=>{
+        setIsUsingworkspace(true)
         dispatch({
             type : "ENTER",
             payload : {
                 ...payload
             }
         })
-    },[])
+    },[setIsUsingworkspace])
 
     const leave = useCallback(()=>{
+        setIsUsingworkspace(false)
         dispatch({
             type : "LEAVE"
         })
-    },[])
+    },[setIsUsingworkspace])
 
     const updatePasswordStatus = useCallback((value)=>{
         dispatch({

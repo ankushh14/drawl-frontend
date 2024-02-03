@@ -1,14 +1,14 @@
 import { Outlet,Navigate } from "react-router-dom"
 import { useAuth } from "../../hooks/useAuth"
-import { WorkspaceCountProvider } from "../../context/UserWorkspaceCountUpdate"
+import WorkspaceCommonProvider from "../WorkspaceCommonProvider"
 
 export default function AuthenticatedValidate() {
     const {authenticated} = useAuth()
     return(
-        <WorkspaceCountProvider>
+        <WorkspaceCommonProvider>
             {
                 authenticated?<Outlet/>:<Navigate to={"/auth"}/>
             }
-        </WorkspaceCountProvider>
+        </WorkspaceCommonProvider>
     )
 }
