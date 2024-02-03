@@ -24,7 +24,7 @@ export default function Chatcomponent() {
   const [collaborators,setCollaborators] = useState(false)
   const [online,setOnline] = useState([])
   const { user,token } = useAuth()
-  const { ID } = useWorkspace()
+  const { ID,leave } = useWorkspace()
   const navigate = useNavigate()
 
   useEffect(()=>{
@@ -104,7 +104,7 @@ export default function Chatcomponent() {
   },[updateMessages])
 
   return (
-    <div className={`w-full absolute  md:w-[40%] xl:w-[25%] md:static h-[94vh] border md:ml-[0.12rem]  flex flex-col border-[#d3d3d3] ${darkMode?"bg-[#212529] text-white":"bg-white text-black"}`}>
+    <div className={`w-full absolute  md:w-[40%] xl:w-[25%] md:static h-full border md:ml-[0.12rem]  flex flex-col border-[#d3d3d3] ${darkMode?"bg-[#212529] text-white":"bg-white text-black"}`}>
         <div className="chat-header w-full p-2 rounded-b-sm border border-inherit flex justify-between items-center relative">
           <h1 className="font-bold">{name}</h1>
           <div className="header-second-half flex w-[40%] justify-around items-center ">
@@ -112,7 +112,7 @@ export default function Chatcomponent() {
             Online
           </button>
           { collaborators && <Collaborators currentlyOnline={online}/> }
-          <ImExit size={22} className="cursor-pointer" onClick={()=>navigate("/dashboard")}/>
+          <ImExit size={22} className="cursor-pointer" onClick={()=>{navigate("/dashboard"); leave()}}/>
           </div>
         </div>
         <div className="body-chat h-full w-full border-inherit p-2 flex flex-col overflow-y-scroll">
