@@ -4,29 +4,19 @@ import useTheme from "../../hooks/useTheme"
 import { useWorkspace } from "../../hooks/useWorkspace";
 import useBoardStore from "../../hooks/useBoardStore";
 import { useAuth } from "../../hooks/useAuth";
-import { useCallback } from "react";
+import { myOverrides } from "../../utils/tldraw/new_Overrides";
 
 
 
 export default function MainWhiteBoard() {
-  const {darkMode,setDarkMode} = useTheme()
+  const {darkMode} = useTheme()
   const {ID} = useWorkspace()
   const {user} = useAuth()
   const store = useBoardStore({roomID:ID,userName:user.email})
-  const handleUiEvent = useCallback((name)=>{
-    if(name === 'toggle-dark-mode'){
-      return setDarkMode(!darkMode)
-    }
-  },[darkMode,setDarkMode])
 
   return (
     <div className='w-full fixed md:w-[60%] xl:w-[75%] md:static h-[94vh] border'>
-      <Tldraw inferDarkMode = {darkMode} store={store} overrides={{
-        menu(editor,menu){
-          const newMenu = menu.slice(0,2);
-          return newMenu
-        }
-      }} onUiEvent={handleUiEvent}/>
+      <Tldraw inferDarkMode = {darkMode} store={store} overrides={myOverrides} />
     </div>
   )
 }
