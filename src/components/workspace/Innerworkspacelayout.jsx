@@ -11,10 +11,8 @@ export default function Innerworkspacelayout() {
 
   const isMember = useCallback(() => {
     if (owner === user.email || members?.includes(user.email)) {
-      console.log("here")
       return setAccessToWorkspace(true)
     } else {
-      console.log("not here")
       return setAccessToWorkspace(false)
     }
   }, [owner, user, members])
@@ -25,13 +23,20 @@ export default function Innerworkspacelayout() {
 
   return (
     (name !== null
-    &&
-    accessToWorkspace
+      &&
+      accessToWorkspace
     )
     &&
-    <div className="w-full flex">
-      <MainWhiteBoard />
-      <Chatcomponent />
+    <div className="w-full h-screen flex flex-col">
+      <div className="utility-bar w-full flex p-2 border-b-2 justify-center items-center">
+        <h1 className="font-Aclonica font-bold cursor-pointer">
+          Nexusmeethub
+        </h1>
+      </div>
+      <div className="w-full flex h-full">
+        <MainWhiteBoard />
+        <Chatcomponent />
+      </div>
     </div>
   )
 }
