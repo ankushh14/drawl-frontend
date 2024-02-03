@@ -8,10 +8,12 @@ import NotificationComponent from "../notification/NotificationComponent";
 import { useAuth } from "../../hooks/useAuth";
 import { userLogout } from "../../api/auth";
 import { showToastMessage } from "../../utils/toasts/showToast";
+import { useIsusingworkspace } from "../../hooks/useIsusingworkspace";
 
 
 export default function Navbar() {
   const {darkMode,setDarkMode} = useTheme()
+  const {isUsingworkspace} = useIsusingworkspace()
   const navigate = useNavigate()
   const {user,token,logout} = useAuth()
   const [themeInLocal,setThemeInLocal] = useLocalStorage("darkTheme",false)
@@ -42,7 +44,11 @@ export default function Navbar() {
   },[token,logout])
 
   return (
-    <div className={`navbar w-full flex justify-between items-center p-2 transition-colors duration-500 border-b-2 ${darkMode?"bg-black  text-white border-b-white":"bg-white text-black border-b-[#d3d3d3]"}`}>
+    <div className={`
+    navbar w-full flex justify-between items-center p-2 transition-colors duration-500 border-b-2 
+    ${darkMode?"bg-black  text-white border-b-white":"bg-white text-black border-b-[#d3d3d3]"}
+    ${isUsingworkspace && "hidden"}
+    `}>
         <div className="logo-div">
             <h1 className="font-Aclonica font-bold cursor-pointer" onClick={()=>navigate("/dashboard")}>
                 Nexusmeethub
