@@ -8,7 +8,7 @@ export default function WorkspacePassword() {
     const [workspacePassword, setWorkspacePassword] = useState("")
     const navigate = useNavigate()
     const { darkMode } = useTheme()
-    const { password, updatePasswordStatus } = useWorkspace()
+    const { password, updatePasswordStatus,leave } = useWorkspace()
     const [description, setDescription] = useState("This workspace is password protected!")
 
     const handlePasswordVerification = (e) => {
@@ -23,7 +23,7 @@ export default function WorkspacePassword() {
     return (
         <div className={`w-full h-screen flex flex-col space-y-10 ${darkMode ? "bg-black text-white" : "bg-white text-black"}`}>
             <div className="return-home-div w-full flex justify-start">
-                <h1 className='flex space-x-2 p-3 cursor-pointer justify-center items-center' onClick={()=>navigate('/home')}><FaArrowLeftLong/> <span> Return home</span></h1>
+                <h1 className='flex space-x-2 p-3 cursor-pointer justify-center items-center' onClick={()=>{navigate('/dashboard'); leave()}}><FaArrowLeftLong/> <span> Return home</span></h1>
             </div>
             <form className="w-full h-[50%] flex justify-center items-center flex-col" onSubmit={handlePasswordVerification}>
                 <div className="input-desc my-8">
