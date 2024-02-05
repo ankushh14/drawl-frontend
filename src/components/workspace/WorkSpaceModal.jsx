@@ -147,7 +147,7 @@ export default function WorkSpaceModal({ openModal }) {
                         <div className="search-div relative">
                             <IoSearch className="absolute right-4 text-inherit bottom-[44%]" size={13} />
                             <InputComp disable={searchDisable} type={"text"} placeholder={"Search for collaborators..."} name={"members"} label={"Collaborators"} required={false} stateVar={individual} setStatevar={setIndividual} description={searchDescription} descriptionControlFunc={setSearchDescription} onKeyDown={handleKeyDown} />
-                            <div className={`search-results-div absolute z-30 ${searchResults.length === 0 && "hidden"} top-[80%] ${!darkMode ? "bg-white text-black" : "bg-black text-white"}  w-full  flex flex-col justify-center items-center rounded-md border border-slate-500`}>
+                            <div className={`search-results-div absolute z-30 ${searchResults.length === 0 && "hidden"} top-[80%] ${!darkMode ? "bg-white text-black" : "bg-[#212529] text-white"}  w-full  flex flex-col justify-center items-center rounded-md border border-slate-500`}>
                                 {
                                     searchResults.map((item, index) => {
                                         return (
