@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import useTheme from "../../hooks/useTheme"
-import { useLocalStorage } from "@uidotdev/usehooks";
 import ThemeToggle from "../../utils/theme/ThemeToggle";
 import { IoIosNotifications } from "react-icons/io";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -12,26 +11,15 @@ import { useIsusingworkspace } from "../../hooks/useIsusingworkspace";
 
 
 export default function Navbar() {
-  const {darkMode,setDarkMode} = useTheme()
+  const {darkMode} = useTheme()
   const {isUsingworkspace} = useIsusingworkspace()
   const navigate = useNavigate()
   const {user,token,logout} = useAuth()
-  const [themeInLocal,setThemeInLocal] = useLocalStorage("darkTheme",false)
   const [nav,setNav] = useState(false)
   const [notifications,setNotifications] = useState(false)
   const [ping,setPing] = useState(false)
 
-  const changeInTheme = useCallback(()=>{
-    setDarkMode(themeInLocal)
-  },[setDarkMode,themeInLocal])
-  useEffect(()=>{
-   changeInTheme() 
-  },[changeInTheme])
 
-
-  const toggleTheme = ()=>{
-    return setThemeInLocal((prev)=>!prev)
-  }
 
   const logoutFunction = useCallback(async()=>{
     const data = await userLogout(token)
@@ -56,7 +44,7 @@ export default function Navbar() {
         </div>
         <div className="some-div flex items-center justify-center space-x-1 md:space-x-2">
         <div className="theme-toggle-div">
-          <ThemeToggle onClick={toggleTheme}/>
+          <ThemeToggle/>
         </div>
         <div className="common-div relative">
           <IoIosNotifications size={20} className="cursor-pointer" onClick={()=>setNotifications((prev)=>!prev)}/>
