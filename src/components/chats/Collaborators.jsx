@@ -6,8 +6,9 @@ export default function Collaborators({currentlyOnline}) {
     const {members,owner} = useWorkspace()
     const collaborators = [...members,owner]
     const {user} = useAuth()
+
     return (
-        <div className="w-[300px] absolute p-2 rounded-md shadow shadow-black top-14 right-2 bg-slate-500 text-white">
+        <div id="collaborators-list" className="w-[300px] absolute p-2 rounded-md shadow shadow-black top-10 md:left-5 left-2 z-[999] bg-slate-500 text-white">
             {
                 collaborators?.map((item,index)=>{
                     return <div className="w-full p-1 flex justify-between items-center py-2" key={index}>

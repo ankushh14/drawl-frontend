@@ -3,29 +3,24 @@ import { useWorkspace } from "../../hooks/useWorkspace";
 import useTheme from "../../hooks/useTheme";
 import Chat from "./Chat";
 import { useCallback, useEffect, useRef, useState } from "react";
-import Collaborators from "./Collaborators";
 import socketIO from "socket.io-client"
 import { useAuth } from "../../hooks/useAuth";
 import getTime from "../../utils/getTime";
 import { getChats } from "../../api/chats";
 import {showToastMessage} from "../../utils/toasts/showToast"
-import { ImExit } from "react-icons/im";
-import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types'
 let io
 
 
-export default function Chatcomponent() {
+export default function Chatcomponent({setOnline}) {
   const inputRef = useRef(null)
   const { name } = useWorkspace()
   const {darkMode} = useTheme()
   const [message,setMessage] = useState('')
   const [chatDisable,setChatDisable] = useState(false)
   const [chats,setChats] = useState([])
-  const [collaborators,setCollaborators] = useState(false)
-  const [online,setOnline] = useState([])
   const { user,token } = useAuth()
-  const { ID,leave } = useWorkspace()
-  const navigate = useNavigate()
+  const { ID } = useWorkspace()
 
   useEffect(()=>{
     io = socketIO(`${import.meta.env.VITE_CHAT_ENDPOINT}`,{
@@ -107,13 +102,6 @@ export default function Chatcomponent() {
     <div className={`w-full absolute  md:w-[40%] xl:w-[25%] md:static h-full border-t flex flex-col ${darkMode?"bg-[#212529] text-white border-[#30363b]":"bg-white text-black border-[#d3d3d3] "}`}>
         <div className="chat-header w-full p-2 rounded-b-sm border-b border-inherit flex justify-between items-center relative">
           <h1 className="font-bold">{name}</h1>
-          <div className="header-second-half flex w-[40%] justify-around items-center ">
-          <button type="button" onClick={()=>setCollaborators((prev)=>!prev)} className="members-div active:scale-95 transition-all duration-500 p-2 w-[70%] flex justify-center items-center rounded-lg bg-slate-500 text-white border-2 border-slate-600 text-xs">
-            Online
-          </button>
-          { collaborators && <Collaborators currentlyOnline={online}/> }
-          <ImExit size={22} className="cursor-pointer" onClick={()=>{navigate("/dashboard"); leave()}}/>
-          </div>
         </div>
         <div className="body-chat h-full w-full border-inherit p-2 flex flex-col overflow-y-scroll">
           {
@@ -132,4 +120,8 @@ export default function Chatcomponent() {
         </div>
     </div>
   )
+}
+
+Chatcomponent.propTypes = {
+  setOnline : PropTypes.func.isRequired
 }
