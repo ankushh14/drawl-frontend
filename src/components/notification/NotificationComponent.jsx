@@ -39,7 +39,7 @@ export default function NotificationComponent({ noti, openController, setPing })
     }, [fetchnotifications, notificationRefresh])
 
     return (
-        <div id="notification-div" className={`notification-list absolute z-50 w-full md:w-[50%] lg:w-[30%] max-h-[50%] overflow-y-scroll  top-10 transition-all duration-300 border-2 right-0 md:right-10  ${noti ? "visible opacity-100" : "invisible opacity-0"} rounded-md ${darkMode ? "bg-black text-white border-white" : "bg-white border-[#d3d3d3] text-black"}`}>
+        <div id="notification-div" className={`notification-list absolute z-50 w-full md:w-[50%] lg:w-[30%] max-h-[50%] overflow-y-scroll  top-10 transition-all duration-300 border-2 right-0 md:right-10  ${noti ? "visible opacity-100" : "invisible opacity-0"} rounded-md ${darkMode ? "bg-[#212529] text-white border-white" : "bg-white border-[#d3d3d3] text-black"}`}>
             {
                 notifications.length === 0 ?
                     <div className="notfound-div w-full p-3 py-6">

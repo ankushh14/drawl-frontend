@@ -90,7 +90,7 @@ export default function JoinWorkspaceModal({ openJoinModal }) {
     return (
         <div id="Modal-background" className="Modal-background fixed top-0 left-0 right-0 bottom-0 bg-[#5c5b5b5d] flex justify-center items-center" onClick={modalCloseHandle}>
 
-            <div className={`Modal-div w-[95%] text-xs md:w-[75%] lg:w-[45%] p-5 ${darkMode ? "bg-black text-white" : "bg-white text-black"} rounded-md overflow-y-none`}>
+            <div className={`Modal-div w-[95%] text-xs md:w-[75%] lg:w-[45%] p-5 ${darkMode ? "bg-[#212529] text-white" : "bg-white text-black"} rounded-md overflow-y-none`}>
                 <div className="close-btn w-full flex justify-end">
                     <IoClose className={`cursor-pointer`} onClick={() => openJoinModal(false)} />
                 </div>

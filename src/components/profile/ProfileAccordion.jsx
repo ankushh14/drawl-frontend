@@ -47,7 +47,7 @@ export default function ProfileAccordion({ workspaceName, workspacePassword, wor
     },[workspaceID,token,setUpdateWorkspaceCount])
 
     return (
-            <div className="w-full flex flex-col p-3 rounded-md border shadow shadow-slate-400 mt-2 mb-1 first:mt-0 last:mb-0">
+            <div className="w-full flex flex-col p-3 rounded-md border border-[#d3d3d3] mt-2 mb-1 first:mt-0 last:mb-0">
                 <div className="w-full flex flex-col lg:flex-row pb-2">
                     <h1 className="w-full md:w-full pb-2 lg:pb-0 font-semibold">
                         {workspaceName}

@@ -32,7 +32,7 @@ export default function DeleteWorkspaceModal({workspaceName,workspaceID,ModalOpe
 
     return (
         <div className="Modal-background fixed top-0 left-0 right-0 bottom-0 bg-[#5c5b5b5d] flex justify-center items-center">
-            <div className={`w-[300px] rounded-md shadow p-3 flex flex-col ${darkMode ? "bg-black text-white" : "bg-white text-black overflow-hidden"}`}>
+            <div className={`w-[300px] rounded-md shadow p-3 flex flex-col ${darkMode ? "bg-[#212529] text-white" : "bg-white text-black overflow-hidden"}`}>
                 <div className="w-full flex p-2 justify-center items-center text-red-500">
                     <IoWarning size={60}/>
                 </div>

@@ -21,7 +21,7 @@ export default function WorkspacePassword() {
     }
 
     return (
-        <div className={`w-full h-screen flex flex-col space-y-10 ${darkMode ? "bg-black text-white" : "bg-white text-black"}`}>
+        <div className={`w-full h-screen flex flex-col space-y-10 ${darkMode ? "bg-[#212529] text-white" : "bg-white text-black"}`}>
             <div className="return-home-div w-full flex justify-start">
                 <h1 className='flex space-x-2 p-3 cursor-pointer justify-center items-center' onClick={()=>{navigate('/dashboard'); leave()}}><FaArrowLeftLong/> <span> Return home</span></h1>
             </div>
