@@ -1,8 +1,11 @@
+import { useState } from "react"
 import useTheme from "../../hooks/useTheme"
 import ThemeToggle from "../../utils/theme/ThemeToggle"
+import ExitWorkspaceModal from "./ExitWorkspaceModal"
 
 export default function WorkspaceUtilityBar() {
     const { darkMode } = useTheme()
+    const [exitModal, setExitModal] = useState(false)
 
     return (
         <div className={`utility-bar w-full flex justify-between items-center p-2 transition-colors duration-500
@@ -15,8 +18,14 @@ export default function WorkspaceUtilityBar() {
                 Nexusmeethub
             </h1>
             <div className="right-utility-bar w-fit">
-                <button type="submit" className={`bg-red-500 border border-red-600 rounded-md px-4 py-2 text-white flex justify-center items-center text-xs w-full active:scale-95 transition-all duration-500`}>Exit workspace</button>
+                <button 
+                className={`bg-red-500 border border-red-600 rounded-md px-3 py-1 text-white flex justify-center items-center text-xs w-full active:scale-95 transition-all duration-500`}
+                onClick={()=>setExitModal(true)}
+                >
+                    Exit
+                </button>
             </div>
+            {exitModal && <ExitWorkspaceModal ModalController={setExitModal}/>}
         </div>
     )
 }
