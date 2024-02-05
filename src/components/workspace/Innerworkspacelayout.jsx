@@ -3,6 +3,7 @@ import MainWhiteBoard from "../whiteboard/MainWhiteBoard"
 import { useWorkspace } from "../../hooks/useWorkspace"
 import { useAuth } from "../../hooks/useAuth"
 import { useCallback, useEffect, useState } from "react"
+import WorkspaceUtilityBar from "./WorkspaceUtilityBar"
 
 export default function Innerworkspacelayout() {
   const { name, owner, members } = useWorkspace()
@@ -28,11 +29,7 @@ export default function Innerworkspacelayout() {
     )
     &&
     <div className="w-full h-screen flex flex-col">
-      <div className="utility-bar w-full flex p-2 border-b-2 justify-center items-center">
-        <h1 className="font-Aclonica font-bold cursor-pointer">
-          Nexusmeethub
-        </h1>
-      </div>
+      <WorkspaceUtilityBar/>
       <div className="w-full flex h-full">
         <MainWhiteBoard />
         <Chatcomponent />
