@@ -104,8 +104,8 @@ export default function Chatcomponent() {
   },[updateMessages])
 
   return (
-    <div className={`w-full absolute  md:w-[40%] xl:w-[25%] md:static h-full border md:ml-[0.12rem]  flex flex-col border-[#d3d3d3] ${darkMode?"bg-[#212529] text-white":"bg-white text-black"}`}>
-        <div className="chat-header w-full p-2 rounded-b-sm border border-inherit flex justify-between items-center relative">
+    <div className={`w-full absolute  md:w-[40%] xl:w-[25%] md:static h-full border-t flex flex-col ${darkMode?"bg-[#212529] text-white border-[#30363b]":"bg-white text-black border-[#d3d3d3] "}`}>
+        <div className="chat-header w-full p-2 rounded-b-sm border-b border-inherit flex justify-between items-center relative">
           <h1 className="font-bold">{name}</h1>
           <div className="header-second-half flex w-[40%] justify-around items-center ">
           <button type="button" onClick={()=>setCollaborators((prev)=>!prev)} className="members-div active:scale-95 transition-all duration-500 p-2 w-[70%] flex justify-center items-center rounded-lg bg-slate-500 text-white border-2 border-slate-600 text-xs">
@@ -122,7 +122,7 @@ export default function Chatcomponent() {
             })
           }
         </div>
-        <div className="w-full justify-self-end py-2 border-y border-inherit">
+        <div className="w-full justify-self-end py-2 border-t border-inherit">
           <div className="input-div w-full relative p-2">
             <input ref={inputRef} type="text" value={message} onChange={(e)=>setMessage(e.target.value)} disabled = {chatDisable} placeholder="Type your message here ..." className="p-2 pr-8 w-full text-xs text-slate-500 outline-slate-500 border-2 border-slate-400 rounded-md" onKeyDown={handleSendMessage} />
             <div className="send-btn cursor-pointer absolute right-4 bottom-4" onClick={simulateEnter}>

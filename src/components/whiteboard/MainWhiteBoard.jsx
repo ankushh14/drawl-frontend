@@ -15,7 +15,7 @@ export default function MainWhiteBoard() {
   const store = useBoardStore({roomID:ID,userName:user.email})
 
   return (
-    <div className='w-full fixed md:w-[60%] xl:w-[75%] md:static h-full border'>
+    <div className='w-full fixed md:w-[60%] xl:w-[75%] md:static h-full border border-[#30363b] transition-colors duration-500'>
       <Tldraw inferDarkMode = {darkMode} store={store} overrides={myOverrides} />
     </div>
   )
