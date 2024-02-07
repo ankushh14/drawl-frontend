@@ -12,7 +12,7 @@ import PropTypes from 'prop-types'
 let io
 
 
-export default function Chatcomponent({setOnline,chatComponent,setChatComponent}) {
+export default function Chatcomponent({setOnline,chatComponent}) {
   const inputRef = useRef(null)
   const { name } = useWorkspace()
   const {darkMode} = useTheme()
@@ -126,5 +126,6 @@ export default function Chatcomponent({setOnline,chatComponent,setChatComponent}
 }
 
 Chatcomponent.propTypes = {
-  setOnline : PropTypes.func.isRequired
+  setOnline : PropTypes.func.isRequired,
+  chatComponent : PropTypes.bool.isRequired,
 }

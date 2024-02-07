@@ -56,5 +56,6 @@ export default function WorkspaceUtilityBar({online,setChatComponent}) {
 }
 
 WorkspaceUtilityBar.propTypes = {
-    online : PropTypes.array.isRequired
+    online : PropTypes.array.isRequired,
+    setChatComponent: PropTypes.func.isRequired
 }
