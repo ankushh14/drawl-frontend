@@ -12,7 +12,7 @@ import PropTypes from 'prop-types'
 let io
 
 
-export default function Chatcomponent({setOnline}) {
+export default function Chatcomponent({setOnline,chatComponent,setChatComponent}) {
   const inputRef = useRef(null)
   const { name } = useWorkspace()
   const {darkMode} = useTheme()
@@ -99,7 +99,10 @@ export default function Chatcomponent({setOnline}) {
   },[updateMessages])
 
   return (
-    <div className={`w-full absolute  md:w-[40%] xl:w-[25%] md:static h-full border-t flex flex-col ${darkMode?"bg-[#212529] text-white border-[#30363b]":"bg-white text-black border-[#d3d3d3] "}`}>
+    <div className={`absolute md:opacity-100 md:w-[35%] xl:w-[25%] md:static h-[calc(100%-41.6px)] md:h-full border-t flex md:flex flex-col overflow-hidden transition-[width,opacity] md:transition-none duration-500 ease-in-out 
+    ${darkMode?"bg-[#212529] text-white border-[#30363b]":"bg-white text-black border-[#d3d3d3] "} 
+    ${chatComponent?"w-full opacity-100":"w-0 opacity-0"}
+    `}>
         <div className="chat-header w-full p-2 rounded-b-sm border-b border-inherit flex justify-between items-center relative">
           <h1 className="font-bold">{name}</h1>
         </div>

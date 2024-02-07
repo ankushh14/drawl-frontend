@@ -12,6 +12,7 @@ export default function Innerworkspacelayout() {
   const [accessToWorkspace, setAccessToWorkspace] = useState(false)
   const {darkMode} = useTheme()
   const [online,setOnline] = useState([])
+  const [chatComponent,setChatComponent] = useState(false)
 
   const isMember = useCallback(() => {
     if (owner === user.email || members?.includes(user.email)) {
@@ -31,11 +32,11 @@ export default function Innerworkspacelayout() {
       accessToWorkspace
     )
     &&
-    <div className={`w-full h-screen flex flex-col ${darkMode?"bg-[#212529]":"bg-white"}`}>
-      <WorkspaceUtilityBar online={online}/>
+    <div className={`w-full h-screen max-h-screen flex flex-col ${darkMode?"bg-[#212529]":"bg-white"}`}>
+      <WorkspaceUtilityBar online={online} setChatComponent={setChatComponent}/>
       <div className="w-full flex h-full">
         <MainWhiteBoard />
-        <Chatcomponent setOnline={setOnline} />
+        <Chatcomponent setOnline={setOnline} chatComponent={chatComponent} setChatComponent={setChatComponent} />
       </div>
     </div>
   )

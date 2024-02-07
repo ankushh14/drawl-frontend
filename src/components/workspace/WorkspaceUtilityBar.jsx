@@ -6,10 +6,12 @@ import { FaUsers } from "react-icons/fa";
 import Collaborators from "../chats/Collaborators";
 import { useClickAway } from "@uidotdev/usehooks";
 import PropTypes from 'prop-types'
+import { IoIosChatbubbles } from "react-icons/io";
 
 
 
-export default function WorkspaceUtilityBar({online}) {
+
+export default function WorkspaceUtilityBar({online,setChatComponent}) {
     const { darkMode } = useTheme()
     const [exitModal, setExitModal] = useState(false)
     const [onlineList,setOnlineList] = useState(false)
@@ -38,6 +40,9 @@ export default function WorkspaceUtilityBar({online}) {
                 Nexusmeethub
             </h1>
             <div className="right-utility-bar w-[30%] flex justify-end items-center">
+                <div className="chats-btn w-fit flex justify-center items-center px-2 md:hidden" onClick={()=>setChatComponent((prev)=>!prev)}>
+                    <IoIosChatbubbles size={19}/>
+                </div>
                 <button 
                 className={`bg-red-500 border border-red-600 rounded-md px-3 py-1 text-white flex justify-center items-center text-xs w-[70px] active:scale-95 transition-all duration-500`}
                 onClick={()=>setExitModal(true)}
