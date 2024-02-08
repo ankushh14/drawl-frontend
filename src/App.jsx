@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom"
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import MainLoader from "./utils/loaders/MainLoader"
 import AuthPage from "./pages/AuthPage"
@@ -26,38 +26,42 @@ function App() {
   const refreshAccessToken = useCallback(async () => {
     updateStatus(STATUS.PENDING)
     const data = await refreshToken()
-    if(data.valid){
+    if (data.valid) {
       return login(data)
-    }else{
+    } else {
       return logout()
     }
-  }, [updateStatus,login,logout])
+  }, [updateStatus, login, logout])
 
-  useEffect(()=>{
+  useEffect(() => {
     refreshAccessToken()
-  },[refreshAccessToken])
+  }, [refreshAccessToken])
+
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <>
+        <Route path="/" element={<LandingPage />} />
+        <Route element={<PublicOutlet />}>
+          <Route path="/auth" element={<AuthPage />} />
+        </Route>
+        <Route element={<AuthenticatedValidate />}>
+          <Route element={<MainLayout />}>
+            <Route path="/dashboard" element={<HomePage />} />
+            <Route path={`/${workspace}`} element={<WorkSpaceLayout />}>
+              <Route path={`:id`} element={<WorkspaceValidator />} />
+            </Route>
+            <Route path="/profile" element={<ProfilePage />} />
+          </Route>
+        </Route>
+      </>
+    )
+  )
 
   return (
     <GoogleOAuthProvider clientId={`${Client_id}`}>
-      <BrowserRouter>
-        <MainLoader />
-        <Toaster />
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route element={<PublicOutlet />}>
-            <Route path="/auth" element={<AuthPage />} />
-          </Route>
-          <Route element={<AuthenticatedValidate />}>
-            <Route element={<MainLayout />}>
-              <Route path="/dashboard" element={<HomePage />} />
-              <Route path={`/${workspace}`} element={<WorkSpaceLayout />}>
-                <Route path={`:id`} element={<WorkspaceValidator />} />
-              </Route>
-              <Route path="/profile" element={<ProfilePage />} />
-            </Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <MainLoader />
+      <Toaster />
+      <RouterProvider router={router}/>
     </GoogleOAuthProvider>
   )
 }
