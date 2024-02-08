@@ -1,8 +1,14 @@
-import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from "react-router-dom"
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import MainLoader from "./utils/loaders/MainLoader"
-import AuthPage from "./pages/AuthPage"
-import { Toaster } from 'react-hot-toast';
+import {
+  Navigate,
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import MainLoader from "./utils/loaders/MainLoader";
+import AuthPage from "./pages/AuthPage";
+import { Toaster } from "react-hot-toast";
 import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/HomePage";
 import AuthenticatedValidate from "./utils/validation/AuthenticatedValidate";
@@ -15,27 +21,27 @@ import { useAuth } from "./hooks/useAuth";
 import { useCallback, useEffect } from "react";
 import { refreshToken } from "./api/auth";
 import STATUS from "./utils/status";
-
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
-  const Client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID
-  const workspace = import.meta.env.VITE_WORKSPACES
+  const Client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const workspace = import.meta.env.VITE_WORKSPACES;
 
-  const { login, updateStatus, logout } = useAuth()
+  const { login, updateStatus, logout } = useAuth();
 
   const refreshAccessToken = useCallback(async () => {
-    updateStatus(STATUS.PENDING)
-    const data = await refreshToken()
+    updateStatus(STATUS.PENDING);
+    const data = await refreshToken();
     if (data.valid) {
-      return login(data)
+      return login(data);
     } else {
-      return logout()
+      return logout();
     }
-  }, [updateStatus, login, logout])
+  }, [updateStatus, login, logout]);
 
   useEffect(() => {
-    refreshAccessToken()
-  }, [refreshAccessToken])
+    refreshAccessToken();
+  }, [refreshAccessToken]);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -53,17 +59,19 @@ function App() {
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
         </Route>
+        <Route path="/404" element={<NotFoundPage />} />
+        <Route path="*" element={<Navigate to="/404" replace />} />
       </>
     )
-  )
+  );
 
   return (
     <GoogleOAuthProvider clientId={`${Client_id}`}>
       <MainLoader />
       <Toaster />
-      <RouterProvider router={router}/>
+      <RouterProvider router={router} />
     </GoogleOAuthProvider>
-  )
+  );
 }
 
-export default App
+export default App;
