@@ -55,6 +55,7 @@ function App() {
             <Route path="/dashboard" element={<HomePage />} />
             <Route path={`/${workspace}`} element={<WorkSpaceLayout />}>
               <Route path={`:id`} element={<WorkspaceValidator />} />
+              <Route index element={<Navigate to={`/404`} replace />} />
             </Route>
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
