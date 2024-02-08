@@ -107,10 +107,10 @@ export default function JoinWorkspaceModal({ openJoinModal }) {
                         inputDescription && <p>{inputDescription}</p>
                         }   
                     </div>
-                    <div className={`search-results-div ${searchArray.length === 0 && "hidden"} w-full rounded-md shadow-slate-500 shadow-sm mt-1 absolute ${darkMode ? "bg-black text-white" : "bg-white text-black"} max-h-[242px] overflow-y-scroll`}>
+                    <div className={`search-results-div ${searchArray.length === 0 && "hidden"} w-full rounded-md mt-1 absolute ${darkMode ? "bg-[#212529] text-white" : "bg-white text-black"} max-h-[242px] overflow-y-scroll`}>
                         {
                             searchArray.map((item,index)=>{
-                                return <div key={index} className="w-full flex flex-col p-3 hover:bg-slate-100 first:rounded-t-md last:rounded-b-md cursor-pointer border-b border-slate-400 last:border-none" onClick={()=>handleSelection(item.name,item.ID,item.owner)}>
+                                return <div key={index} className={`w-full flex flex-col p-3  first:rounded-t-md last:rounded-b-md cursor-pointer border-b border-slate-400 last:border-none ${darkMode ? "hover:bg-slate-700" : "hover:bg-slate-100"}`} onClick={()=>handleSelection(item.name,item.ID,item.owner)}>
                                     <h1 className="w-full font-semibold mb-1">Workspace : {item.name}</h1>
                                     <h1 className="w-full text-[0.65rem]">Owner : {item.owner}</h1>
                                 </div>
