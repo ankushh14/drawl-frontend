@@ -64,7 +64,7 @@ export default function ProfileAccordion({ workspaceName, workspacePassword, wor
                         {
                             workspacePassword.length > 0 ?
                                 <>
-                                    <input type={passwordVisibility ? "password" : "text"} disabled value={workspacePassword} />
+                                    <input type={passwordVisibility ? "password" : "text"} disabled value={workspacePassword} className='bg-inherit' />
                                     <div className={`w-fit ${workspacePassword.length > 0 ? "flex" : "hidden"}`}>
                                         <div className="w-fit  cursor-pointer mr-2" onClick={() => setPasswordVisibility((prev) => !prev)}>
                                             {
