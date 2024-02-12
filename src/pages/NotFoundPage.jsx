@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import useTheme from "../hooks/useTheme";
+import { BsFillEmojiFrownFill } from "react-icons/bs";
 
 export default function NotFoundPage() {
   const { darkMode } = useTheme();
@@ -15,6 +16,7 @@ export default function NotFoundPage() {
       `}
     >
       <div className="404-box w-[90%] h-1/2 md:w-[70%] lg:w-[55%] border-2 flex flex-col justify-center items-center rounded-md">
+        <BsFillEmojiFrownFill size={40} className="mb-2"/>
         <h1 className="text-3xl md:text-4xl font-Aclonica w-full text-center py-3 font-bold">
           NexusMeetHub
         </h1>
