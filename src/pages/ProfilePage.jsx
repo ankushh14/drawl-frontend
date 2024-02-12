@@ -31,7 +31,7 @@ export default function ProfilePage() {
     },[getUserWorkspaces,updateWorkspaceCount])
 
     return (
-        <div className={`main-profile-div w-full flex flex-col lg:flex-row p-5 ${darkMode?"text-white bg-[#212529]":"bg-white text-black"} min-h-[calc(100vh-41px)]`}>
+        <div className={`main-profile-div w-full flex flex-col lg:flex-row p-5 ${darkMode?"text-white bg-[#212529]":"bg-white text-black"} min-h-[calc(100vh-40px)]`}>
             <div className="main-profile w-full lg:w-[50%] flex flex-col justify-center items-center p-5 max-h-[400px]">
                 <div className="profile-img-div w-[200px] h-[200px] lg:w-[300px] lg:h-[300px] rounded-full border-8 relative">
                     <img src={user.profile} alt={user.email + "profile image"} className="w-full rounded-full h-full object-contain" />
