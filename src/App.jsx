@@ -22,6 +22,7 @@ import { useCallback, useEffect } from "react";
 import { refreshToken } from "./api/auth";
 import STATUS from "./utils/status";
 import NotFoundPage from "./pages/NotFoundPage";
+import ErrorBoundary from "./components/error/ErrorBoundary";
 
 function App() {
   const Client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -50,7 +51,7 @@ function App() {
         <Route element={<PublicOutlet />}>
           <Route path="/auth" element={<AuthPage />} />
         </Route>
-        <Route element={<AuthenticatedValidate />}>
+        <Route element={<AuthenticatedValidate />} errorElement={<ErrorBoundary/>}>
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<HomePage />} />
             <Route path={`/${workspace}`} element={<WorkSpaceLayout />}>
