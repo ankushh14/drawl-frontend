@@ -5,10 +5,12 @@ import { verifyUser, userRegister } from "../../api/auth";
 import { showToastMessage } from "../toasts/showToast";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import useTheme from "../../hooks/useTheme";
 
 export default function OtpComp({ setOtpDiv, requestBody, setLoader }) {
   const [count, setCount] = useState(59);
   const [otp, setOtp] = useState("");
+  const { darkMode } = useTheme()
   const [verifyLoader, setVerifyLoader] = useState(false);
   const { login } = useAuth();
   const timeOutCallback = useCallback(
@@ -48,7 +50,12 @@ export default function OtpComp({ setOtpDiv, requestBody, setLoader }) {
   };
   return (
     <div className="Otp-div-background absolute top-0 left-0 right-0 bottom-0 bg-[#5c5b5b5d] flex justify-center items-center">
-      <div className="otp-div w-[95%] md:w-[75%] lg:w-[45%] p-5 bg-white rounded-md">
+      <div className={`otp-div w-[95%] md:w-[75%] lg:w-[45%] p-5 rounded-md 
+      ${
+        darkMode
+          ? "bg-[#212529] text-white  shadow-white"
+          : "bg-white text-black shadow-slate-500"
+      }`}>
         <div className="verify-code w-full my-4 flex justify-center items-center">
           <h1 className="text-3xl">Verification Code</h1>
         </div>
