@@ -6,7 +6,6 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import MainLoader from "./utils/loaders/MainLoader";
 import AuthPage from "./pages/AuthPage";
 import { Toaster } from "react-hot-toast";
 import LandingPage from "./pages/LandingPage";
@@ -69,7 +68,6 @@ function App() {
 
   return (
     <GoogleOAuthProvider clientId={`${Client_id}`}>
-      <MainLoader />
       <Toaster />
       <RouterProvider router={router} />
     </GoogleOAuthProvider>
