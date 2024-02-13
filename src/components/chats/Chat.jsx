@@ -12,7 +12,7 @@ export default function Chat({ chat }) {
             : "bg-slate-400 self-start"
         } `}
       >
-        <p className="w-full whitespace-pre">{chat.message}</p>
+        <p className="w-full whitespace-pre overflow-hidden">{chat.message}</p>
         <div
           className={`time-div w-full ${
             user.email === chat.email ? "text-end" : "text-start"

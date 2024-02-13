@@ -9,6 +9,7 @@ import getTime from "../../utils/getTime";
 import { getChats } from "../../api/chats";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import PropTypes from "prop-types";
+import { getDecryptedText, getEncryptedText } from "../../utils/encryption/encryptText";
 let io;
 
 export default function Chatcomponent({ setOnline, chatComponent }) {
@@ -43,13 +44,14 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
         setChatDisable(true);
         const time = getTime();
         io.emit("sendMessage", {
-          message: message,
+          message: getEncryptedText(message,ID),
           email: user.email,
           profile: user.profile,
           id: ID,
           time,
         });
       } catch (error) {
+        console.log(error.message)
         showToastMessage("Some Error Occured", "error");
       } finally {
         setChatDisable(false);
@@ -72,7 +74,10 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
     };
     const data = await getChats(requestBody, token);
     if (data.valid) {
-      return setChats(data.data);
+      const chats = data.data.map((item)=>{
+        return { ...item,message : getDecryptedText(item.message,ID) }
+      })
+      return setChats(chats);
     } else {
       return;
     }
@@ -80,9 +85,10 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
 
   const updateMessages = useCallback(() => {
     io.on("message", (newMessage) => {
+      newMessage.message = getDecryptedText(newMessage.message,ID)
       setChats((prev) => [...prev, newMessage]);
     });
-  }, [setChats]);
+  }, [setChats,ID]);
 
   const updateOnline = useCallback(() => {
     io.on("getOnline", (data) => {
