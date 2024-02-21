@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getSpecificWorkspace } from "../../api/workspace";
 import { useWorkspace } from "../../hooks/useWorkspace";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,6 +6,7 @@ import { useAuth } from "../../hooks/useAuth";
 import WorkspacePassword from "./WorkspacePassword";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import Innerworkspacelayout from "./Innerworkspacelayout";
+import MainLoader from "../../utils/loaders/MainLoader";
 
 
 export default function WorkspaceValidator() {
@@ -13,12 +14,15 @@ export default function WorkspaceValidator() {
     const {user,token} = useAuth()
     const {enter,passwordStatus,owner} = useWorkspace()
     const id = useParams()
+    const [loader,setLoader] = useState(false)
 
     const getWorkspace = useCallback(async () => {
+        setLoader(true)
         let requestBody = {
             id
         }
         const response = await getSpecificWorkspace(requestBody,token)
+        setLoader(false)
         if(response.valid){
             return enter(response.data)
         }else{
@@ -33,6 +37,7 @@ export default function WorkspaceValidator() {
     },[getWorkspace])
 
     return (
+        loader?<MainLoader/>:
         (passwordStatus && owner !== user.email ) ? <WorkspacePassword/> : <Innerworkspacelayout/>
     )
 }

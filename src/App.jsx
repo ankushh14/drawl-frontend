@@ -22,10 +22,12 @@ import { refreshToken } from "./api/auth";
 import STATUS from "./utils/status";
 import NotFoundPage from "./pages/NotFoundPage";
 import ErrorBoundary from "./components/error/ErrorBoundary";
+import useTheme from "./hooks/useTheme";
 
 function App() {
   const Client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const workspace = import.meta.env.VITE_WORKSPACES;
+  const { darkMode } = useTheme();
 
   const { login, updateStatus, logout } = useAuth();
 
@@ -50,7 +52,10 @@ function App() {
         <Route element={<PublicOutlet />}>
           <Route path="/auth" element={<AuthPage />} />
         </Route>
-        <Route element={<AuthenticatedValidate />} errorElement={<ErrorBoundary/>}>
+        <Route
+          element={<AuthenticatedValidate />}
+          errorElement={<ErrorBoundary />}
+        >
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<HomePage />} />
             <Route path={`/${workspace}`} element={<WorkSpaceLayout />}>
@@ -69,7 +74,16 @@ function App() {
   return (
     <GoogleOAuthProvider clientId={`${Client_id}`}>
       <Toaster />
-      <RouterProvider router={router} />
+      <main
+        className={`w-full min-h-screen h-full 
+      ${
+        darkMode
+          ? "bg-[#212529] text-white  shadow-white"
+          : "bg-white text-black shadow-slate-500"
+      }`}
+      >
+        <RouterProvider router={router} />
+      </main>
     </GoogleOAuthProvider>
   );
 }
