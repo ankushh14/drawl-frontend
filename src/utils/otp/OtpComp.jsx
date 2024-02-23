@@ -1,13 +1,13 @@
 import VerificationInput from "react-verification-input";
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useState } from "react";
-import { verifyUser, userRegister } from "../../api/auth";
+import { verifyUser, userRegister, verifyForgotPassword } from "../../api/auth";
 import { showToastMessage } from "../toasts/showToast";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import useTheme from "../../hooks/useTheme";
 
-export default function OtpComp({ setOtpDiv, requestBody, setLoader }) {
+export default function OtpComp({ setOtpDiv, requestBody, setLoader,forgotPassword = false }) {
   const [count, setCount] = useState(59);
   const [otp, setOtp] = useState("");
   const { darkMode } = useTheme()
@@ -28,6 +28,16 @@ export default function OtpComp({ setOtpDiv, requestBody, setLoader }) {
       otp,
     };
     setVerifyLoader(true);
+    if(forgotPassword){
+      const data = await verifyForgotPassword(body)
+      showToastMessage(data.message, data.info);
+      if (data.valid === false) {
+        setLoader(false);
+        return setOtpDiv(false);
+      }
+      setLoader(false)
+      return navigate("/auth");
+    }
     const data = await verifyUser(body);
     showToastMessage(data.message, data.info);
     if (data.valid === false) {
@@ -79,7 +89,7 @@ export default function OtpComp({ setOtpDiv, requestBody, setLoader }) {
             Resend Code
           </button>
         </div>
-        <div className="verify-code w-full my-4 flex justify-center items-center">
+        <div className="verify-code w-full my-4 flex flex-col space-y-3 justify-center items-center">
           <button
             type={"button"}
             onClick={handleVerify}
@@ -87,6 +97,14 @@ export default function OtpComp({ setOtpDiv, requestBody, setLoader }) {
             disabled={verifyLoader}
           >
             <span>Verify</span>
+          </button>
+          <button
+            type={"button"}
+            onClick={()=>window.location.reload()}
+            className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-[80%] flex justify-center space-x-1 items-center active:scale-95 disabled:bg-slate-700`}
+            disabled={verifyLoader}
+          >
+            <span>Cancel</span>
           </button>
         </div>
         <div className="verify-code w-full my-4 mt-8 flex justify-center items-center">
@@ -104,4 +122,5 @@ OtpComp.propTypes = {
   setOtpDiv: PropTypes.func,
   requestBody: PropTypes.object,
   setLoader: PropTypes.func,
+  forgotPassword: PropTypes.bool,
 };

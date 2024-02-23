@@ -23,6 +23,8 @@ import STATUS from "./utils/status";
 import NotFoundPage from "./pages/NotFoundPage";
 import ErrorBoundary from "./components/error/ErrorBoundary";
 import useTheme from "./hooks/useTheme";
+import ForgotPasswordValidator from "./utils/validation/ForgotPasswordValidator";
+import ForgotPassword from "./components/auth/ForgotPassword";
 
 function App() {
   const Client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -49,8 +51,11 @@ function App() {
     createRoutesFromElements(
       <>
         <Route path="/" element={<LandingPage />} />
-        <Route element={<PublicOutlet />}>
+        <Route element={<PublicOutlet />} errorElement={<ErrorBoundary />}>
           <Route path="/auth" element={<AuthPage />} />
+          <Route element={<ForgotPasswordValidator />}>
+            <Route path="/auth/forgotPassword" element={<ForgotPassword />} />
+          </Route>
         </Route>
         <Route
           element={<AuthenticatedValidate />}

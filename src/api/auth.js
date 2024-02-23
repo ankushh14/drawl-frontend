@@ -61,6 +61,28 @@ const userLogout = async (token) => {
     }
 }
 
+const forgotPassword = async (requestBody) => {
+    try {
+        const data = await axios.post(`${ServerUrl}auth/forgotpassword`, requestBody, {
+            headers: headers,
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
+
+const verifyForgotPassword = async (requestBody) => {
+    try {
+        const data = await axios.post(`${ServerUrl}auth/verifyforgotpassword`, requestBody, {
+            headers: headers,
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
+
 
 
 
@@ -69,5 +91,7 @@ export {
     verifyUser,
     userLogin,
     userLogout,
-    refreshToken
+    refreshToken,
+    forgotPassword,
+    verifyForgotPassword
 }
