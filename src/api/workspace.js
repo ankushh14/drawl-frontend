@@ -87,6 +87,21 @@ const removeMember = async (requestBody, token) => {
     }
 }
 
+const leaveWorkspace = async (requestBody, token) => {
+    try {
+        const data = await axios.post(`${ServerUrl}workspace/leave`, requestBody, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                ...headers
+            },
+            withCredentials: true
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
+
 const getWorkspaces = async (requestBody, token) => {
     try {
         const data = await axios.post(`${ServerUrl}workspace/getworkspaces`, requestBody, {
@@ -140,5 +155,6 @@ export {
     findWorkspaces, 
     joinWorkspace, 
     deleteWorkspace, 
-    removeMember 
+    removeMember,
+    leaveWorkspace 
 }

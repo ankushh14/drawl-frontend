@@ -1,17 +1,20 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import { MdGroup, MdOutlineDoubleArrow } from "react-icons/md";
-import { getProfiles } from "../../api/workspace";
+import { getProfiles, leaveWorkspace } from "../../api/workspace";
 import { useCallback, useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { useAuth } from "../../hooks/useAuth";
 import useTheme from "../../hooks/useTheme";
 import { useClickAway } from "@uidotdev/usehooks";
+import { showToastMessage } from "../../utils/toasts/showToast";
+import { useWorkspacesUpdate } from "../../hooks/useWorkspaceCount";
 
 export default function WorkspaceCard({ workspace }) {
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const { darkMode } = useTheme();
+  const { setUpdateWorkspaceCount } = useWorkspacesUpdate();
   const [profiles, setProfiles] = useState([]);
   const [submenu, setSubmenu] = useState(false);
   const [members, setMembers] = useState(false);
@@ -22,9 +25,9 @@ export default function WorkspaceCard({ workspace }) {
   const [about, setAbout] = useState(false);
   const workspaceRoute = import.meta.env.VITE_WORKSPACES;
 
-  const dotsDivRef = useClickAway(()=>{
-    setSubmenu(false)
-  })
+  const dotsDivRef = useClickAway(() => {
+    setSubmenu(false);
+  });
 
   const handleNavigate = () => {
     navigate(`/${workspaceRoute}/${workspace.ID}`);
@@ -44,6 +47,20 @@ export default function WorkspaceCard({ workspace }) {
   useEffect(() => {
     getProfileData();
   }, [getProfileData]);
+
+  const handleLeave = async () => {
+    let requestBody = {
+      userEmail: user.email,
+      workspaceID: workspace.ID,
+    };
+    const response = await leaveWorkspace(requestBody, token);
+    if (response.valid) {
+      showToastMessage(response.message, response.info);
+      return setUpdateWorkspaceCount((prev) => !prev);
+    } else {
+      return showToastMessage("Some error occured", response.info);
+    }
+  };
 
   return (
     <div
@@ -72,17 +89,25 @@ export default function WorkspaceCard({ workspace }) {
             onClick={() => setSubmenu((prev) => !prev)}
             ref={dotsDivRef}
           >
-            <span className={`w-[0.15rem] h-[0.15rem] ${darkMode?"bg-white":"bg-black"} m-[0.08rem] rounded-full`}></span>
-            <span className={`w-[0.15rem] h-[0.15rem] ${darkMode?"bg-white":"bg-black"} m-[0.08rem] rounded-full`}></span>
-            <span className={`w-[0.15rem] h-[0.15rem] ${darkMode?"bg-white":"bg-black"} m-[0.08rem] rounded-full`}></span>
+            <span
+              className={`w-[0.15rem] h-[0.15rem] ${
+                darkMode ? "bg-white" : "bg-black"
+              } m-[0.08rem] rounded-full`}
+            ></span>
+            <span
+              className={`w-[0.15rem] h-[0.15rem] ${
+                darkMode ? "bg-white" : "bg-black"
+              } m-[0.08rem] rounded-full`}
+            ></span>
+            <span
+              className={`w-[0.15rem] h-[0.15rem] ${
+                darkMode ? "bg-white" : "bg-black"
+              } m-[0.08rem] rounded-full`}
+            ></span>
             <div
               className={`absolute w-[100px] flex flex-col cursor-pointer shadow-sm shadow-slate-500 rounded-md p-2 text-xs top-5 right-2 text-inherit transition-all duration-300 
-              ${
-                submenu ? "visible opacity-100" : "invisible opacity-0"
-              }
-              ${
-                darkMode?"bg-slate-400":"bg-white"
-              }`}
+              ${submenu ? "visible opacity-100" : "invisible opacity-0"}
+              ${darkMode ? "bg-slate-400" : "bg-white"}`}
             >
               <div
                 className="w-full border-b border-slate-500 text-center p-1"
@@ -90,6 +115,14 @@ export default function WorkspaceCard({ workspace }) {
               >
                 About
               </div>
+              {user.email !== workspace.owner && (
+                <div
+                  className="w-full border-b border-slate-500 text-center p-1"
+                  onClick={handleLeave}
+                >
+                  Leave
+                </div>
+              )}
               <div
                 className="w-full text-center p-1"
                 onClick={() => setMembers(true)}
@@ -155,28 +188,32 @@ export default function WorkspaceCard({ workspace }) {
       <div
         className={`about-div w-full flex-col top-0 left-0 p-3 flex [transform:rotateY(180deg)] transition-[visibility,position,opacity] duration-500 
         ${
-          (about || members) ? "visible opacity-100 absolute" : "invisible opacity-0 static"
+          about || members
+            ? "visible opacity-100 absolute"
+            : "invisible opacity-0 static"
         }`}
       >
         <div className="back-btn w-full flex justify-start mb-4">
-          <FaArrowLeft size={18} onClick={() => 
-            {
-              setAbout(false)
-              setMembers(false)
-            }} />
+          <FaArrowLeft
+            size={18}
+            onClick={() => {
+              setAbout(false);
+              setMembers(false);
+            }}
+          />
         </div>
         <div className="content-about w-full text-xs text-center flex flex-col">
-          {
-            about? workspace.description
-            :members? actualMembers?.map((item, index) => {
-              return (
-                <span className="w-full text-center p-2" key={index}>
-                  {item}
-                </span>
-              );
-            })
-            :""
-          }
+          {about
+            ? workspace.description
+            : members
+            ? actualMembers?.map((item, index) => {
+                return (
+                  <span className="w-full text-center p-2" key={index}>
+                    {item}
+                  </span>
+                );
+              })
+            : ""}
         </div>
       </div>
     </div>
