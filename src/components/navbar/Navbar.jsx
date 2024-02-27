@@ -131,7 +131,6 @@ export default function Navbar() {
         </ul>
       </div>
       <NotificationComponent
-        openController={setNotifications}
         noti={notifications}
         setPing={setPing}
       />

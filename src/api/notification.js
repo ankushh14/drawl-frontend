@@ -31,7 +31,39 @@ const sendResponse = async (reqBody, token) => {
     }
 }
 
+const deleteOne = async (reqBody, token) => {
+    try {
+        const data = await axios.post(`${ServerUrl}notifications/deleteone`, reqBody, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                ...headers
+            },
+            withCredentials: true
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
+
+const clearAll = async (reqBody, token) => {
+    try {
+        const data = await axios.post(`${ServerUrl}notifications/clearall`, reqBody, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                ...headers
+            },
+            withCredentials: true
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
+
 export {
     getNotifications,
-    sendResponse
+    sendResponse,
+    deleteOne,
+    clearAll
 }
