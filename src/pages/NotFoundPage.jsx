@@ -4,7 +4,6 @@ import { BsFillEmojiFrownFill } from "react-icons/bs";
 
 export default function NotFoundPage() {
   const { darkMode } = useTheme();
-  console.log(darkMode);
   return (
     <div
       className={`w-full flex flex-col h-screen max-h-screen justify-center items-center 

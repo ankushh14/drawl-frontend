@@ -10,7 +10,6 @@ const getToken = async (googleToken) => {
         }
         return { returnData, valid: true }
     } catch (error) {
-        console.log(error.response.data)
         throw new Error("Invalid Token")
     }
 }

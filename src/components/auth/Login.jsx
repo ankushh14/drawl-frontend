@@ -38,7 +38,6 @@ export default function Login({ setNewUser }) {
           return;
         }
       } catch (error) {
-        console.log(error.message);
         return setLoader(false);
       }
     },

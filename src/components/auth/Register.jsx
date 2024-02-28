@@ -34,7 +34,7 @@ export default function Register({ setNewUser }) {
         setProfile(userData.returnData.profile);
         return setPasswordDesc("Please enter a valid password");
       } catch (error) {
-        console.log(error.message);
+        return showToastMessage("Some Error Occured","error")
       }
     },
   });

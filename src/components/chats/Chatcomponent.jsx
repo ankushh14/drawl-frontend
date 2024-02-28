@@ -51,7 +51,6 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
           time,
         });
       } catch (error) {
-        console.log(error.message)
         showToastMessage("Some Error Occured", "error");
       } finally {
         setChatDisable(false);

@@ -99,7 +99,6 @@ const AuthProvider = ({ children }) => {
     [login, logout, state, updateStatus,updateForgotPasswordStatus]
   );
 
-  console.log(state);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

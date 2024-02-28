@@ -88,7 +88,6 @@ const WorkSpaceProvider = ({children})=>{
         updatePasswordStatus
     }),[state,enter,leave,updatePasswordStatus])
 
-    console.log("Workspace : ",state)
 
     return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>
 }
