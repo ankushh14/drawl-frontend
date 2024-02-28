@@ -25,13 +25,15 @@ import ErrorBoundary from "./components/error/ErrorBoundary";
 import useTheme from "./hooks/useTheme";
 import ForgotPasswordValidator from "./utils/validation/ForgotPasswordValidator";
 import ForgotPassword from "./components/auth/ForgotPassword";
+import MainLoader from "./utils/loaders/MainLoader";
+import { showToastMessage } from "./utils/toasts/showToast";
 
 function App() {
   const Client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const workspace = import.meta.env.VITE_WORKSPACES;
   const { darkMode } = useTheme();
 
-  const { login, updateStatus, logout } = useAuth();
+  const { login, updateStatus, logout,status } = useAuth();
 
   const refreshAccessToken = useCallback(async () => {
     updateStatus(STATUS.PENDING);
@@ -39,6 +41,7 @@ function App() {
     if (data.valid) {
       return login(data);
     } else {
+      showToastMessage("Session expired,please login again.","error")
       return logout();
     }
   }, [updateStatus, login, logout]);
@@ -88,6 +91,8 @@ function App() {
       }`}
       >
         <RouterProvider router={router} />
+
+        {status === STATUS.PENDING && <MainLoader/>}
       </main>
     </GoogleOAuthProvider>
   );
