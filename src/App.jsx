@@ -38,7 +38,7 @@ function App() {
   const refreshAccessToken = useCallback(async () => {
     updateStatus(STATUS.PENDING);
     const data = await refreshToken();
-    if (data.valid) {
+    if (data && data.valid) {
       return login(data);
     } else {
       showToastMessage("Session expired,please login again.","error")

@@ -18,6 +18,7 @@ export default function WorkspaceValidator() {
 
     const getWorkspace = useCallback(async () => {
         setLoader(true)
+        console.log("Re-render")
         let requestBody = {
             id
         }
@@ -34,7 +35,8 @@ export default function WorkspaceValidator() {
 
     useEffect(()=>{
         getWorkspace()
-    },[getWorkspace])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
 
     return (
         loader?<MainLoader/>:
