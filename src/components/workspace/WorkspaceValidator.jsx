@@ -18,7 +18,6 @@ export default function WorkspaceValidator() {
 
     const getWorkspace = useCallback(async () => {
         setLoader(true)
-        console.log("Re-render")
         let requestBody = {
             id
         }

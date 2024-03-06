@@ -30,7 +30,7 @@ const userLogin = async (requestBody) => {
         })
         return { ...data.data, info: "success" }
     } catch (error) {
-        return { ...error.response, info: "error" }
+        return { ...error.response.data, info: "error" }
     }
 }
 const refreshToken = async () => {

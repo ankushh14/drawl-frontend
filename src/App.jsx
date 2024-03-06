@@ -26,7 +26,7 @@ import useTheme from "./hooks/useTheme";
 import ForgotPasswordValidator from "./utils/validation/ForgotPasswordValidator";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import MainLoader from "./utils/loaders/MainLoader";
-import { showToastMessage } from "./utils/toasts/showToast";
+
 
 function App() {
   const Client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID;
@@ -41,7 +41,6 @@ function App() {
     if (data && data.valid) {
       return login(data);
     } else {
-      showToastMessage("Session expired,please login again.","error")
       return logout();
     }
   }, [updateStatus, login, logout]);
