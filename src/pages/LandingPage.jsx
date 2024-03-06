@@ -15,7 +15,7 @@ export default function LandingPage() {
     `}>
       <div className="main-heading w-full flex justify-center items-center py-3">
         <h1 className="text-4xl md:text-7xl font-bold text-center">
-          Nexus Meet hub
+          DrawL
         </h1>
       </div>
       <div className="secondary-heading w-full flex justify-center items-center py-3 mb-8">
