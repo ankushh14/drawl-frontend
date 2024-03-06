@@ -37,7 +37,7 @@ export default function WorkspaceUtilityBar({online,setChatComponent}) {
                 </div>
             </div>
             <h1 className="font-Aclonica font-bold cursor-pointer">
-                Nexusmeethub
+                DrawL
             </h1>
             <div className="right-utility-bar w-[30%] flex justify-end items-center">
                 <div className="chats-btn w-fit flex justify-center items-center px-2 md:hidden" onClick={()=>setChatComponent((prev)=>!prev)}>

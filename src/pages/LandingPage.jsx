@@ -25,12 +25,12 @@ export default function LandingPage() {
       </div>
       <div className="side-heading w-full flex justify-center items-center py-3 md:px-16">
         <p className="text-center text-xs md:text-base">
-          Welcome to NexusMeethub, the innovative web application designed to
-          redefine your online interactions. NexusMeethub combines seamless
+          Welcome to DrawL, the innovative web application designed to
+          redefine your online interactions. DrawL combines seamless
           chatting capabilities with a unique and creative twist - introducing
           the Blankboard feature for collaborative drawing and scribbling.
           Whether you are planning a project, discussing ideas, or just looking
-          to have fun with friends, NexusMeethub is the ultimate destination for
+          to have fun with friends, DrawL is the ultimate destination for
           interactive and dynamic conversations.
         </p>
       </div>

@@ -78,7 +78,7 @@ export default function Register({ setNewUser }) {
   return (
     <div className="regitser-div w-[90%] md:w-[70%] lg:w-[45%] rounded-md shadow shadow-[#6d6d6d60] p-5">
       <div className="heading-div w-full text-center py-4 mb-3">
-        <h1 className="text-3xl">NexusMeetHub</h1>
+        <h1 className="text-3xl">DrawL</h1>
       </div>
       <form className="form-div" onSubmit={handleSubmit}>
         <div className={"fullname w-full"}>

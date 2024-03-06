@@ -81,7 +81,7 @@ export default function Login({ setNewUser }) {
   return (
     <div className="w-[90%] md:w-[70%] lg:w-[45%] rounded-md shadow shadow-[#6d6d6d60] p-5">
       <div className="heading-div w-full text-center py-4 mb-3">
-        <h1 className="text-3xl">Welcome Back To NexusMeetHub.</h1>
+        <h1 className="text-3xl">Welcome Back To DrawL.</h1>
       </div>
       <form className="form-div" onSubmit={handleSubmit}>
         <div className={"email w-full"}>
@@ -144,7 +144,7 @@ export default function Login({ setNewUser }) {
       </div>
       <div className="already w-full my-4 flex justify-center items-center">
         <h1 className="text-xs">
-          New to nexusMeetHub?{" "}
+          New to DrawL?{" "}
           <span
             className="font-bold cursor-pointer"
             onClick={() => setNewUser(true)}

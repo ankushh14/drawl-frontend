@@ -56,7 +56,7 @@ export default function Navbar() {
           className="font-Aclonica font-bold cursor-pointer"
           onClick={() => navigate("/dashboard")}
         >
-          Nexusmeethub
+          DrawL
         </h1>
       </div>
       <div className="some-div flex items-center justify-center space-x-1 md:space-x-2">

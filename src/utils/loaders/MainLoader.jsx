@@ -9,7 +9,7 @@ export default function MainLoader() {
       >
         <div className="load-div flex justify-center space-x-1 items-center">
           <h1 className="text-[20px] font-semibold text-inherit xl:text-[40px] animate-pulse delay-75 font-Aclonica">
-            NexusMeetHub
+            DrawL
           </h1>
         </div>
       </div>
