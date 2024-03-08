@@ -17,10 +17,9 @@ export default function MainWhiteBoard() {
   const [editor,setEditor] = useState(null)
 
   useEffect(()=>{
-    if(editor !==null || editor !== undefined){
+    if(editor !== null && editor !== undefined){
       editor.user.updateUserPreferences({isDarkMode : darkMode})
-      console.log(editor)
-    }
+    }else return
   },[darkMode,editor])
 
   return (
