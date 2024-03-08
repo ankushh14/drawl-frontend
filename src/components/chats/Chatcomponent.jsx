@@ -21,6 +21,7 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
   const [chats, setChats] = useState([]);
   const { user, token } = useAuth();
   const { ID } = useWorkspace();
+  const chatBodyRef = useRef(null)
 
   useEffect(() => {
     io = socketIO(`${import.meta.env.VITE_CHAT_ENDPOINT}`, {
@@ -103,6 +104,12 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
     updateMessages();
   }, [updateMessages]);
 
+  useEffect(()=>{
+    if(chatBodyRef.current){
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight
+    }
+  },[chats])
+
   return (
     <div
       className={`absolute md:opacity-100 md:w-[35%] xl:w-[25%] md:static h-[calc(100%-41.6px)] md:h-full border-t flex md:flex flex-col overflow-hidden transition-[width,opacity] md:transition-none duration-500 ease-in-out 
@@ -117,7 +124,7 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
       <div className="chat-header w-full p-2 rounded-b-sm border-b border-inherit flex justify-between items-center relative">
         <h1 className="font-bold">{name}</h1>
       </div>
-      <div className="body-chat h-full w-full border-inherit p-2 flex flex-col overflow-y-scroll">
+      <div className="body-chat h-full w-full border-inherit p-2 flex flex-col overflow-y-scroll" ref={chatBodyRef}>
         {chats.length > 0 &&
           chats.map((item, index) => {
             return <Chat chat={item} key={index} />;
