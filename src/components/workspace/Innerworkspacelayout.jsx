@@ -38,7 +38,7 @@ export default function Innerworkspacelayout() {
           online={online}
           setChatComponent={setChatComponent}
         />
-        <div className="w-full flex flex-1 max-h-[calc(100vh-41.6px)]">
+        <div className="w-full flex flex-1 h-full max-h-[calc(100%-41.6px)]">
           <MainWhiteBoard />
           <Chatcomponent
             setOnline={setOnline}

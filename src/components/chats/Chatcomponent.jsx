@@ -112,7 +112,7 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
 
   return (
     <div
-      className={`absolute md:opacity-100 md:w-[35%] xl:w-[25%] md:static h-[calc(100%-41.6px)] md:h-full border-t flex md:flex flex-col overflow-hidden transition-[width,opacity] md:transition-none duration-500 ease-in-out 
+      className={`absolute md:opacity-100 md:w-[35%] xl:w-[25%] md:static h-[calc(100vh-41.6px)] md:h-full border-t flex md:flex flex-col overflow-hidden transition-[width,opacity] md:transition-none duration-500 ease-in-out 
     ${
       darkMode
         ? "bg-[#212529] text-white border-[#30363b]"

@@ -9,10 +9,12 @@ import {
   isValidFullname,
   isValidPassword,
 } from "../../utils/validation/auth.validation";
-import { userRegister } from "../../api/auth";
+import { oauthRegister, userRegister } from "../../api/auth";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import Proptypes from "prop-types";
 import OtpComp from "../../utils/otp/OtpComp";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Register({ setNewUser }) {
   const [fullname, setFullname] = useState("");
@@ -25,16 +27,29 @@ export default function Register({ setNewUser }) {
   const [loader, setLoader] = useState(false);
   const [otpDiv, setOtpDiv] = useState(false);
   const [requestToSend, setRequestToSend] = useState({});
-  const login = useGoogleLogin({
+  const navigate = useNavigate();
+  const { login } = useAuth()
+
+  const authlogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
+        setLoader(true);
         const userData = await getToken(tokenResponse.access_token);
-        setFullname(userData.returnData.fullname);
-        setEmail(userData.returnData.email);
-        setProfile(userData.returnData.profile);
-        return setPasswordDesc("Please enter a valid password");
+        setProfile(userData.returnData.profile)
+        let requestBody = {
+          fullname : userData.returnData.fullname,
+          email:userData.returnData.email
+        }
+        const data = await oauthRegister(requestBody);
+        showToastMessage(data.message, data.info);
+        if (data.valid === false) {
+          return setLoader(false);
+        }
+        setLoader(false);
+        login(data);
+        return navigate("/dashboard");
       } catch (error) {
-        return showToastMessage("Some Error Occured","error")
+        return showToastMessage("Some Error Occured", "error");
       }
     },
   });
@@ -137,7 +152,7 @@ export default function Register({ setNewUser }) {
       <div className="google-login-div w-full p-1 flex justify-center items-center my-2">
         <button
           type="button"
-          onClick={() => login()}
+          onClick={() => authlogin()}
           className="border-green-300 border-2 p-2 w-full flex justify-center items-center space-x-2 active:scale-95 transition-all duration-500"
         >
           <FcGoogle size={21} />

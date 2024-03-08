@@ -12,6 +12,17 @@ const userRegister = async (requestBody) => {
     }
 }
 
+const oauthRegister = async(requestBody)=>{
+    try {
+        const data = await axios.post(`${ServerUrl}auth/oauth`, requestBody, {
+            headers: headers,
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
+
 const verifyUser = async (requestBody) => {
     try {
         const data = await axios.post(`${ServerUrl}auth/verify`, requestBody, {
@@ -93,5 +104,6 @@ export {
     userLogout,
     refreshToken,
     forgotPassword,
-    verifyForgotPassword
+    verifyForgotPassword,
+    oauthRegister
 }

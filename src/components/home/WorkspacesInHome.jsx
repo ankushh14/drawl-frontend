@@ -35,11 +35,12 @@ export default function WorkspacesInHome({ setNoWorkspace }) {
         response.info
       );
     }
-  }, [user, token, setNoWorkspace]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, token, setNoWorkspace,updateWorkspaceCount]);
 
   useEffect(() => {
     getworkspaces();
-  }, [getworkspaces, updateWorkspaceCount]);
+  }, [getworkspaces]);
 
   return (
     <div
