@@ -8,7 +8,6 @@ import InputIcons from "../../utils/input/InputIcons";
 import { useDebounce } from "@uidotdev/usehooks";
 import { findMembers,createWorkspace } from "../../api/workspace";
 import { useAuth } from "../../hooks/useAuth";
-import { isValidPassword } from "../../utils/validation/auth.validation";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import { useWorkspacesUpdate } from "../../hooks/useWorkspaceCount";
 
@@ -44,7 +43,7 @@ export default function WorkSpaceModal({ openModal }) {
     const debouncedSearch = useDebounce(individual, 500)
     const searchMembers = useCallback(async () => {
         if (debouncedSearch == "" || undefined) {
-            return
+            return setSearchResults([])
         }
         let requestBody = {
             email: debouncedSearch
@@ -111,12 +110,7 @@ export default function WorkSpaceModal({ openModal }) {
             return setDescription("Please provide a description for your workspace")
         }
         if (password !== "") {
-            const passwordValidity = isValidPassword(password);
-            if (passwordValidity.valid) {
-                requestBody.password = password
-            } else {
-                return setPasswordDesc(passwordValidity.message)
-            }
+            requestBody.password = password
         }
         const response = await createWorkspace(requestBody,token)
         if(response.valid){
@@ -147,7 +141,7 @@ export default function WorkSpaceModal({ openModal }) {
                         <div className="search-div relative">
                             <IoSearch className="absolute right-4 text-inherit bottom-[44%]" size={13} />
                             <InputComp disable={searchDisable} type={"text"} placeholder={"Search for collaborators..."} name={"members"} label={"Collaborators"} required={false} stateVar={individual} setStatevar={setIndividual} description={searchDescription} descriptionControlFunc={setSearchDescription} onKeyDown={handleKeyDown} />
-                            <div className={`search-results-div absolute z-30 ${searchResults.length === 0 && "hidden"} top-[80%] ${!darkMode ? "bg-white text-black" : "bg-[#212529] text-white"}  w-full  flex flex-col justify-center items-center rounded-md border border-slate-500`}>
+                            <div className={`search-results-div absolute z-[30] ${searchResults.length === 0 && "hidden"} ${!darkMode ? "bg-white text-black" : "bg-[#212529] text-white"} top-20  w-full  flex flex-col  rounded-md border border-slate-500 overflow-y-scroll max-h-[200%] no-scrollbar`}>
                                 {
                                     searchResults.map((item, index) => {
                                         return (
