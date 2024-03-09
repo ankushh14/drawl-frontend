@@ -146,6 +146,21 @@ const getProfiles = async (requestBody, token) => {
     }
 }
 
+const updatePassword = async (requestBody, token) => {
+    try {
+        const data = await axios.post(`${ServerUrl}workspace/updatepassword`, requestBody, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                ...headers
+            },
+            withCredentials: true
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
+
 export { 
     findMembers, 
     createWorkspace, 
@@ -156,5 +171,6 @@ export {
     joinWorkspace, 
     deleteWorkspace, 
     removeMember,
-    leaveWorkspace 
+    leaveWorkspace,
+    updatePassword 
 }

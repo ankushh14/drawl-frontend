@@ -1,9 +1,16 @@
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useState } from "react";
-import { FaEye, FaEyeSlash, FaRegCopy, FaTrash } from "react-icons/fa";
+import {
+  FaEye,
+  FaEyeSlash,
+  FaRegCopy,
+  FaTrash,
+  FaPen,
+  FaCheck,
+} from "react-icons/fa";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import DeleteWorkspaceModal from "./DeleteWorkspaceModal";
-import { removeMember } from "../../api/workspace";
+import { removeMember, updatePassword } from "../../api/workspace";
 import { useAuth } from "../../hooks/useAuth";
 import { useWorkspacesUpdate } from "../../hooks/useWorkspaceCount";
 
@@ -14,6 +21,8 @@ export default function ProfileAccordion({
   workspaceID,
 }) {
   const [passwordVisibility, setPasswordVisibility] = useState(true);
+  const [passwordEdit, setPasswordEdit] = useState(false);
+  const [password,setPassword] = useState(workspacePassword)
   const [edit, setEdit] = useState(false);
   const [isPopulated, setIsPopulated] = useState(false);
   const [deleteWorkspace, setDeleteWorkspace] = useState(false);
@@ -53,6 +62,25 @@ export default function ProfileAccordion({
     [workspaceID, token, setUpdateWorkspaceCount]
   );
 
+  const handlePasswordChange = async () => {
+    if(password !== workspacePassword){
+      let requestBody = {
+        password,
+        workspaceID
+      }
+      const data = await updatePassword(requestBody,token)
+      if(data.valid){
+        showToastMessage(data.message,data.info)
+        setUpdateWorkspaceCount((prev)=>!prev)
+        return setPasswordEdit(false)
+      }else{
+        showToastMessage(data.message,data.info)
+      }
+    }else{
+      return setPasswordEdit(false)
+    }
+  };
+
   return (
     <div className="w-full flex flex-col p-3 rounded-md border border-[#d3d3d3] mt-2 mb-1 first:mt-0 last:mb-0">
       <div className="w-full flex flex-col lg:flex-row pb-2">
@@ -87,9 +115,12 @@ export default function ProfileAccordion({
                 <form onSubmit={(e) => e.preventDefault()} className="w-fit">
                   <input
                     type={passwordVisibility ? "password" : "text"}
-                    disabled
-                    value={workspacePassword}
-                    className="bg-inherit"
+                    disabled={!passwordEdit}
+                    value={password}
+                    onChange={(e)=>setPassword(e.target.value)}
+                    className={`bg-inherit text-inherit font-kalam p-1 text-xs outline-none border-slate-500 focus:border-b-[2px]
+                    ${passwordEdit ? "border-b" : "border-none"}
+                    `}
                   />
                 </form>
                 <div
@@ -107,8 +138,24 @@ export default function ProfileAccordion({
                       <FaEye className="text-slate-500" />
                     )}
                   </div>
-                  <div className="w-fit  cursor-pointer" onClick={copyPassword}>
+                  <div
+                    className="w-fit  cursor-pointer mr-2"
+                    onClick={copyPassword}
+                  >
                     <FaRegCopy className="text-slate-500" />
+                  </div>
+                  <div className="w-fit  cursor-pointer">
+                    {passwordEdit ? (
+                      <FaCheck
+                        className="text-slate-500"
+                        onClick={handlePasswordChange}
+                      />
+                    ) : (
+                      <FaPen
+                        className="text-slate-500"
+                        onClick={()=>setPasswordEdit(true)}
+                      />
+                    )}
                   </div>
                 </div>
               </>
