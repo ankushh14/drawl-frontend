@@ -7,6 +7,7 @@ import {
   FaTrash,
   FaPen,
   FaCheck,
+  FaPlus
 } from "react-icons/fa";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import DeleteWorkspaceModal from "./DeleteWorkspaceModal";
@@ -81,6 +82,17 @@ export default function ProfileAccordion({
     }
   };
 
+  const handleCancel = ()=>{
+    setPassword(workspacePassword)
+    return setPasswordEdit(false)
+  }
+
+  const addNewPassword = ()=>{
+    setPasswordVisibility(false)
+    setPasswordEdit(true)
+    return setPassword("New Password")
+  }
+
   return (
     <div className="w-full flex flex-col p-3 rounded-md border border-[#d3d3d3] mt-2 mb-1 first:mt-0 last:mb-0">
       <div className="w-full flex flex-col lg:flex-row pb-2">
@@ -110,7 +122,7 @@ export default function ProfileAccordion({
         <div className={`password-div flex flex-col p-2 w-full lg:w-[50%]`}>
           <h1 className={`text-[0.65rem] w-full`}>Password</h1>
           <h1 className={`w-full flex justify-between`}>
-            {workspacePassword.length > 0 ? (
+            {(password.length > 0 || passwordEdit === true) ? (
               <>
                 <form onSubmit={(e) => e.preventDefault()} className="w-fit">
                   <input
@@ -125,7 +137,7 @@ export default function ProfileAccordion({
                 </form>
                 <div
                   className={`w-fit ${
-                    workspacePassword.length > 0 ? "flex" : "hidden"
+                    (password.length > 0 || passwordEdit === true)? "flex" : "hidden"
                   }`}
                 >
                   <div
@@ -144,23 +156,32 @@ export default function ProfileAccordion({
                   >
                     <FaRegCopy className="text-slate-500" />
                   </div>
-                  <div className="w-fit  cursor-pointer">
+                  <>
                     {passwordEdit ? (
+                      <div className="flex items-start">
                       <FaCheck
-                        className="text-slate-500"
+                        className="text-slate-500 mr-1 cursor-pointer"
                         onClick={handlePasswordChange}
                       />
+                      <FaPlus
+                        className="text-slate-500 rotate-45 cursor-pointer"
+                        onClick={handleCancel}
+                      />  
+                      </div>
                     ) : (
                       <FaPen
-                        className="text-slate-500"
+                        className="text-slate-500 cursor-pointer"
                         onClick={()=>setPasswordEdit(true)}
                       />
                     )}
-                  </div>
+                  </>
                 </div>
               </>
             ) : (
+              <div className="flex space-x-16 items-center">
               <span>None</span>
+              <button className="flex space-x-1 items-center text-slate-500" onClick={addNewPassword}><span>Add password</span><FaPlus/></button>
+              </div>
             )}
           </h1>
         </div>
