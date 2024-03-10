@@ -4,6 +4,7 @@ import { deleteOne, sendResponse } from "../../api/notification";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import { useAuth } from "../../hooks/useAuth";
 import { useWorkspacesUpdate } from "../../hooks/useWorkspaceCount";
+import { useEffect } from "react";
 
 export default function SingleNotificationComponent({
   item,
@@ -40,6 +41,13 @@ export default function SingleNotificationComponent({
       return showToastMessage(response.message, response.info);
     }
   }
+
+  useEffect(()=>{
+    if(item.type === "ACCEPT" || item.type === "REMOVE" || item.type === "LEAVE"){
+      setUpdateWorkspaceCount((prev)=>!prev)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
 
   return (
     <div className="w-full h-[110px] border-b border-inherit last:border-none flex">
