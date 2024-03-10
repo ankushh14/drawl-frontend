@@ -7,13 +7,14 @@ import {
   FaTrash,
   FaPen,
   FaCheck,
-  FaPlus
+  FaPlus,
 } from "react-icons/fa";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import DeleteWorkspaceModal from "./DeleteWorkspaceModal";
 import { removeMember, updatePassword } from "../../api/workspace";
 import { useAuth } from "../../hooks/useAuth";
 import { useWorkspacesUpdate } from "../../hooks/useWorkspaceCount";
+import AddMemberModal from "./AddMemberModal";
 
 export default function ProfileAccordion({
   workspaceName,
@@ -23,10 +24,11 @@ export default function ProfileAccordion({
 }) {
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [passwordEdit, setPasswordEdit] = useState(false);
-  const [password,setPassword] = useState(workspacePassword)
+  const [password, setPassword] = useState(workspacePassword);
   const [edit, setEdit] = useState(false);
   const [isPopulated, setIsPopulated] = useState(false);
   const [deleteWorkspace, setDeleteWorkspace] = useState(false);
+  const [isAddingMembers, setIsAddingMembers] = useState(false);
   const { token } = useAuth();
   const { setUpdateWorkspaceCount } = useWorkspacesUpdate();
 
@@ -64,34 +66,35 @@ export default function ProfileAccordion({
   );
 
   const handlePasswordChange = async () => {
-    if(password !== workspacePassword){
+    if (password !== workspacePassword) {
       let requestBody = {
         password,
-        workspaceID
+        workspaceID,
+      };
+      const data = await updatePassword(requestBody, token);
+      if (data.valid) {
+        showToastMessage(data.message, data.info);
+        setUpdateWorkspaceCount((prev) => !prev);
+        return setPasswordEdit(false);
+      } else {
+        showToastMessage(data.message, data.info);
       }
-      const data = await updatePassword(requestBody,token)
-      if(data.valid){
-        showToastMessage(data.message,data.info)
-        setUpdateWorkspaceCount((prev)=>!prev)
-        return setPasswordEdit(false)
-      }else{
-        showToastMessage(data.message,data.info)
-      }
-    }else{
-      return setPasswordEdit(false)
+    } else {
+      return setPasswordEdit(false);
     }
   };
 
-  const handleCancel = ()=>{
-    setPassword(workspacePassword)
-    return setPasswordEdit(false)
-  }
+  const handleCancel = () => {
+    setPassword(workspacePassword);
+    return setPasswordEdit(false);
+  };
 
-  const addNewPassword = ()=>{
-    setPasswordVisibility(false)
-    setPasswordEdit(true)
-    return setPassword("New Password")
-  }
+  const addNewPassword = () => {
+    setPasswordVisibility(false);
+    setPasswordEdit(true);
+    return setPassword("New Password");
+  };
+
 
   return (
     <div className="w-full flex flex-col p-3 rounded-md border border-[#d3d3d3] mt-2 mb-1 first:mt-0 last:mb-0">
@@ -122,14 +125,14 @@ export default function ProfileAccordion({
         <div className={`password-div flex flex-col p-2 w-full lg:w-[50%]`}>
           <h1 className={`text-[0.65rem] w-full`}>Password</h1>
           <h1 className={`w-full flex justify-between`}>
-            {(password.length > 0 || passwordEdit === true) ? (
+            {password.length > 0 || passwordEdit === true ? (
               <>
                 <form onSubmit={(e) => e.preventDefault()} className="w-fit">
                   <input
                     type={passwordVisibility ? "password" : "text"}
                     disabled={!passwordEdit}
                     value={password}
-                    onChange={(e)=>setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     className={`bg-inherit text-inherit font-kalam p-1 text-xs outline-none border-slate-500 focus:border-b-[2px]
                     ${passwordEdit ? "border-b" : "border-none"}
                     `}
@@ -137,7 +140,9 @@ export default function ProfileAccordion({
                 </form>
                 <div
                   className={`w-fit ${
-                    (password.length > 0 || passwordEdit === true)? "flex" : "hidden"
+                    password.length > 0 || passwordEdit === true
+                      ? "flex"
+                      : "hidden"
                   }`}
                 >
                   <div
@@ -159,19 +164,19 @@ export default function ProfileAccordion({
                   <>
                     {passwordEdit ? (
                       <div className="flex items-start">
-                      <FaCheck
-                        className="text-slate-500 mr-1 cursor-pointer"
-                        onClick={handlePasswordChange}
-                      />
-                      <FaPlus
-                        className="text-slate-500 rotate-45 cursor-pointer"
-                        onClick={handleCancel}
-                      />  
+                        <FaCheck
+                          className="text-slate-500 mr-1 cursor-pointer"
+                          onClick={handlePasswordChange}
+                        />
+                        <FaPlus
+                          className="text-slate-500 rotate-45 cursor-pointer"
+                          onClick={handleCancel}
+                        />
                       </div>
                     ) : (
                       <FaPen
                         className="text-slate-500 cursor-pointer"
-                        onClick={()=>setPasswordEdit(true)}
+                        onClick={() => setPasswordEdit(true)}
                       />
                     )}
                   </>
@@ -179,14 +184,31 @@ export default function ProfileAccordion({
               </>
             ) : (
               <div className="flex space-x-16 items-center">
-              <span>None</span>
-              <button className="flex space-x-1 items-center text-slate-500" onClick={addNewPassword}><span>Add password</span><FaPlus/></button>
+                <span>None</span>
+                <button
+                  className="flex space-x-1 items-center text-slate-500"
+                  onClick={addNewPassword}
+                >
+                  <span>Add password</span>
+                  <FaPlus />
+                </button>
               </div>
             )}
           </h1>
         </div>
         <div className={`w-full flex flex-col px-2`}>
-          <h1 className="text-[0.65rem]">Workspace members (Excluding you)</h1>
+          <div className="w-full flex space-x-12 items-center mb-2">
+            <h1 className="text-[0.65rem]">
+              Workspace members (Excluding you)
+            </h1>
+            <button
+              className="flex space-x-1 items-center text-[0.65rem] text-slate-500"
+              onClick={() => setIsAddingMembers(true)}
+            >
+              <span>Add Members</span>
+              <FaPlus />
+            </button>
+          </div>
           {!isPopulated ? (
             <h1>None</h1>
           ) : (
@@ -214,6 +236,13 @@ export default function ProfileAccordion({
           workspaceName={workspaceName}
           ModalOpenController={setDeleteWorkspace}
           workspaceID={workspaceID}
+        />
+      )}
+      {isAddingMembers && (
+        <AddMemberModal
+          workspaceID={workspaceID}
+          openModal={setIsAddingMembers}
+          workspaceMembers={workspaceMembers}
         />
       )}
     </div>

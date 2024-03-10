@@ -44,6 +44,21 @@ const createWorkspace = async (requestBody, token) => {
         return { ...error.response.data, info: "error" }
     }
 }
+
+const addMembers = async (requestBody, token) => {
+    try {
+        const data = await axios.post(`${ServerUrl}workspace/addmembers`, requestBody, {
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                ...headers
+            },
+            withCredentials: true
+        })
+        return { ...data.data, info: "success" }
+    } catch (error) {
+        return { ...error.response.data, info: "error" }
+    }
+}
 const joinWorkspace = async (requestBody, token) => {
     try {
         const data = await axios.post(`${ServerUrl}workspace/joinworkspace`, requestBody, {
@@ -172,5 +187,6 @@ export {
     deleteWorkspace, 
     removeMember,
     leaveWorkspace,
-    updatePassword 
+    updatePassword,
+    addMembers 
 }
