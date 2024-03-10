@@ -16,11 +16,15 @@ export default function NotificationComponent({
   const { user, token } = useAuth();
 
   const fetchnotifications = useCallback(async () => {
-    let requestBody = {
-      email: user.email,
-    };
-    const response = await getNotifications(requestBody, token);
-    return setNotifications(response.data);
+    try {
+      let requestBody = {
+        email: user.email,
+      };
+      const response = await getNotifications(requestBody, token);
+      return setNotifications(response.data);
+    } catch (error) {
+      return
+    }
   }, [user, setNotifications, token]);
 
   const checkNotifications = useCallback(() => {
