@@ -47,6 +47,9 @@ function App() {
 
   useEffect(() => {
     refreshAccessToken();
+    setInterval(() => {
+      refreshAccessToken();
+    }, 10800000);
   }, [refreshAccessToken]);
 
   const router = createBrowserRouter(
