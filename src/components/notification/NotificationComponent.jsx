@@ -43,7 +43,7 @@ export default function NotificationComponent({
     fetchnotifications();
     setInterval(() => {
       fetchnotifications();
-    }, 30000);
+    }, 10000);
   }, [fetchnotifications, notificationRefresh]);
 
   const clearAllNotifications = async()=>{
