@@ -28,7 +28,7 @@ export default function NotificationComponent({
   }, [user, setNotifications, token]);
 
   const checkNotifications = useCallback(() => {
-    if (notifications.length > 0) {
+    if (notifications?.length > 0) {
       setPing(true);
     } else {
       setPing(false);
