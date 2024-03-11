@@ -43,7 +43,6 @@ export default function Innerworkspacelayout() {
           <Chatcomponent
             setOnline={setOnline}
             chatComponent={chatComponent}
-            setChatComponent={setChatComponent}
           />
         </div>
       </div>
