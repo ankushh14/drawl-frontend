@@ -49,7 +49,7 @@ function App() {
     refreshAccessToken();
     setInterval(() => {
       refreshAccessToken();
-    }, 10800000);
+    }, 10799990);
   }, [refreshAccessToken]);
 
   const router = createBrowserRouter(

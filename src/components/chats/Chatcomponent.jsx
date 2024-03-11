@@ -85,10 +85,13 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
 
   const updateMessages = useCallback(() => {
     io.on("message", (newMessage) => {
+      if(newMessage.email !== user?.email){
+        showToastMessage(`${newMessage.email} sent a chat`,"success")
+      }
       newMessage.message = getDecryptedText(newMessage.message,ID)
       setChats((prev) => [...prev, newMessage]);
     });
-  }, [setChats,ID]);
+  }, [setChats,ID,user]);
 
   const updateOnline = useCallback(() => {
     io.on("getOnline", (data) => {
@@ -112,7 +115,7 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
 
   return (
     <div
-      className={`absolute md:opacity-100 md:w-[35%] xl:w-[25%] md:static h-[calc(100vh-41.6px)] md:h-full border-t flex md:flex flex-col overflow-hidden transition-[width,opacity] md:transition-none duration-500 ease-in-out 
+      className={`fixed md:opacity-100 md:w-[35%] xl:w-[25%] md:static top-[41.6px] bottom-0 md:h-full border-t flex md:flex flex-col overflow-hidden transition-[width,opacity] md:transition-none duration-500 ease-in-out 
     ${
       darkMode
         ? "bg-[#212529] text-white border-[#30363b]"
