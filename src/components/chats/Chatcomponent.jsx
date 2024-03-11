@@ -85,15 +85,10 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
 
   const updateMessages = useCallback(() => {
     io.on("message", (newMessage) => {
-      if(newMessage.email !== user?.email){
-        if(!chatComponent){
-          showToastMessage(`${newMessage.email} sent a chat`,"success")
-        }
-      }
       newMessage.message = getDecryptedText(newMessage.message,ID)
       setChats((prev) => [...prev, newMessage]);
     });
-  }, [setChats,ID,user,chatComponent]);
+  }, [setChats,ID]);
 
   const updateOnline = useCallback(() => {
     io.on("getOnline", (data) => {
