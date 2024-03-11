@@ -124,10 +124,10 @@ export default function ProfileAccordion({
       >
         <div className={`password-div flex flex-col p-2 w-full lg:w-[50%]`}>
           <h1 className={`text-[0.65rem] w-full`}>Password</h1>
-          <h1 className={`w-full flex justify-between`}>
+          <h1 className={`w-full flex justify-between flex-col md:flex-row`}>
             {password.length > 0 || passwordEdit === true ? (
               <>
-                <form onSubmit={(e) => e.preventDefault()} className="w-fit">
+                <form onSubmit={(e) => e.preventDefault()} className="w-fit mb-2">
                   <input
                     type={passwordVisibility ? "password" : "text"}
                     disabled={!passwordEdit}
@@ -150,16 +150,16 @@ export default function ProfileAccordion({
                     onClick={() => setPasswordVisibility((prev) => !prev)}
                   >
                     {passwordVisibility ? (
-                      <FaEyeSlash className="text-slate-500" />
+                      <FaEyeSlash className="text-slate-500" size={17} />
                     ) : (
-                      <FaEye className="text-slate-500" />
+                      <FaEye className="text-slate-500" size={17} />
                     )}
                   </div>
                   <div
                     className="w-fit  cursor-pointer mr-2"
                     onClick={copyPassword}
                   >
-                    <FaRegCopy className="text-slate-500" />
+                    <FaRegCopy className="text-slate-500" size={17} />
                   </div>
                   <>
                     {passwordEdit ? (
@@ -167,16 +167,19 @@ export default function ProfileAccordion({
                         <FaCheck
                           className="text-slate-500 mr-1 cursor-pointer"
                           onClick={handlePasswordChange}
+                          size={17}
                         />
                         <FaPlus
                           className="text-slate-500 rotate-45 cursor-pointer"
                           onClick={handleCancel}
+                          size={17}
                         />
                       </div>
                     ) : (
                       <FaPen
                         className="text-slate-500 cursor-pointer"
                         onClick={() => setPasswordEdit(true)}
+                        size={17}
                       />
                     )}
                   </>

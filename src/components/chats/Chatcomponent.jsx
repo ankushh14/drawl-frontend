@@ -136,7 +136,7 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
       <div className="w-full justify-self-end py-2 border-t border-inherit">
         <div className="input-div w-full relative p-2">
           <div
-            className="send-btn cursor-pointer absolute right-4 bottom-5"
+            className="send-btn cursor-pointer absolute right-4 bottom-[1.29rem]"
             onClick={simulateEnter}
           >
             <FaCircleChevronRight
@@ -152,7 +152,7 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
             onKeyDown={handleSendMessage}
             disabled={chatDisable}
             placeholder="Type your message here ..."
-            className="w-full p-2 rounded-md text-slate-500 text-xs pr-8 resize-none outline-slate-500 border-slate-400 border-2"
+            className="w-full p-2 rounded-md text-slate-500 text-xs pr-8 resize-none no-scrollbar outline-slate-500 border-slate-400 border-2 bg-inherit"
           />
         </div>
       </div>
