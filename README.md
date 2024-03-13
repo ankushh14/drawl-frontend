@@ -52,7 +52,7 @@ DrawL, the innovative web application designed to redefine your online interacti
 
 ## 📋 LICENSE
 
-Apache 2.0 ©
+Apache 2.0 © [2024](https://github.com/ankushh14/drawl-frontend/blob/main/LICENSE)
 
 
 
