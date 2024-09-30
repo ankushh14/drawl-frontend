@@ -27,28 +27,13 @@ DrawL, the innovative web application designed to redefine your online interacti
 - **Live Updates**: Keep everyone in sync with real-time updates
 - **Instant Notifications**: Stay informed with notifications of changes and additions.
 
-## Screenshots
+## Demo
 
-![Drawl-workspace](https://github.com/ankushh14/drawl-frontend/assets/99381987/cd07ccc6-8234-40f5-a471-47022f0562b7)
-#### Workspace named "Welcome to drawl"
 
-<br/>
-<br/>
 
-![Drawl-createworkspace](https://github.com/ankushh14/drawl-frontend/assets/99381987/eabb283c-fa24-4af6-a548-2f70a683ec86)
-#### Drawl create workspace
+https://github.com/user-attachments/assets/1bcc45a8-0770-42b9-9977-6a0fac630a53
 
-<br/>
-<br/>
 
-![Drawl-joinworkspace](https://github.com/ankushh14/drawl-frontend/assets/99381987/20cdbb02-b47e-4e98-81f4-31857608dc0c)
-#### Drawl join workspace
-
-<br/>
-<br/>
-
-![Drawl-loginpage](https://github.com/ankushh14/drawl-frontend/assets/99381987/2ab31059-2bcd-4111-b3f3-b6541b23238c)
-#### Drawl login page
 
 ## 📋 LICENSE
 
