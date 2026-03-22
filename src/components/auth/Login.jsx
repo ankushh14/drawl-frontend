@@ -1,9 +1,8 @@
 import { FcGoogle } from "react-icons/fc";
-import InputComp from "../../utils/input/InputComp";
-import InputIcons from "../../utils/input/InputIcons";
+import Input from "../ui/input";
 import { useState } from "react";
 import { showToastMessage } from "../../utils/toasts/showToast";
-import Proptypes from "prop-types";
+import PropTypes from "prop-types";
 import { useGoogleLogin } from "@react-oauth/google";
 import { userLogin } from "../../api/auth";
 import {
@@ -12,6 +11,9 @@ import {
 } from "../../utils/validation/auth.validation";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import Button from "../ui/button";
+import useTheme from "../../hooks/useTheme";
+import { getThemeStyles } from "../../styles/theme";
 
 export default function Login({ setNewUser }) {
   const [email, setEmail] = useState("");
@@ -21,10 +23,13 @@ export default function Login({ setNewUser }) {
   const [loader, setLoader] = useState(false);
   const { login, updateForgotPasswordStatus } = useAuth();
   const navigate = useNavigate();
+  const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
 
   const googleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
+        setLoader(true);
         let requestBody = {
           googleAuthToken: tokenResponse.access_token,
         };
@@ -34,8 +39,6 @@ export default function Login({ setNewUser }) {
         if (data.info === "success") {
           login(data);
           return navigate("/dashboard");
-        } else {
-          return;
         }
       } catch (error) {
         return setLoader(false);
@@ -49,27 +52,29 @@ export default function Login({ setNewUser }) {
       email: "",
       password: "",
     };
+
     const emailValidity = isValidEmail(email);
     if (emailValidity.valid) {
       requestBody.email = email;
     } else {
       return setEmailDesc(emailValidity.message);
     }
+
     const passwordValidity = isValidPassword(password);
     if (passwordValidity.valid) {
       requestBody.password = password;
     } else {
       return setPasswordDesc(passwordValidity.message);
     }
+
     setLoader(true);
     const data = await userLogin(requestBody);
     showToastMessage(data.message, data.info);
     setLoader(false);
+
     if (data.info === "success") {
       login(data);
       return navigate("/dashboard");
-    } else {
-      return;
     }
   };
 
@@ -79,84 +84,88 @@ export default function Login({ setNewUser }) {
   };
 
   return (
-    <div className="w-[90%] md:w-[70%] lg:w-[45%] rounded-md shadow shadow-[#6d6d6d60] p-5">
-      <div className="heading-div w-full text-center py-4 mb-3">
-        <h1 className="text-3xl">Welcome Back To DrawL.</h1>
+    <div className={`w-full rounded-2xl p-6 md:p-8 transition ${theme.card}`}>
+      <div className="text-center mb-6">
+        <h1 className="text-3xl font-bold font-Aclonica bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-400 bg-clip-text text-transparent">
+          Welcome Back
+        </h1>
+        <p className={`text-xs mt-2 ${theme.mutedText}`}>
+          Login to continue to DrawL
+        </p>
       </div>
-      <form className="form-div" onSubmit={handleSubmit}>
-        <div className={"email w-full"}>
-          <InputComp
-            type={"text"}
-            label={"Email"}
-            placeholder={"someone@gmail.com"}
-            name={"email"}
-            required={false}
-            stateVar={email}
-            setStatevar={setEmail}
-            description={emailDesc}
-            descriptionControlFunc={setEmailDesc}
-          />
-        </div>
-        <div className={"password w-full relative"}>
-          <InputComp
-            type={"password"}
-            label={"Password"}
-            placeholder={"John_doe123"}
-            name={"password"}
-            required={false}
-            stateVar={password}
-            setStatevar={setPassword}
-            description={passwordDesc}
-            descriptionControlFunc={setPasswordDesc}
-          />
-          <InputIcons type={"password"} />
-        </div>
-        <div className="forgot-password w-full flex items-center justify-start">
-          <p
-            className="text-start w-fit underline font-semibold text-[0.65rem] pl-3 cursor-pointer"
+
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <Input
+          type="text"
+          label="Email"
+          placeholder="someone@gmail.com"
+          name="email"
+          stateVar={email}
+          setStatevar={setEmail}
+          description={emailDesc}
+          descriptionControlFunc={setEmailDesc}
+        />
+
+        <Input
+          type="password"
+          label="Password"
+          placeholder="John_doe123"
+          name="password"
+          stateVar={password}
+          setStatevar={setPassword}
+          description={passwordDesc}
+          descriptionControlFunc={setPasswordDesc}
+        />
+
+        <div className="flex justify-end">
+          <button
+            type="button"
             onClick={handleForgotPassword}
+            className="text-xs text-purple-500 hover:text-purple-600 transition"
           >
             Forgot Password?
-          </p>
-        </div>
-        <div className={"submit-btn w-full px-1 my-3"}>
-          <button
-            type={"submit"}
-            className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-full flex justify-center space-x-1 items-center active:scale-95  disabled:bg-slate-700`}
-            disabled={loader}
-          >
-            <span>Login</span>
           </button>
         </div>
-      </form>
-      <div className="w-full text-center p-1">
-        <h1 className="text-xs text-slate-500">Or</h1>
-      </div>
-      <div className="google-login-div w-full p-1 flex justify-center items-center my-2">
-        <button
-          type="button"
-          onClick={() => googleLogin()}
-          className="border-green-300 border-2 p-2 w-full flex justify-center items-center space-x-2 active:scale-95 transition-all duration-500"
+
+        <Button
+          type="submit"
+          variant="primary"
+          className="w-full"
+          disabled={loader}
         >
-          <FcGoogle size={21} />
-          <span>Login with Google</span>
-        </button>
+          Login
+        </Button>
+      </form>
+
+      <div className="flex items-center gap-3 my-6">
+        <div className={`flex-1 h-px ${theme.divider}`} />
+        <span className="text-xs text-gray-500">OR</span>
+        <div className={`flex-1 h-px ${theme.divider}`} />
       </div>
-      <div className="already w-full my-4 flex justify-center items-center">
-        <h1 className="text-xs">
-          New to DrawL?{" "}
-          <span
-            className="font-bold cursor-pointer"
-            onClick={() => setNewUser(true)}
-          >
-            Signup
-          </span>
-        </h1>
+
+      <button
+        type="button"
+        onClick={() => googleLogin()}
+        className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl transition active:scale-95
+        ${theme.card}`}
+      >
+        <FcGoogle size={20} />
+        <span className="text-sm">Continue with Google</span>
+      </button>
+
+      <div className="mt-6 text-center text-xs text-gray-500">
+        New to DrawL?{" "}
+        <span
+          className="text-purple-500 cursor-pointer hover:underline"
+          onClick={() => setNewUser(true)}
+        >
+          Signup
+        </span>
       </div>
     </div>
   );
 }
 
 Login.propTypes = {
-  setNewUser: Proptypes.func,
+  setNewUser: PropTypes.func,
 };

@@ -1,42 +1,93 @@
-import { useState } from 'react'
-import { useWorkspace } from '../../hooks/useWorkspace'
-import useTheme from '../../hooks/useTheme'
+import { useState } from "react";
+import { useWorkspace } from "../../hooks/useWorkspace";
+import useTheme from "../../hooks/useTheme";
 import { FaArrowLeftLong } from "react-icons/fa6";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { getThemeStyles } from "../../styles/theme";
+import Button from "../../components/ui/button";
 
 export default function WorkspacePassword() {
-    const [workspacePassword, setWorkspacePassword] = useState("")
-    const navigate = useNavigate()
-    const { darkMode } = useTheme()
-    const { password, updatePasswordStatus,leave } = useWorkspace()
-    const [description, setDescription] = useState("This workspace is password protected!")
+  const [workspacePassword, setWorkspacePassword] = useState("");
+  const navigate = useNavigate();
+  const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
+  const { password, updatePasswordStatus, leave } = useWorkspace();
+  const [description, setDescription] = useState(
+    "This workspace is password protected",
+  );
 
-    const handlePasswordVerification = (e) => {
-        e.preventDefault()
-        if (workspacePassword === password) {
-            return updatePasswordStatus(false)
-        } else {
-            setDescription("Invalid Password")
-        }
+  const handlePasswordVerification = (e) => {
+    e.preventDefault();
+    if (workspacePassword === password) {
+      updatePasswordStatus(false);
+    } else {
+      setDescription("Invalid password");
     }
+  };
 
-    return (
-        <div className={`w-full h-screen flex flex-col space-y-10 ${darkMode ? "bg-[#212529] text-white" : "bg-white text-black"}`}>
-            <div className="return-home-div w-full flex justify-start">
-                <h1 className='flex space-x-2 p-3 cursor-pointer justify-center items-center' onClick={()=>{navigate('/dashboard'); leave()}}><FaArrowLeftLong/> <span> Return home</span></h1>
-            </div>
-            <form className="w-full h-[50%] flex justify-center items-center flex-col" onSubmit={handlePasswordVerification}>
-                <div className="input-desc my-8">
-                    <h1 className="text-xl">Workspace Password</h1>
-                </div>
-                <input type="password" autoComplete='off' placeholder='Enter password here' value={workspacePassword} onChange={(e) => setWorkspacePassword(e.target.value)} className={`w-[90%] md:w-[60%] lg:w-[45%] bg-inherit text-inherit font-kalam p-3 text-xs outline-none ${darkMode ? "text-white" : "text-black"} border-slate-500 border-b focus:border-b-[2px]`} />
-                <div className="btn-div my-8 w-[90%] md:w-[60%] lg:w-[45%]">
-                    <button type="submit" className={`${darkMode ? "bg-white text-black" : "bg-black text-white"} border w-full border-black rounded-md px-8 py-3 flex justify-center items-center active:scale-95 transition-all duration-500`}>Submit</button>
-                </div>
-                <div className="desc-div my-8">
-                    <h1 className="text-xs">{description}</h1>
-                </div>
-            </form>
+  return (
+    <div className={`w-full min-h-screen flex flex-col ${theme.page}`}>
+      {/* Top Navigation */}
+      <div className="w-full p-4">
+        <button
+          onClick={() => {
+            navigate("/dashboard");
+            leave();
+          }}
+          className="flex items-center gap-2 text-sm hover:opacity-80 transition"
+        >
+          <FaArrowLeftLong />
+          Return to dashboard
+        </button>
+      </div>
+
+      {/* Center Card */}
+      <div className="flex flex-1 items-center justify-center px-4">
+        <div
+          className={`w-full max-w-md p-6 rounded-2xl flex flex-col gap-6 ${theme.card}`}
+        >
+          <div className="text-center">
+            <h1 className="text-xl font-semibold">Workspace Access</h1>
+            <p className={`text-xs mt-1 ${theme.mutedText}`}>
+              Enter the password to continue
+            </p>
+          </div>
+
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={handlePasswordVerification}
+          >
+            <input
+              type="password"
+              autoComplete="off"
+              placeholder="Enter workspace password"
+              value={workspacePassword}
+              onChange={(e) => setWorkspacePassword(e.target.value)}
+              className={`w-full px-4 py-3 rounded-xl outline-none transition
+              ${
+                darkMode
+                  ? "bg-white/5 border border-white/10 text-white placeholder:text-gray-400"
+                  : "bg-white border border-gray-300 text-gray-900 placeholder:text-gray-500"
+              }
+              focus:border-purple-500`}
+            />
+
+            <Button type="submit" className="w-full">
+              Unlock Workspace
+            </Button>
+          </form>
+
+          <p
+            className={`text-xs text-center ${
+              description === "Invalid password"
+                ? "text-red-500"
+                : theme.mutedText
+            }`}
+          >
+            {description}
+          </p>
         </div>
-    )
+      </div>
+    </div>
+  );
 }

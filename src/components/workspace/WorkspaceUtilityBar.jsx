@@ -1,61 +1,81 @@
-import { useState } from "react"
-import useTheme from "../../hooks/useTheme"
-import ThemeToggle from "../../utils/theme/ThemeToggle"
-import ExitWorkspaceModal from "./ExitWorkspaceModal"
+import { useState } from "react";
+import useTheme from "../../hooks/useTheme";
+import ThemeToggle from "../../utils/theme/ThemeToggle";
+import ExitWorkspaceModal from "./ExitWorkspaceModal";
 import { FaUsers } from "react-icons/fa";
 import Collaborators from "../chats/Collaborators";
 import { useClickAway } from "@uidotdev/usehooks";
-import PropTypes from 'prop-types'
+import PropTypes from "prop-types";
 import { IoIosChatbubbles } from "react-icons/io";
+import { getThemeStyles } from "../../styles/theme";
+import Button from "../ui/button";
+import Portal from "../ui/portal";
 
+export default function WorkspaceUtilityBar({ online, setChatComponent }) {
+  const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
 
+  const [exitModal, setExitModal] = useState(false);
+  const [onlineList, setOnlineList] = useState(false);
 
+  const onlineListRef = useClickAway(() => {
+    setOnlineList(false);
+  });
 
-export default function WorkspaceUtilityBar({online,setChatComponent}) {
-    const { darkMode } = useTheme()
-    const [exitModal, setExitModal] = useState(false)
-    const [onlineList,setOnlineList] = useState(false)
+  return (
+    <div
+      className={`utility-bar w-full flex items-center justify-between px-4 py-2 border-b transition-colors duration-300
+      ${theme.card}`}
+    >
+      <div className="left-utility-bar flex items-center gap-3 md:gap-4 lg:gap-5">
+        <ThemeToggle />
 
-    const onlineListRef = useClickAway(()=>{
-        setOnlineList(false)
-    })
+        <div
+          ref={onlineListRef}
+          onClick={() => setOnlineList((prev) => !prev)}
+          className={`online-members relative flex items-center gap-2 px-2 py-1 rounded-lg cursor-pointer transition
+          ${darkMode ? "hover:bg-white/10" : "hover:bg-gray-100"}`}
+        >
+          <FaUsers size={16} />
+          <span className="hidden md:block text-sm">Online</span>
 
-    return (
-        <div className={`utility-bar w-full flex justify-between items-center p-2 transition-colors duration-500
-        ${darkMode ? "bg-[#212529]  text-white border-slate-700" : "bg-white text-black border-[#d3d3d3]"}
-        `}>
-            <div className="left-utility-bar w-[30%] flex justify-start items-center space-x-2 md:space-x-4 lg:space-x-6">
-                <ThemeToggle />
-                <div 
-                className="online-members w-fit px-2 rounded-md flex justify-center items-center space-x-1 cursor-pointer" 
-                onClick={()=>setOnlineList((prev)=>!prev)}
-                ref={onlineListRef}
-                >
-                    <FaUsers size={19}/>
-                    <h3 className="online-heading hidden md:block">Online</h3>
-                    {onlineList && <Collaborators currentlyOnline={online}/>}
-                </div>
-            </div>
-            <h1 className="font-Aclonica font-bold cursor-pointer">
-                DrawL
-            </h1>
-            <div className="right-utility-bar w-[30%] flex justify-end items-center">
-                <div className="chats-btn w-fit flex justify-center items-center px-2 md:hidden" onClick={()=>setChatComponent((prev)=>!prev)}>
-                    <IoIosChatbubbles size={19}/>
-                </div>
-                <button 
-                className={`bg-red-500 border border-red-600 rounded-md px-3 py-1 text-white flex justify-center items-center text-xs w-[70px] active:scale-95 transition-all duration-500`}
-                onClick={()=>setExitModal(true)}
-                >
-                    Exit
-                </button>
-            </div>
-            {exitModal && <ExitWorkspaceModal ModalController={setExitModal}/>}
+          {onlineList && (
+            <Portal>
+              {" "}
+              <Collaborators currentlyOnline={online} />{" "}
+            </Portal>
+          )}
         </div>
-    )
+      </div>
+
+      <h1 className="font-Aclonica font-bold text-sm md:text-base bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-400 bg-clip-text text-transparent">
+        DrawL
+      </h1>
+
+      <div className="right-utility-bar flex items-center gap-2">
+        <button
+          onClick={() => setChatComponent((prev) => !prev)}
+          className={`md:hidden p-2 rounded-lg transition
+          ${darkMode ? "hover:bg-white/10" : "hover:bg-gray-100"}`}
+        >
+          <IoIosChatbubbles size={18} />
+        </button>
+
+        <Button variant="danger" size="md" onClick={() => setExitModal(true)}>
+          Exit
+        </Button>
+      </div>
+
+      {exitModal && (
+        <Portal>
+          <ExitWorkspaceModal ModalController={setExitModal} />{" "}
+        </Portal>
+      )}
+    </div>
+  );
 }
 
 WorkspaceUtilityBar.propTypes = {
-    online : PropTypes.array.isRequired,
-    setChatComponent: PropTypes.func.isRequired
-}
+  online: PropTypes.array.isRequired,
+  setChatComponent: PropTypes.func.isRequired,
+};

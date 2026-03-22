@@ -1,6 +1,5 @@
 import { useState } from "react";
-import InputComp from "../../utils/input/InputComp";
-import InputIcons from "../../utils/input/InputIcons";
+import Input from "../../components/ui/input";
 import {
   isValidEmail,
   isValidPassword,
@@ -8,6 +7,9 @@ import {
 import OtpComp from "../../utils/otp/OtpComp";
 import { forgotPassword } from "../../api/auth";
 import { showToastMessage } from "../../utils/toasts/showToast";
+import Button from "../../components/ui/button";
+import useTheme from "../../hooks/useTheme";
+import { getThemeStyles } from "../../styles/theme";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -19,6 +21,8 @@ export default function ForgotPassword() {
   const [loader, setLoader] = useState(false);
   const [otpDiv, setOtpDiv] = useState(false);
   const [requestToSend, setRequestToSend] = useState({});
+  const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,26 +30,31 @@ export default function ForgotPassword() {
       email: "",
       password: "",
     };
+
     const emailValidity = isValidEmail(email);
     if (emailValidity.valid) {
       requestBody.email = email;
     } else {
       return setEmailDesc(emailValidity.message);
     }
+
     const passwordValidity = isValidPassword(password);
     if (passwordValidity.valid) {
       requestBody.password = password;
     } else {
       return setPasswordDesc(passwordValidity.message);
     }
+
     if (password !== confirmPassword) {
       return setconfirmPasswordDesc(
-        "Password & Confirm Password do not match."
+        "Password & Confirm Password do not match.",
       );
     }
+
     setLoader(true);
     const data = await forgotPassword(requestBody);
     showToastMessage(data.message, data.info);
+
     if (data.info === "success") {
       setRequestToSend(requestBody);
       setLoader(false);
@@ -54,69 +63,72 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="w-full h-screen flex justify-center items-center">
-      <div className="w-[90%] md:w-[70%] lg:w-[45%] rounded-md shadow shadow-[#6d6d6d60] p-5">
-        <div className="w-full py-2">
-          <h1 className="text-3xl w-full text-center">Reset Password</h1>
+    <div
+      className={`w-full min-h-screen flex items-center justify-center ${theme.page}`}
+    >
+      <div
+        className={`w-full max-w-md rounded-2xl p-6 md:p-8 transition ${theme.card}`}
+      >
+        <div className="text-center mb-6">
+          <h1 className="text-3xl font-bold font-Aclonica bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-400 bg-clip-text text-transparent">
+            Reset Password
+          </h1>
+          <p className={`text-xs mt-2 ${theme.mutedText}`}>
+            Enter your email and set a new password
+          </p>
         </div>
-        <form className="w-full" onSubmit={(e) => handleSubmit(e)}>
-          <div className={"w-full"}>
-            <InputComp
-              type={"text"}
-              label={"Email"}
-              placeholder={"someone@gmail.com"}
-              name={"email"}
-              required={false}
-              stateVar={email}
-              setStatevar={setEmail}
-              description={emailDesc}
-              descriptionControlFunc={setEmailDesc}
-            />
-          </div>
-          <div className={"w-full relative"}>
-            <InputComp
-              type={"password"}
-              label={"New Password"}
-              placeholder={"John_doe123"}
-              name={"password"}
-              required={false}
-              stateVar={password}
-              setStatevar={setPassword}
-              description={passwordDesc}
-              descriptionControlFunc={setPasswordDesc}
-            />
-            <InputIcons type={"password"} />
-          </div>
-          <div className={"w-full relative"}>
-            <InputComp
-              type={"password"}
-              label={"Confirm Password"}
-              placeholder={"Re-enter_above_password"}
-              name={"confirmpassword"}
-              required={false}
-              stateVar={confirmPassword}
-              setStatevar={setconfirmPassword}
-              description={confirmPasswordDesc}
-              descriptionControlFunc={setconfirmPasswordDesc}
-            />
-          </div>
-          <div className={"w-full px-1 my-3"}>
-            <button
-              type={"submit"}
-              className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-full flex justify-center space-x-1 items-center active:scale-95  disabled:bg-slate-700`}
-              disabled={loader}
-            >
-              <span>Reset Password</span>
-            </button>
-          </div>
+
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <Input
+            type="text"
+            label="Email"
+            placeholder="someone@gmail.com"
+            name="email"
+            stateVar={email}
+            setStatevar={setEmail}
+            description={emailDesc}
+            descriptionControlFunc={setEmailDesc}
+          />
+
+          <Input
+            type="password"
+            label="New Password"
+            placeholder="John_doe123"
+            name="password"
+            stateVar={password}
+            setStatevar={setPassword}
+            description={passwordDesc}
+            descriptionControlFunc={setPasswordDesc}
+          />
+
+          <Input
+            type="password"
+            label="Confirm Password"
+            placeholder="Re-enter password"
+            name="confirmpassword"
+            stateVar={confirmPassword}
+            setStatevar={setconfirmPassword}
+            description={confirmPasswordDesc}
+            descriptionControlFunc={setconfirmPasswordDesc}
+          />
+
+          <Button
+            type="submit"
+            variant="primary"
+            className="w-full"
+            disabled={loader}
+          >
+            Reset Password
+          </Button>
         </form>
       </div>
+
       {otpDiv && (
         <OtpComp
           setOtpDiv={setOtpDiv}
           requestBody={requestToSend}
           setLoader={setLoader}
-          forgotPassword = {true}
+          forgotPassword={true}
         />
       )}
     </div>

@@ -15,6 +15,9 @@ import { removeMember, updatePassword } from "../../api/workspace";
 import { useAuth } from "../../hooks/useAuth";
 import { useWorkspacesUpdate } from "../../hooks/useWorkspaceCount";
 import AddMemberModal from "./AddMemberModal";
+import useTheme from "../../hooks/useTheme";
+import { getThemeStyles } from "../../styles/theme";
+import Button from "../ui/button";
 
 export default function ProfileAccordion({
   workspaceName,
@@ -22,218 +25,177 @@ export default function ProfileAccordion({
   workspaceMembers,
   workspaceID,
 }) {
+  const { token } = useAuth();
+  const { setUpdateWorkspaceCount } = useWorkspacesUpdate();
+  const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
+
+  const [open, setOpen] = useState(false);
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [passwordEdit, setPasswordEdit] = useState(false);
   const [password, setPassword] = useState(workspacePassword);
-  const [edit, setEdit] = useState(false);
-  const [isPopulated, setIsPopulated] = useState(false);
   const [deleteWorkspace, setDeleteWorkspace] = useState(false);
   const [isAddingMembers, setIsAddingMembers] = useState(false);
-  const { token } = useAuth();
-  const { setUpdateWorkspaceCount } = useWorkspacesUpdate();
 
   const copyPassword = () => {
     navigator.clipboard.writeText(workspacePassword);
     showToastMessage("copied to clipboard", "success");
   };
 
-  const checkPopulated = useCallback(() => {
-    if (workspaceMembers.length > 0) {
-      return setIsPopulated(true);
-    } else {
-      return setIsPopulated(false);
-    }
-  }, [workspaceMembers, setIsPopulated]);
-
-  useEffect(() => {
-    checkPopulated();
-  }, [checkPopulated]);
-
   const removeWorkspaceMember = useCallback(
     async (mail) => {
-      let requestBody = {
-        memberMail: mail,
-        workspaceID,
-      };
-      const response = await removeMember(requestBody, token);
+      const response = await removeMember(
+        { memberMail: mail, workspaceID },
+        token,
+      );
+      showToastMessage(response.message, response.info);
       if (response.valid) {
         setUpdateWorkspaceCount((prev) => !prev);
-        return showToastMessage(response.message, response.info);
       }
-      return showToastMessage(response.message, response.info);
     },
-    [workspaceID, token, setUpdateWorkspaceCount]
+    [workspaceID, token, setUpdateWorkspaceCount],
   );
 
   const handlePasswordChange = async () => {
     if (password !== workspacePassword) {
-      let requestBody = {
-        password,
-        workspaceID,
-      };
-      const data = await updatePassword(requestBody, token);
+      const data = await updatePassword({ password, workspaceID }, token);
+      showToastMessage(data.message, data.info);
       if (data.valid) {
-        showToastMessage(data.message, data.info);
         setUpdateWorkspaceCount((prev) => !prev);
-        return setPasswordEdit(false);
-      } else {
-        showToastMessage(data.message, data.info);
+        setPasswordEdit(false);
       }
     } else {
-      return setPasswordEdit(false);
+      setPasswordEdit(false);
     }
   };
 
   const handleCancel = () => {
     setPassword(workspacePassword);
-    return setPasswordEdit(false);
+    setPasswordEdit(false);
   };
-
-  const addNewPassword = () => {
-    setPasswordVisibility(false);
-    setPasswordEdit(true);
-    return setPassword("New Password");
-  };
-
 
   return (
-    <div className="w-full flex flex-col p-3 rounded-md border border-[#d3d3d3] mt-2 mb-1 first:mt-0 last:mb-0">
-      <div className="w-full flex flex-col lg:flex-row pb-2">
-        <h1 className="w-full md:w-full pb-2 lg:pb-0 font-semibold">
-          {workspaceName}
-        </h1>
-        <div className="primary-buttons-div w-full md:w-fit flex">
-          <button
-            className={`border text-white bg-slate-400 mx-1 rounded-md px-4 py-2 text-xs lg:text-sm flex justify-center items-center active:scale-95 transition-all duration-500`}
-            onClick={() => setEdit((prev) => !prev)}
+    <div className={`rounded-2xl p-4 transition mb-2 ${theme.card}`}>
+      <div className="flex justify-between items-center">
+        <h1 className="font-semibold text-sm">{workspaceName}</h1>
+
+        <div className="flex gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            onClick={() => setOpen((prev) => !prev)}
           >
-            {edit ? "Done" : "Edit"}
-          </button>
-          <button
-            className={`border text-white bg-red-500 mx-1 rounded-md px-4 py-2 text-xs lg:text-sm flex justify-center items-center active:scale-95 transition-all duration-500`}
+            {open ? "Close" : "Manage"}
+          </Button>
+
+          <Button
+            size="sm"
+            variant="danger"
             onClick={() => setDeleteWorkspace(true)}
           >
             Delete
-          </button>
+          </Button>
         </div>
       </div>
+
+      {/* Expandable Content */}
       <div
-        className={`w-full flex flex-col text-xs border-slate-300  rounded-md transition-height transition-border duration-500 ${
-          edit ? "h-[185px] border" : "h-0 border-none"
-        } overflow-hidden`}
+        className={`transition-all duration-300 overflow-hidden ${
+          open ? "max-h-[400px] mt-4" : "max-h-0"
+        }`}
       >
-        <div className={`password-div flex flex-col p-2 w-full lg:w-[50%]`}>
-          <h1 className={`text-[0.65rem] w-full`}>Password</h1>
-          <h1 className={`w-full flex justify-between flex-col md:flex-row`}>
-            {password.length > 0 || passwordEdit === true ? (
-              <>
-                <form onSubmit={(e) => e.preventDefault()} className="w-fit mb-2">
-                  <input
-                    type={passwordVisibility ? "password" : "text"}
-                    disabled={!passwordEdit}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={`bg-inherit text-inherit font-kalam p-1 text-xs outline-none border-slate-500 focus:border-b-[2px]
-                    ${passwordEdit ? "border-b" : "border-none"}
-                    `}
+        {/* Password Section */}
+        <div className="flex flex-col gap-2 mb-4">
+          <span className={`text-xs ${theme.mutedText}`}>Password</span>
+
+          {password.length > 0 || passwordEdit ? (
+            <div className="flex items-center gap-2 flex-wrap">
+              <input
+                type={passwordVisibility ? "password" : "text"}
+                disabled={!passwordEdit}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={`px-3 py-1 rounded-md text-xs outline-none
+                ${
+                  darkMode
+                    ? "bg-white/10 border border-white/10"
+                    : "bg-gray-100 border border-gray-300"
+                }`}
+              />
+
+              <span
+                className="cursor-pointer text-gray-500"
+                onClick={() => setPasswordVisibility((prev) => !prev)}
+              >
+                {passwordVisibility ? <FaEyeSlash /> : <FaEye />}
+              </span>
+
+              <FaRegCopy
+                className="cursor-pointer text-gray-500"
+                onClick={copyPassword}
+              />
+
+              {passwordEdit ? (
+                <>
+                  <FaCheck
+                    className="cursor-pointer text-green-500"
+                    onClick={handlePasswordChange}
                   />
-                </form>
-                <div
-                  className={`w-fit ${
-                    password.length > 0 || passwordEdit === true
-                      ? "flex"
-                      : "hidden"
-                  }`}
-                >
-                  <div
-                    className="w-fit  cursor-pointer mr-2"
-                    onClick={() => setPasswordVisibility((prev) => !prev)}
-                  >
-                    {passwordVisibility ? (
-                      <FaEyeSlash className="text-slate-500" size={17} />
-                    ) : (
-                      <FaEye className="text-slate-500" size={17} />
-                    )}
-                  </div>
-                  <div
-                    className="w-fit  cursor-pointer mr-2"
-                    onClick={copyPassword}
-                  >
-                    <FaRegCopy className="text-slate-500" size={17} />
-                  </div>
-                  <>
-                    {passwordEdit ? (
-                      <div className="flex items-start">
-                        <FaCheck
-                          className="text-slate-500 mr-1 cursor-pointer"
-                          onClick={handlePasswordChange}
-                          size={17}
-                        />
-                        <FaPlus
-                          className="text-slate-500 rotate-45 cursor-pointer"
-                          onClick={handleCancel}
-                          size={17}
-                        />
-                      </div>
-                    ) : (
-                      <FaPen
-                        className="text-slate-500 cursor-pointer"
-                        onClick={() => setPasswordEdit(true)}
-                        size={17}
-                      />
-                    )}
-                  </>
-                </div>
-              </>
-            ) : (
-              <div className="flex space-x-16 items-center">
-                <span>None</span>
-                <button
-                  className="flex space-x-1 items-center text-slate-500"
-                  onClick={addNewPassword}
-                >
-                  <span>Add password</span>
-                  <FaPlus />
-                </button>
-              </div>
-            )}
-          </h1>
-        </div>
-        <div className={`w-full flex flex-col px-2`}>
-          <div className="w-full flex space-x-12 items-center mb-2">
-            <h1 className="text-[0.65rem]">
-              Workspace members (Excluding you)
-            </h1>
+                  <FaPlus
+                    className="rotate-45 cursor-pointer text-red-500"
+                    onClick={handleCancel}
+                  />
+                </>
+              ) : (
+                <FaPen
+                  className="cursor-pointer text-gray-500"
+                  onClick={() => setPasswordEdit(true)}
+                />
+              )}
+            </div>
+          ) : (
             <button
-              className="flex space-x-1 items-center text-[0.65rem] text-slate-500"
+              onClick={() => setPasswordEdit(true)}
+              className="text-xs text-purple-500 flex items-center gap-1"
+            >
+              Add password <FaPlus />
+            </button>
+          )}
+        </div>
+
+        {/* Members */}
+        <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-center">
+            <span className={`text-xs ${theme.mutedText}`}>Members</span>
+
+            <button
+              className="text-xs text-purple-500 flex items-center gap-1"
               onClick={() => setIsAddingMembers(true)}
             >
-              <span>Add Members</span>
-              <FaPlus />
+              Add <FaPlus />
             </button>
           </div>
-          {!isPopulated ? (
-            <h1>None</h1>
+
+          {workspaceMembers.length === 0 ? (
+            <p className="text-xs opacity-60">No members</p>
           ) : (
-            workspaceMembers.map((member, index) => {
-              return (
-                <div
-                  key={index}
-                  className="w-full lg:w-[50%] flex justify-between px-1"
-                >
-                  <h1>{member}</h1>
-                  <div
-                    className="w-fit text-slate-500 cursor-pointer"
-                    onClick={() => removeWorkspaceMember(member)}
-                  >
-                    <FaTrash size={11} />
-                  </div>
-                </div>
-              );
-            })
+            workspaceMembers.map((member, index) => (
+              <div
+                key={index}
+                className="flex justify-between items-center text-xs py-1"
+              >
+                <span>{member}</span>
+                <FaTrash
+                  className="cursor-pointer text-red-400"
+                  size={12}
+                  onClick={() => removeWorkspaceMember(member)}
+                />
+              </div>
+            ))
           )}
         </div>
       </div>
+
       {deleteWorkspace && (
         <DeleteWorkspaceModal
           workspaceName={workspaceName}
@@ -241,6 +203,7 @@ export default function ProfileAccordion({
           workspaceID={workspaceID}
         />
       )}
+
       {isAddingMembers && (
         <AddMemberModal
           workspaceID={workspaceID}

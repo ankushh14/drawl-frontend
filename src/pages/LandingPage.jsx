@@ -1,48 +1,49 @@
 import { FaArrowRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import useTheme from "../hooks/useTheme";
+import Button from "../components/ui/button";
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const { darkMode } = useTheme()
+  const { darkMode } = useTheme();
+
   return (
-    <div className={`main-div w-full h-screen flex flex-col justify-center items-center p-6
-    ${
-      darkMode
-        ? "bg-[#212529]  text-white border-white"
-        : "bg-white text-black border-[#d3d3d3]"
-    }
-    `}>
-      <div className="main-heading w-full flex justify-center items-center py-3">
-        <h1 className="text-4xl md:text-7xl font-bold text-center">
-          DrawL
-        </h1>
+    <div
+      className={`relative w-full min-h-screen flex flex-col justify-center items-center px-6 overflow-hidden transition-colors duration-500
+      ${
+        darkMode
+          ? "bg-gradient-to-br from-[#0f0f11] via-[#1a1b1f] to-[#0f0f11] text-white"
+          : "bg-gradient-to-br from-[#f8f9fa] via-white to-[#eef1f4] text-black"
+      }`}
+    >
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute top-[-20%] left-[-10%] w-[400px] h-[400px] bg-purple-500/10 blur-[120px] rounded-full" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-indigo-500/10 blur-[120px] rounded-full" />
       </div>
-      <div className="secondary-heading w-full flex justify-center items-center py-3 mb-8">
-        <h1 className="text-2xl md:text-5xl font-semibold text-center">
+
+      <div className="relative z-10 max-w-5xl text-center flex flex-col items-center">
+        <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
+          <span className="bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-400 bg-clip-text text-transparent">
+            DrawL
+          </span>
+        </h1>
+        <h2 className="mt-6 text-xl md:text-3xl font-semibold text-gray-400 dark:text-gray-300">
           A Collaborative Networking Experience
-        </h1>
-      </div>
-      <div className="side-heading w-full flex justify-center items-center py-3 md:px-16">
-        <p className="text-center text-xs md:text-base">
-          Welcome to DrawL, the innovative web application designed to
-          redefine your online interactions. DrawL combines seamless
-          chatting capabilities with a unique and creative twist - introducing
-          the Blankboard feature for collaborative drawing and scribbling.
-          Whether you are planning a project, discussing ideas, or just looking
-          to have fun with friends, DrawL is the ultimate destination for
-          interactive and dynamic conversations.
+        </h2>
+        <p className="mt-6 max-w-2xl text-sm md:text-base leading-relaxed text-gray-500 dark:text-gray-400 mb-6">
+          DrawL is a real-time collaboration platform that blends seamless chat
+          with a Figma-like interactive whiteboard. Brainstorm, sketch ideas,
+          and communicate effortlessly—all in one workspace designed for speed
+          and creativity.
         </p>
-      </div>
-      <div className="btn-dashboard">
-        <button
-          type="button"
-          className="bg-black text-white rounded-md px-8 py-3 flex justify-center items-center hover:text-[#FBFFFF] active:scale-95 transition-all duration-500"
+        <Button
+          variant="primary"
+          size="lg"
           onClick={() => navigate("/dashboard")}
+          rightIcon={<FaArrowRight />}
         >
-          Dashboard
-          <FaArrowRight className="ml-1" />
-        </button>
+          Go to Dashboard
+        </Button>
       </div>
     </div>
   );

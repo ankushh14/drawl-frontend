@@ -2,12 +2,14 @@ import Proptypes from "prop-types";
 import useTheme from "../../hooks/useTheme";
 import { useCallback, useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
-import InputComp from "../../utils/input/InputComp";
 import { useDebounce } from "@uidotdev/usehooks";
 import { useAuth } from "../../hooks/useAuth";
 import { addMembers, findMembers } from "../../api/workspace";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import { useWorkspacesUpdate } from "../../hooks/useWorkspaceCount";
+import { getThemeStyles } from "../../styles/theme";
+import Input from "../ui/input";
+import Button from "../ui/button";
 
 export default function AddMemberModal({
   workspaceID,
@@ -15,6 +17,7 @@ export default function AddMemberModal({
   workspaceMembers,
 }) {
   const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
   const [members, setMembers] = useState(workspaceMembers);
   const [newMembers, setNewMembers] = useState([]);
   const [searchResults, setSearchResults] = useState([]);
@@ -50,7 +53,7 @@ export default function AddMemberModal({
     let dataToSet = [];
     if (user.email) {
       dataToSet = data.data.filter((elem) => elem.email !== user.email);
-      dataToSet = data.data.filter((elem) => !members.includes(elem.email));
+      dataToSet = dataToSet.filter((elem) => !members.includes(elem.email));
     } else {
       dataToSet = data.data;
     }
@@ -94,48 +97,44 @@ export default function AddMemberModal({
     return setNewMembers(newData);
   };
 
-  const handleSubmit = async(e)=>{
-    e.preventDefault()
-    if(newMembers.length === 0){
-        return
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (newMembers.length === 0) {
+      return;
     }
     let requestBody = {
-        members : newMembers,
-        workspaceID
-    }
-    const response = await addMembers(requestBody,token)
+      members: newMembers,
+      workspaceID,
+    };
+    const response = await addMembers(requestBody, token);
     if (response.valid) {
-        showToastMessage(response.message, response.info);
-        setUpdateWorkspaceCount((prev) => !prev);
-        return openModal(false);
-      } else {
-        return showToastMessage(response.message, response.info);
-      }
-  }
+      showToastMessage(response.message, response.info);
+      setUpdateWorkspaceCount((prev) => !prev);
+      return openModal(false);
+    } else {
+      return showToastMessage(response.message, response.info);
+    }
+  };
 
   return (
     <div
       id="Add-Modal-background"
-      className="Modal-background fixed top-0 left-0 right-0 bottom-0 bg-[#5c5b5b5d] flex justify-center items-center"
+      className={`fixed inset-0 flex items-center justify-center ${theme.overlay}`}
       onClick={modalCloseHandle}
     >
       <div
-        className={`w-[95%] text-xs md:w-[75%] lg:w-[45%] rounded-md shadow p-4 flex flex-col ${
-          darkMode ? "bg-[#212529] text-white" : "bg-white text-black"
-        }`}
+        className={`w-[95%] md:w-[75%] lg:w-[45%] p-6 rounded-2xl flex flex-col gap-4 ${theme.overlayCard}`}
+        onClick={(e) => e.stopPropagation()}
       >
-        <div className="w-full mb-3">
-          <h1 className="text-xl">Add members</h1>
-        </div>
-        <form className="w-full" onSubmit={handleSubmit}>
-        <div className="w-full p-2 flex flex-col">
-          <div className="search-div relative">
-            <InputComp
-              name={"collaborators"}
-              type={"text"}
-              label={"Collaborators"}
-              placeholder={"Search for collaborators..."}
-              required={false}
+        <h1 className="text-lg font-semibold">Add members</h1>
+
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <div className="relative">
+            <Input
+              name="collaborators"
+              type="text"
+              label="Collaborators"
+              placeholder="Search for collaborators..."
               stateVar={individual}
               setStatevar={setIndividual}
               description={searchDescription}
@@ -143,61 +142,54 @@ export default function AddMemberModal({
               onKeyDown={handleKeyDown}
               disable={searchDisable}
             />
-            <div
-              className={`search-results-div absolute z-[30] ${
-                searchResults.length === 0 && "hidden"
-              } ${
-                !darkMode ? "bg-white text-black" : "bg-[#212529] text-white"
-              } top-20  w-full  flex flex-col  rounded-md border border-slate-500 overflow-y-scroll max-h-[200%] no-scrollbar`}
-            >
-              {searchResults.map((item, index) => {
-                return (
+
+            {searchResults.length > 0 && (
+              <div
+                className={`absolute top-[70px] w-full rounded-xl z-30 max-h-[220px] overflow-y-auto ${theme.overlayCard}`}
+              >
+                {searchResults.map((item, index) => (
                   <div
-                    className={` ${
-                      darkMode ? "hover:bg-slate-500" : "hover:bg-slate-200"
-                    } bg-inherit text-inherit border-slate-500 text-xs w-full border-b last:border-b-0 p-2 cursor-pointer flex items-center first:rounded-t-md last:rounded-b-md last:rounded-t-none transition-colors duration-300 `}
-                    onClick={() => handleSelection(item.email)}
                     key={index}
+                    onClick={() => handleSelection(item.email)}
+                    className={`flex items-center gap-3 p-3 text-xs cursor-pointer border-b last:border-none
+                    ${darkMode ? "hover:bg-white/10" : "hover:bg-gray-100"}`}
                   >
                     <img
                       src={item.profile}
-                      className="w-5 h-5 mr-4 rounded-full"
+                      className="w-6 h-6 rounded-full"
                       alt="profile"
                     />
                     {item.email}
                   </div>
-                );
-              })}
-            </div>
-            <div className="member-div w-full p-2 flex items-center flex-wrap">
-              {newMembers.map((item, index) => {
-                return (
-                  <div
-                    className={`${
-                      darkMode ? "bg-white text-black" : "bg-black text-white"
-                    } flex justify-center items-center rounded-md text-xs px-3 pr-1 py-1 m-2`}
-                    key={index}
-                  >
-                    <span>{item}</span>
-                    <IoClose
-                      className="ml-2 cursor-pointer"
-                      size={15}
-                      onClick={() => handleDeletion(item)}
-                    />
-                  </div>
-                );
-              })}
+                ))}
+              </div>
+            )}
+
+            <div className="flex flex-wrap gap-2 mt-3">
+              {newMembers.map((item, index) => (
+                <div
+                  key={index}
+                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs
+                  ${
+                    darkMode
+                      ? "bg-white/10 text-white"
+                      : "bg-gray-100 text-gray-800"
+                  }`}
+                >
+                  <span>{item}</span>
+                  <IoClose
+                    className="cursor-pointer"
+                    size={14}
+                    onClick={() => handleDeletion(item)}
+                  />
+                </div>
+              ))}
             </div>
           </div>
-        </div>
-        <button
-          type="submit"
-          className={`${
-            darkMode ? "bg-white text-black" : "bg-black text-white"
-          } border border-black rounded-md px-8 py-3 flex justify-center items-center text-xs w-full active:scale-95 transition-all duration-500`}
-        >
-          Submit
-        </button>
+
+          <Button type="submit" className="w-full">
+            Add Members
+          </Button>
         </form>
       </div>
     </div>

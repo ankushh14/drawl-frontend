@@ -1,42 +1,59 @@
 import PropTypes from "prop-types";
 import { useAuth } from "../../hooks/useAuth";
+import useTheme from "../../hooks/useTheme";
 
 export default function Chat({ chat }) {
   const { user } = useAuth();
+  const { darkMode } = useTheme();
+
+  const isMe = user.email === chat.email;
+
   return (
-    <div className="outline-chat my-4 w-full flex flex-col">
-      <div
-        className={`max-w-[80%] p-2 rounded-md text-white text-xs ${
-          user.email === chat.email
-            ? "bg-slate-500 self-end"
-            : "bg-slate-400 self-start"
-        } `}
-      >
-        <p className="w-full whitespace-pre-wrap break-words">{chat.message}</p>
-        <div
-          className={`time-div w-full ${
-            user.email === chat.email ? "text-end" : "text-start"
-          } text-[0.45rem] text-slate-300`}
-        >
-          {chat.time}
-        </div>
-      </div>
-      <div
-        className={`prof-div w-full mt-[0.20rem] ${
-          user.email === chat.email
-            ? "flex-row justify-end"
-            : "flex-row-reverse justify-start"
-        } flex justify-end items-center`}
-      >
-        <h1 className="text-[0.65rem] text-slate-500">
-          {user.email === chat.email ? "you" : chat.email}
-        </h1>
+    <div
+      className={`w-full flex gap-2 my-2 ${
+        isMe ? "justify-end" : "justify-start"
+      }`}
+    >
+      {!isMe && (
         <img
           src={chat.profile}
-          className="w-5 h-5 mx-1 rounded-full"
           alt="profile"
+          className="w-7 h-7 rounded-full self-end"
         />
+      )}
+
+      <div className={`flex flex-col max-w-[75%]`}>
+        <div
+          className={`flex items-center gap-2 text-[0.6rem] mb-1 opacity-70
+          ${isMe ? "justify-end" : "justify-start"}`}
+        >
+          <span className="truncate max-w-[120px]">
+            {isMe ? "You" : chat.email}
+          </span>
+          <span>{chat.time}</span>
+        </div>
+        <div
+          className={`px-4 py-2 text-xs leading-relaxed rounded-2xl break-words whitespace-pre-wrap w-fit
+          ${
+            isMe
+              ? darkMode
+                ? "bg-purple-600 text-white rounded-br-sm"
+                : "bg-purple-500 text-white rounded-br-sm"
+              : darkMode
+                ? "bg-white/10 text-white rounded-bl-sm"
+                : "bg-gray-100 text-gray-900 rounded-bl-sm"
+          }`}
+        >
+          {chat.message}
+        </div>
       </div>
+      {isMe && (
+        <img
+          src={chat.profile}
+          alt="profile"
+          className="w-7 h-7 rounded-full self-end"
+        />
+      )}
     </div>
   );
 }

@@ -9,9 +9,13 @@ import { userLogout } from "../../api/auth";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import { useIsusingworkspace } from "../../hooks/useIsusingworkspace";
 import { useClickAway } from "@uidotdev/usehooks";
+import { getThemeStyles } from "../../styles/theme";
+import Button from "../ui/button";
+import Portal from "../ui/portal";
 
 export default function Navbar() {
   const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
   const { isUsingworkspace } = useIsusingworkspace();
   const navigate = useNavigate();
   const { user, token, logout } = useAuth();
@@ -41,99 +45,108 @@ export default function Navbar() {
 
   return (
     <div
-      className={`
-    navbar w-full flex justify-between items-center p-2 transition-colors duration-500 border-b 
-    ${
-      darkMode
-        ? "bg-[#212529]  text-white border-white"
-        : "bg-white text-black border-[#d3d3d3]"
-    }
-    ${isUsingworkspace && "hidden"}
-    `}
+      className={`w-full flex justify-between items-center px-4 py-2 border-b transition-colors duration-500
+      ${theme.card} ${isUsingworkspace && "hidden"}`}
     >
-      <div className="logo-div">
-        <h1
-          className="font-Aclonica font-bold cursor-pointer"
-          onClick={() => navigate("/dashboard")}
-        >
-          DrawL
-        </h1>
+      <div
+        className="cursor-pointer font-Aclonica font-bold text-lg bg-gradient-to-r from-purple-400 via-pink-500 to-indigo-400 bg-clip-text text-transparent"
+        onClick={() => navigate("/dashboard")}
+      >
+        DrawL
       </div>
-      <div className="some-div flex items-center justify-center space-x-1 md:space-x-2">
-        <div className="theme-toggle-div">
-          <ThemeToggle />
-        </div>
-        <div className="common-div relative" ref={notificationRef}>
-          <IoIosNotifications
-            size={20}
-            className="cursor-pointer"
+
+      <div className="flex items-center gap-3">
+        <ThemeToggle />
+
+        <div className="relative" ref={notificationRef}>
+          <button
             onClick={() => setNotifications((prev) => !prev)}
-          />
+            className={`p-2 rounded-lg transition ${
+              darkMode ? "hover:bg-white/10" : "hover:bg-gray-100"
+            }`}
+          >
+            <IoIosNotifications size={20} />
+          </button>
+
           {ping && (
-            <div className="notification-ball absolute bottom-0 right-0 w-[0.55rem] animate-pulse h-[0.55rem] rounded-full bg-[#63f58c]"></div>
+            <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-green-400 animate-pulse" />
           )}
         </div>
-        <div
-          ref={navigationRef}
-          className="hamburger-div flex flex-col cursor-pointer justify-center items-center space-y-[0.15rem] w-[1.5rem]  p-1"
-          onClick={() => setNav((prev) => !prev)}
-        >
-          <span
-            className={`w-full h-[0.2rem] rounded-xl transition-all duration-500 ${
-              darkMode ? "bg-white" : "bg-black"
-            } ${nav ? "translate-y-[0.168rem] rotate-45" : "rotate-0"} `}
-          ></span>
-          <span
-            className={`w-full h-[0.2rem] rounded-xl transition-all duration-500 ${
-              darkMode ? "bg-white" : "bg-black"
-            } ${nav ? "-translate-y-[0.168rem] -rotate-45" : "rotate-0"}`}
-          ></span>
-        </div>
-        <ul
-          id="navigation-dropdown"
-          className={`nav-inside-div flex flex-col text-sm w-full md:w-[320px] top-[2.55rem] absolute ${
-            nav ? "h-[214px] border py-3" : "h-0 py-0 border-none"
-          } transition-height overflow-hidden duration-500 rounded-md right-0 px-6 z-30 ${
-            !darkMode
-              ? "bg-white text-black border-[#d3d3d3]"
-              : "bg-[#212529] text-white border-white"
-          }`}
-        >
-          <li className="w-full py-3 flex justify-between text-xs">
-            <span>{user.email}</span>
-            <img
-              src={user.profile}
-              alt={`${user.email} profile`}
-              className={`w-[20px] h-[20px] rounded-full`}
-            />
-          </li>
-          <NavLink
-            className="w-full border-t border-inherit py-2"
-            to={"/dashboard"}
-            onClick={() => setNav(false)}
-          >
-            Dashboard
-          </NavLink>
-          <NavLink
-            className="w-full border-y border-inherit py-2"
-            to={"/profile"}
-            onClick={() => setNav(false)}
-          >
-            Profile
-          </NavLink>
+
+        <div ref={navigationRef} className="relative">
           <button
-            type="button"
-            onClick={() => logoutFunction()}
-            className={`border border-[#d3d3d3] bg-red-500 text-white rounded-md px-8 py-3 my-3 flex justify-center items-center active:scale-95 transition-all duration-500`}
+            onClick={() => setNav((prev) => !prev)}
+            className={`flex flex-col justify-center items-center gap-[3px] p-2 rounded-lg transition
+            ${darkMode ? "hover:bg-white/10" : "hover:bg-gray-100"}`}
           >
-            Logout
+            <span
+              className={`w-5 h-[2px] transition-all duration-300 ${
+                darkMode ? "bg-white" : "bg-black"
+              } ${nav ? "rotate-45 translate-y-[2.5px]" : ""}`}
+            />
+            <span
+              className={`w-5 h-[2px] transition-all duration-300 ${
+                darkMode ? "bg-white" : "bg-black"
+              } ${nav ? "-rotate-45 -translate-y-[2.5px]" : ""}`}
+            />
           </button>
-        </ul>
+
+          <Portal>
+            <div
+              id="navigation-dropdown"
+              className={`absolute right-0 top-12 w-[280px] rounded-2xl overflow-hidden transition-all duration-300 z-50
+            ${nav ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"}
+            ${darkMode ? "text-white" : "text-black"}
+            ${theme.overlayCard}`}
+            >
+              <div
+                className={`flex items-center justify-between px-4 py-3 border-b ${theme.divider}`}
+              >
+                <span className="text-xs truncate">{user.email}</span>
+                <img
+                  src={user.profile}
+                  alt={`${user.email} profile`}
+                  className="w-6 h-6 rounded-full"
+                />
+              </div>
+
+              <NavLink
+                to="/dashboard"
+                onClick={() => setNav(false)}
+                className={`block px-4 py-3 text-sm transition ${
+                  darkMode ? "hover:bg-white/10" : "hover:bg-gray-100"
+                }`}
+              >
+                Dashboard
+              </NavLink>
+
+              <NavLink
+                to="/profile"
+                onClick={() => setNav(false)}
+                className={`block px-4 py-3 text-sm transition ${
+                  darkMode ? "hover:bg-white/10" : "hover:bg-gray-100"
+                }`}
+              >
+                Profile
+              </NavLink>
+
+              <div className="px-4 py-3">
+                <Button
+                  variant="danger"
+                  className="w-full"
+                  onClick={logoutFunction}
+                >
+                  Logout
+                </Button>
+              </div>
+            </div>
+          </Portal>
+        </div>
       </div>
-      <NotificationComponent
-        noti={notifications}
-        setPing={setPing}
-      />
+
+      <Portal>
+        <NotificationComponent noti={notifications} setPing={setPing} />
+      </Portal>
     </div>
   );
 }

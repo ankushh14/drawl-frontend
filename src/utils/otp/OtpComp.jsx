@@ -6,112 +6,134 @@ import { showToastMessage } from "../toasts/showToast";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import useTheme from "../../hooks/useTheme";
+import Button from "../../components/ui/button";
+import { getThemeStyles } from "../../styles/theme";
 
-export default function OtpComp({ setOtpDiv, requestBody, setLoader,forgotPassword = false }) {
+export default function OtpComp({
+  setOtpDiv,
+  requestBody,
+  setLoader,
+  forgotPassword = false,
+}) {
   const [count, setCount] = useState(59);
   const [otp, setOtp] = useState("");
-  const { darkMode } = useTheme()
+  const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
   const [verifyLoader, setVerifyLoader] = useState(false);
   const { login } = useAuth();
-  const timeOutCallback = useCallback(
-    () => setCount((curr) => curr - 1),
-    [setCount]
-  );
   const navigate = useNavigate();
 
+  const timeOutCallback = useCallback(() => setCount((curr) => curr - 1), []);
+
   useEffect(() => {
-    count > 0 && setTimeout(timeOutCallback, 1000);
+    if (count > 0) {
+      const timer = setTimeout(timeOutCallback, 1000);
+      return () => clearTimeout(timer);
+    }
   }, [count, timeOutCallback]);
 
   const handleVerify = async () => {
-    let body = {
-      otp,
-    };
     setVerifyLoader(true);
-    if(forgotPassword){
-      const data = await verifyForgotPassword(body)
+    const body = { otp };
+
+    if (forgotPassword) {
+      const data = await verifyForgotPassword(body);
       showToastMessage(data.message, data.info);
-      if (data.valid === false) {
+
+      if (!data.valid) {
         setLoader(false);
-        return setOtpDiv(false);
+        setOtpDiv(false);
+        return;
       }
-      setLoader(false)
+
+      setLoader(false);
       return navigate("/auth");
     }
+
     const data = await verifyUser(body);
     showToastMessage(data.message, data.info);
-    if (data.valid === false) {
+
+    if (!data.valid) {
       setLoader(false);
-      return setOtpDiv(false);
+      setOtpDiv(false);
+      return;
     }
+
     setLoader(false);
     login(data);
-    return navigate("/dashboard");
+    navigate("/dashboard");
   };
 
-  const resetTimer = () => {
-    setCount(59);
-  };
   const handleReset = async () => {
     setLoader(true);
     const data = await userRegister(requestBody);
     showToastMessage(data.message, data.info);
-    return resetTimer();
+    setCount(59);
   };
+
   return (
-    <div className="Otp-div-background absolute top-0 left-0 right-0 bottom-0 bg-[#5c5b5b5d] flex justify-center items-center">
-      <div className={`otp-div w-[95%] md:w-[75%] lg:w-[45%] p-5 rounded-md 
-      ${
-        darkMode
-          ? "bg-[#212529] text-white  shadow-white"
-          : "bg-white text-black shadow-slate-500"
-      }`}>
-        <div className="verify-code w-full my-4 flex justify-center items-center">
-          <h1 className="text-3xl">Verification Code</h1>
-        </div>
-        <div className="verify-code w-full my-4 flex justify-center items-center">
-          <h1 className="text-xs">Please check your entered gmail for OTP</h1>
-        </div>
-        <div className="Otp-main w-full my-4 flex py-2 justify-center items-center">
+    <div
+      className={`fixed inset-0 z-[1000] flex items-center justify-center ${theme.overlay}`}
+    >
+      <div
+        className={`w-[95%] md:w-[70%] lg:w-[420px] p-8 rounded-2xl transition-colors duration-500 ${theme.card}`}
+      >
+        <h1 className="text-2xl font-semibold text-center">
+          Verification Code
+        </h1>
+
+        <p className={`text-sm text-center mt-2 ${theme.mutedText}`}>
+          Enter the 6-digit code sent to your email
+        </p>
+
+        <div className="mt-6 flex justify-center">
           <VerificationInput
             validChars="0-9"
-            placeholder=" "
             value={otp}
-            onChange={(value) => setOtp(value)}
+            onChange={setOtp}
+            classNames={{
+              container: "gap-2",
+              character: `w-10 h-12 rounded-lg border text-center text-lg focus:border-purple-500 focus:outline-none ${
+                darkMode
+                  ? "bg-white/10 border-white/10 text-white"
+                  : "bg-white border-gray-300 text-gray-900"
+              }`,
+              characterInactive: "opacity-70",
+              characterSelected: "border-purple-500",
+            }}
           />
         </div>
-        <div className="verify-code w-full my-4 flex justify-center items-center">
+
+        <div className="mt-4 flex justify-between items-center text-xs">
+          <span className={theme.mutedText}>
+            00:{count < 10 ? `0${count}` : count}
+          </span>
+
           <button
-            className="text-xs text-red-400 hover:text-red-500 disabled:text-red-300 border-none"
-            disabled={count === 0 ? false : true}
             onClick={handleReset}
+            disabled={count !== 0}
+            className="text-purple-500 hover:text-purple-600 disabled:text-gray-400 transition"
           >
             Resend Code
           </button>
         </div>
-        <div className="verify-code w-full my-4 flex flex-col space-y-3 justify-center items-center">
-          <button
-            type={"button"}
+
+        <div className="mt-6 flex flex-col gap-3">
+          <Button
+            variant="primary"
             onClick={handleVerify}
-            className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-[80%] flex justify-center space-x-1 items-center active:scale-95 disabled:bg-slate-700`}
             disabled={verifyLoader}
           >
-            <span>Verify</span>
-          </button>
-          <button
-            type={"button"}
-            onClick={()=>window.location.reload()}
-            className={`font-kalam text-white bg-black font-normal py-2 text-center rounded transition duration-500 ease-in-out focus:outline-none focus:shadow-outline hover:text-slate-200 w-[80%] flex justify-center space-x-1 items-center active:scale-95 disabled:bg-slate-700`}
+            Verify
+          </Button>
+
+          <Button
+            variant="ghost"
+            onClick={() => window.location.reload()}
             disabled={verifyLoader}
           >
-            <span>Cancel</span>
-          </button>
-        </div>
-        <div className="verify-code w-full my-4 mt-8 flex justify-center items-center">
-          <h1 className="text-xs text-blue-500">
-            0:{count < 10 && "0"}
-            {count}
-          </h1>
+            Cancel
+          </Button>
         </div>
       </div>
     </div>

@@ -8,7 +8,7 @@ const initialState = {
   authenticated: false,
   status: STATUS.IDLE,
   expiresAt: null,
-  forgotPassword: false
+  forgotPassword: false,
 };
 
 const AuthContext = createContext({
@@ -16,7 +16,7 @@ const AuthContext = createContext({
   login: () => {},
   logout: () => {},
   updateStatus: () => {},
-  updateForgotPasswordStatus: ()=>{}
+  updateForgotPasswordStatus: () => {},
 });
 
 const authReducer = (state, action) => {
@@ -41,11 +41,11 @@ const authReducer = (state, action) => {
         status: action.payload.status,
       };
     }
-    case "updateForgotPasswordStatus":{
-      return{
+    case "updateForgotPasswordStatus": {
+      return {
         ...state,
-        forgotPassword: action.payload.value
-      }
+        forgotPassword: action.payload.value,
+      };
     }
     default:
       throw new Error("unhandled action");
@@ -79,14 +79,14 @@ const AuthProvider = ({ children }) => {
     });
   }, []);
 
-  const updateForgotPasswordStatus = useCallback((value)=>{
+  const updateForgotPasswordStatus = useCallback((value) => {
     dispatch({
       type: "updateForgotPasswordStatus",
-      payload : {
-        value
-      }
-    })
-  },[])
+      payload: {
+        value,
+      },
+    });
+  }, []);
 
   const value = useMemo(
     () => ({
@@ -94,12 +94,12 @@ const AuthProvider = ({ children }) => {
       login,
       logout,
       updateStatus,
-      updateForgotPasswordStatus
+      updateForgotPasswordStatus,
     }),
-    [login, logout, state, updateStatus,updateForgotPasswordStatus]
+    [login, logout, state, updateStatus, updateForgotPasswordStatus],
   );
 
-
+  console.log(value);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 

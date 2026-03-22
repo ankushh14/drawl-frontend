@@ -9,19 +9,24 @@ import getTime from "../../utils/getTime";
 import { getChats } from "../../api/chats";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import PropTypes from "prop-types";
-import { getDecryptedText, getEncryptedText } from "../../utils/encryption/encryptText";
+import {
+  getDecryptedText,
+  getEncryptedText,
+} from "../../utils/encryption/encryptText";
+import { getThemeStyles } from "../../styles/theme";
 let io;
 
 export default function Chatcomponent({ setOnline, chatComponent }) {
   const inputRef = useRef(null);
   const { name } = useWorkspace();
   const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
   const [message, setMessage] = useState("");
   const [chatDisable, setChatDisable] = useState(false);
   const [chats, setChats] = useState([]);
   const { user, token } = useAuth();
   const { ID } = useWorkspace();
-  const chatBodyRef = useRef(null)
+  const chatBodyRef = useRef(null);
 
   useEffect(() => {
     io = socketIO(`${import.meta.env.VITE_CHAT_ENDPOINT}`, {
@@ -45,7 +50,7 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
         setChatDisable(true);
         const time = getTime();
         io.emit("sendMessage", {
-          message: getEncryptedText(message,ID),
+          message: getEncryptedText(message, ID),
           email: user.email,
           profile: user.profile,
           id: ID,
@@ -74,9 +79,9 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
     };
     const data = await getChats(requestBody, token);
     if (data.valid) {
-      const chats = data.data.map((item)=>{
-        return { ...item,message : getDecryptedText(item.message,ID) }
-      })
+      const chats = data.data.map((item) => {
+        return { ...item, message: getDecryptedText(item.message, ID) };
+      });
       return setChats(chats);
     } else {
       return;
@@ -85,10 +90,10 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
 
   const updateMessages = useCallback(() => {
     io.on("message", (newMessage) => {
-      newMessage.message = getDecryptedText(newMessage.message,ID)
+      newMessage.message = getDecryptedText(newMessage.message, ID);
       setChats((prev) => [...prev, newMessage]);
     });
-  }, [setChats,ID]);
+  }, [setChats, ID]);
 
   const updateOnline = useCallback(() => {
     io.on("getOnline", (data) => {
@@ -104,43 +109,31 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
     updateMessages();
   }, [updateMessages]);
 
-  useEffect(()=>{
-    if(chatBodyRef.current){
-      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight
+  useEffect(() => {
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
     }
-  },[chats])
+  }, [chats]);
 
   return (
     <div
-      className={`fixed md:opacity-100 md:w-[35%] xl:w-[25%] md:static top-[41.6px] bottom-0 md:h-full border-t flex md:flex flex-col overflow-hidden transition-[width,opacity] md:transition-none duration-500 ease-in-out 
-    ${
-      darkMode
-        ? "bg-[#212529] text-white border-[#30363b]"
-        : "bg-white text-black border-[#d3d3d3] "
-    } 
-    ${chatComponent ? "w-full opacity-100" : "w-0 opacity-0"}
-    `}
+      className={`fixed md:static top-[60px] bottom-0 flex flex-col overflow-hidden transition-[width,opacity] duration-500
+    ${chatComponent ? "w-full opacity-100" : "w-0 opacity-0 md:w-[35%] xl:w-[25%] md:opacity-100"}
+    ${theme.card}`}
     >
-      <div className="chat-header w-full p-2 rounded-b-sm border-b border-inherit flex justify-between items-center relative">
-        <h1 className="font-bold">{name}</h1>
+      {" "}
+      <div className="px-4 py-3 border-b flex items-center justify-between sticky top-0 z-10 backdrop-blur-md bg-inherit">
+        <h1 className="font-semibold text-sm truncate">{name}</h1>
       </div>
-      <div className="body-chat h-full w-full border-inherit p-2 flex flex-col overflow-y-scroll" ref={chatBodyRef}>
+      <div
+        ref={chatBodyRef}
+        className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-1"
+      >
         {chats.length > 0 &&
-          chats.map((item, index) => {
-            return <Chat chat={item} key={index} />;
-          })}
+          chats.map((item, index) => <Chat chat={item} key={index} />)}
       </div>
-      <div className="w-full justify-self-end py-2 border-t border-inherit">
-        <div className="input-div w-full relative p-2">
-          <div
-            className="send-btn cursor-pointer absolute right-4 bottom-[1.29rem]"
-            onClick={simulateEnter}
-          >
-            <FaCircleChevronRight
-              size={20}
-              className="text-slate-500 bg-inherit"
-            />
-          </div>
+      <div className="border-t p-3 sticky bottom-0 bg-inherit backdrop-blur-md">
+        <div className="relative flex items-end">
           <textarea
             rows="1"
             ref={inputRef}
@@ -148,9 +141,27 @@ export default function Chatcomponent({ setOnline, chatComponent }) {
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleSendMessage}
             disabled={chatDisable}
-            placeholder="Type your message here ..."
-            className="w-full p-2 rounded-md text-slate-500 text-xs pr-8 resize-none no-scrollbar outline-slate-500 border-slate-400 border-2 bg-inherit"
+            placeholder="Message..."
+            className={`w-full px-4 py-3 pr-12 rounded-full resize-none outline-none text-xs transition
+          ${
+            darkMode
+              ? "bg-white/5 border border-white/10 text-white placeholder:text-gray-400"
+              : "bg-gray-100 border border-gray-300 text-gray-900 placeholder:text-gray-500"
+          }
+          focus:border-purple-500`}
           />
+
+          <button
+            onClick={simulateEnter}
+            className={`absolute right-2 bottom-[0.3rem] p-2 rounded-full transition
+          ${
+            darkMode
+              ? "bg-purple-600 hover:bg-purple-500 text-white"
+              : "bg-purple-500 hover:bg-purple-600 text-white"
+          }`}
+          >
+            <FaCircleChevronRight size={16} />
+          </button>
         </div>
       </div>
     </div>

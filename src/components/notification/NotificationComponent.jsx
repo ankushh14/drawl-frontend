@@ -5,37 +5,32 @@ import { clearAll, getNotifications } from "../../api/notification";
 import { useCallback, useEffect, useState } from "react";
 import SingleNotificationComponent from "./SingleNotificationComponent";
 import { showToastMessage } from "../../utils/toasts/showToast";
+import { getThemeStyles } from "../../styles/theme";
 
 export default function NotificationComponent({ noti, setPing }) {
   const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
   const [notifications, setNotifications] = useState([]);
   const [notificationRefresh, setNotificationsRefresh] = useState(false);
   const { user, token, authenticated } = useAuth();
 
   const fetchnotifications = useCallback(async () => {
-    if (authenticated) {
-      try {
-        let requestBody = {
-          email: user.email,
-        };
-        const response = await getNotifications(requestBody, token);
-        return setNotifications(response.data);
-      } catch (error) {
-        return;
-      }
-    } else return;
-  }, [user, setNotifications, token, authenticated]);
+    if (!authenticated) return;
 
-  const checkNotifications = useCallback(() => {
-    if (authenticated) {
-      if (notifications?.length > 0) {
-        setPing(true);
-      } else {
-        setPing(false);
-      }
-    } else {
+    try {
+      let requestBody = {
+        email: user.email,
+      };
+      const response = await getNotifications(requestBody, token);
+      setNotifications(response.data);
+    } catch (error) {
       return;
     }
+  }, [user, token, authenticated]);
+
+  const checkNotifications = useCallback(() => {
+    if (!authenticated) return;
+    setPing(notifications?.length > 0);
   }, [notifications, setPing, authenticated]);
 
   useEffect(() => {
@@ -43,61 +38,65 @@ export default function NotificationComponent({ noti, setPing }) {
   }, [checkNotifications]);
 
   useEffect(() => {
-    if (authenticated) {
+    if (!authenticated) return;
+
+    fetchnotifications();
+    const interval = setInterval(() => {
       fetchnotifications();
-      setInterval(() => {
-        fetchnotifications();
-      }, 10000);
-    } else {
-      return;
-    }
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, [fetchnotifications, notificationRefresh, authenticated]);
 
   const clearAllNotifications = async () => {
     let requestBody = {
       userEmail: user.email,
     };
+
     const response = await clearAll(requestBody, token);
+
     if (response.valid) {
-      return setNotificationsRefresh((prev) => !prev);
+      setNotificationsRefresh((prev) => !prev);
     } else {
-      return showToastMessage(response.message, response.info);
+      showToastMessage(response.message, response.info);
     }
   };
 
   return (
     <div
       id="notification-div"
-      className={`notification-list absolute z-50 w-full md:w-[50%] lg:w-[30%] max-h-[50%] overflow-y-scroll  top-10 transition-all duration-300 border right-0 md:right-10 rounded-md no-scrollbar border-[#d3d3d3] 
-      ${noti ? "visible opacity-100" : "invisible opacity-0"} 
-      ${darkMode ? "bg-[#212529] text-white" : "bg-white text-black"}`}
+      className={`absolute z-[9999] w-full md:w-[420px] max-h-[60vh] overflow-y-auto top-12 right-0 md:right-6 rounded-2xl transition-all duration-300 no-scrollbar
+      ${noti ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2 pointer-events-none"}
+      ${theme.overlayCard}`}
     >
       {notifications.length === 0 ? (
-        <div className="notfound-div w-full p-3 py-6">
-          <h1 className="font-bold text-center text-sm md:text-md">
-            Nothing to see here...
-          </h1>
+        <div className="w-full py-10 flex items-center justify-center">
+          <p className={`text-sm ${theme.mutedText}`}>Nothing to see here...</p>
         </div>
       ) : (
-        <div className="notification-div w-full flex flex-col">
-          <div className="w-full flex p-2 justify-between items-center border-b">
-            <h3 className="text-xs">Notifications</h3>
+        <div className="flex flex-col">
+          <div
+            className={`flex items-center justify-between px-4 py-3 border-b ${theme.divider}`}
+          >
+            <h3 className="text-sm font-semibold">Notifications</h3>
+
             <button
-              className="text-xs rounded-md text-blue-500"
               onClick={clearAllNotifications}
+              className="text-xs text-purple-500 hover:text-purple-600 transition"
             >
               Clear all
             </button>
           </div>
-          {notifications.map((item, index) => {
-            return (
+
+          <div className="flex flex-col divide-y">
+            {notifications.map((item, index) => (
               <SingleNotificationComponent
                 key={index}
                 item={item}
                 setNotificationRefresh={setNotificationsRefresh}
               />
-            );
-          })}
+            ))}
+          </div>
         </div>
       )}
     </div>

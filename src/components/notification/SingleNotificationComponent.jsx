@@ -5,6 +5,9 @@ import { showToastMessage } from "../../utils/toasts/showToast";
 import { useAuth } from "../../hooks/useAuth";
 import { useWorkspacesUpdate } from "../../hooks/useWorkspaceCount";
 import { useEffect } from "react";
+import Button from "../ui/button";
+import useTheme from "../../hooks/useTheme";
+import { getThemeStyles } from "../../styles/theme";
 
 export default function SingleNotificationComponent({
   item,
@@ -12,16 +15,19 @@ export default function SingleNotificationComponent({
 }) {
   const { token } = useAuth();
   const { setUpdateWorkspaceCount } = useWorkspacesUpdate();
+  const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
 
   const handleResponse = async (answer = undefined) => {
-    if (answer === undefined) {
-      return;
-    }
+    if (answer === undefined) return;
+
     let requestBody = {
       notificationID: item._id,
       answer,
     };
+
     const response = await sendResponse(requestBody, token);
+
     if (response.valid) {
       setUpdateWorkspaceCount((prev) => !prev);
       return setNotificationRefresh((prev) => !prev);
@@ -30,52 +36,72 @@ export default function SingleNotificationComponent({
     }
   };
 
-  const handleDelete = async()=>{
+  const handleDelete = async () => {
     let requestBody = {
-      notificationID : item._id
-    }
+      notificationID: item._id,
+    };
+
     const response = await deleteOne(requestBody, token);
+
     if (response.valid) {
       return setNotificationRefresh((prev) => !prev);
     } else {
       return showToastMessage(response.message, response.info);
     }
-  }
+  };
 
-  useEffect(()=>{
-    if(item.type === "ACCEPT" || item.type === "REMOVE" || item.type === "LEAVE"){
-      setUpdateWorkspaceCount((prev)=>!prev)
+  useEffect(() => {
+    if (
+      item.type === "ACCEPT" ||
+      item.type === "REMOVE" ||
+      item.type === "LEAVE"
+    ) {
+      setUpdateWorkspaceCount((prev) => !prev);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <div className="w-full h-[110px] border-b border-inherit last:border-none flex">
-      <div className="w-[90%] flex flex-col justify-center">
-        <p className="text-xs font-semibold p-2 w-full">{item.message}</p>
+    <div
+      className={`w-full p-4 flex items-center justify-between transition-colors duration-200
+      border-b last:border-none ${theme.divider}`}
+    >
+      <div className="flex flex-col gap-2 w-full">
+        <p className="text-sm font-medium leading-snug break-words">
+          {item.message}
+        </p>
+
         {(item.type === "INVITE" || item.type === "REQUEST") && (
-          <div className="buttons-div flex text-xs items-center p-2 space-x-3">
-            <button
-              type="button"
-              className={` rounded-md px-4 py-2 flex justify-center items-center  active:scale-95 transition-all duration-500 bg-[#FF7F50] text-white font-semibold`}
+          <div className="flex gap-2">
+            <Button
+              variant="primary"
+              size="sm"
               onClick={() => handleResponse(true)}
+              leftIcon={<IoCheckmarkSharp size={14} />}
             >
-              <IoCheckmarkSharp size={16} className="mr-[0.15rem]" /> Accept
-            </button>
-            <button
-              type="button"
-              className={` rounded-md px-4 py-2 flex justify-center items-center  active:scale-95 transition-all duration-500 bg-red-500 text-white font-semibold`}
+              Accept
+            </Button>
+
+            <Button
+              variant="danger"
+              size="sm"
               onClick={() => handleResponse(false)}
+              leftIcon={<IoCloseSharp size={14} />}
             >
-              <IoCloseSharp size={16} className="mr-[0.15rem]" /> Reject
-            </button>
+              Reject
+            </Button>
           </div>
         )}
       </div>
+
       {!(item.type === "INVITE" || item.type === "REQUEST") && (
-        <div className="w-[10%] h-full flex items-center justify-center">
-          <IoTrash className="cursor-pointer" onClick={handleDelete}/>
-        </div>
+        <button
+          onClick={handleDelete}
+          className={`ml-4 p-2 rounded-lg transition
+          ${darkMode ? "hover:bg-white/10" : "hover:bg-gray-100"}`}
+        >
+          <IoTrash size={16} />
+        </button>
       )}
     </div>
   );

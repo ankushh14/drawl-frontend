@@ -3,39 +3,55 @@ import useTheme from "../../hooks/useTheme";
 import { useWorkspace } from "../../hooks/useWorkspace";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import { getThemeStyles } from "../../styles/theme";
+import Button from "../../components/ui/button";
 
-export default function ExitWorkspaceModal({ModalController}) {
-    const {darkMode} = useTheme()
-    const navigate = useNavigate()
-    const { leave,name } = useWorkspace()
-    const handleYes = ()=>{
-        leave()
-        ModalController(false)
-        return navigate("/dashboard")
-    }
+export default function ExitWorkspaceModal({ ModalController }) {
+  const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
+  const navigate = useNavigate();
+  const { leave, name } = useWorkspace();
 
-    const handleNo = ()=>{
-        return ModalController(false)
-    }
+  const handleYes = () => {
+    leave();
+    ModalController(false);
+    navigate("/dashboard");
+  };
 
-    return (
-        <div className="Modal-background fixed z-[1000] top-0 left-0 right-0 bottom-0 bg-[#5c5b5b5d] flex justify-center items-center">
-            <div className={`w-[300px] rounded-md shadow p-3 flex flex-col ${darkMode ? "bg-[#212529] text-white" : "bg-white text-black overflow-hidden"}`}>
-                <div className="w-full flex p-2 justify-center items-center text-red-500">
-                    <IoWarning size={60} />
-                </div>
-                <div className="w-full">
-                    <h1 className="text-center w-full font-semibold">Are you sure you want to exit the workspace `{name}` ?</h1>
-                </div>
-                <div className="btns-div flex w-full justify-center items-center py-2">
-                    <button className={`border text-white bg-red-500 mx-1 rounded-md px-4 py-2 text-xs lg:text-sm flex justify-center items-center active:scale-95 transition-all duration-500 w-[40%]`} onClick={handleYes}>Yes</button>
-                    <button className={`border text-white bg-red-500 mx-1 rounded-md px-4 py-2 text-xs lg:text-sm flex justify-center items-center active:scale-95 transition-all duration-500 w-[40%]`} onClick={handleNo}>No</button>
-                </div>
-            </div>
+  const handleNo = () => {
+    ModalController(false);
+  };
+
+  return (
+    <div
+      className={`fixed inset-0 z-[1000] flex items-center justify-center ${theme.overlay} ${darkMode ? "text-white" : "text-black"}`}
+    >
+      <div
+        className={`w-[320px] p-6 rounded-2xl flex flex-col gap-4 text-center ${theme.overlayCard}`}
+      >
+        <div className="flex justify-center text-red-500">
+          <IoWarning size={50} />
         </div>
-    )
+
+        <h1 className="text-sm font-semibold leading-relaxed">
+          Are you sure you want to leave{" "}
+          <span className="font-bold">{name}</span>?
+        </h1>
+
+        <div className="flex gap-2 mt-2">
+          <Button variant="danger" className="w-full" onClick={handleYes}>
+            Leave
+          </Button>
+
+          <Button variant="secondary" className="w-full" onClick={handleNo}>
+            Cancel
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 ExitWorkspaceModal.propTypes = {
-    ModalController : PropTypes.func.isRequired
-}
+  ModalController: PropTypes.func.isRequired,
+};

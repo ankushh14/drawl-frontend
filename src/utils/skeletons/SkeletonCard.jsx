@@ -1,22 +1,40 @@
 import useTheme from "../../hooks/useTheme";
 
 export default function SkeletonCard() {
-  const { darkMode } = useTheme()
+  const { darkMode } = useTheme();
+
   return (
-    <div className={`card w-[300px]  h-[330px] p-2 m-4 px-4 rounded flex flex-col justify-between shadow shadow-inherit cursor-pointer hover:shadow-md
-    ${
-      darkMode
-        ? "bg-[#393f45] text-white shadow-slate-800"
-        : "bg-white text-black shadow-slate-500"
-    }`}>
-      <div className="name-skeleton w-[90%] h-[30px] rounded-md bg-slate-400 animate-pulse"></div>
-      <div className="group-skeleton-outer w-full h-[250px] my-2 flex justify-center items-center flex-col">
-        <div className="group-icon-skelton w-[100px] h-[100px] bg-slate-400 animate-pulse rounded-xl ">
-        </div>
-        <div className="group-icon-skelton w-[120px] h-[30px] bg-slate-400 animate-pulse rounded-md my-5 ">
-        </div>
+    <div
+      className={`w-[300px] h-[220px] m-4 p-4 rounded-2xl flex flex-col justify-between transition-all duration-300
+      ${
+        darkMode
+          ? "bg-white/5 border border-white/10"
+          : "bg-white border border-gray-200 shadow-sm"
+      }`}
+    >
+      <div className="flex justify-between items-center">
+        <div className="w-10 h-10 rounded-xl bg-slate-300 dark:bg-white/10 animate-pulse"></div>
+        <div className="w-5 h-5 rounded-md bg-slate-300 dark:bg-white/10 animate-pulse"></div>
       </div>
-      <div className="owner-skeleton w-[90%] h-[20px] rounded-md bg-slate-400 animate-pulse self-end"></div>
+
+      <div className="mt-3 flex flex-col gap-2">
+        <div className="w-[80%] h-[14px] rounded bg-slate-300 dark:bg-white/10 animate-pulse"></div>
+        <div className="w-[60%] h-[12px] rounded bg-slate-300 dark:bg-white/10 animate-pulse"></div>
+      </div>
+
+      <div className="flex items-center justify-between mt-3">
+        <div className="flex -space-x-2">
+          <div className="w-8 h-8 rounded-full bg-slate-300 dark:bg-white/10 animate-pulse"></div>
+          <div className="w-8 h-8 rounded-full bg-slate-300 dark:bg-white/10 animate-pulse"></div>
+          <div className="w-8 h-8 rounded-full bg-slate-300 dark:bg-white/10 animate-pulse"></div>
+        </div>
+        <div className="w-10 h-[12px] rounded bg-slate-300 dark:bg-white/10 animate-pulse"></div>
+      </div>
+
+      <div className="flex justify-between items-center mt-3">
+        <div className="w-[50%] h-[12px] rounded bg-slate-300 dark:bg-white/10 animate-pulse"></div>
+        <div className="w-[40px] h-[12px] rounded bg-slate-300 dark:bg-white/10 animate-pulse"></div>
+      </div>
     </div>
   );
 }

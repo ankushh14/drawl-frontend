@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-import useTheme from "../../hooks/useTheme";
 import WorkspaceCard from "../workspace/WorkspaceCard";
 import { getWorkspaces } from "../../api/workspace";
 import { showToastMessage } from "../../utils/toasts/showToast";
@@ -9,7 +8,6 @@ import { useAuth } from "../../hooks/useAuth";
 import WorkspaceSkeleton from "../../utils/skeletons/WorkspaceSkeleton";
 
 export default function WorkspacesInHome({ setNoWorkspace }) {
-  const { darkMode } = useTheme();
   const { updateWorkspaceCount } = useWorkspacesUpdate();
   const [skeleton, setSkeleton] = useState(false);
   const { user, token } = useAuth();
@@ -26,17 +24,17 @@ export default function WorkspacesInHome({ setNoWorkspace }) {
       if (response.data.length === 0) {
         return setNoWorkspace(true);
       }
-      setNoWorkspace(false)
+      setNoWorkspace(false);
       return setWorkspaces(response.data);
     } else {
       setSkeleton(false);
       return showToastMessage(
         response.message + ",Please refresh the page",
-        response.info
+        response.info,
       );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, token, setNoWorkspace,updateWorkspaceCount]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, token, setNoWorkspace, updateWorkspaceCount]);
 
   useEffect(() => {
     getworkspaces();
@@ -44,12 +42,7 @@ export default function WorkspacesInHome({ setNoWorkspace }) {
 
   return (
     <div
-      className={`cards-cont flex flex-wrap overflow-y-scroll justify-center h-[80%] lg:h-auto lg:overflow-hidden w-full  lg:w-[70%]  p-4  
-      ${
-        darkMode
-          ? "bg-[#212529] text-white  shadow-white"
-          : "bg-white text-black shadow-slate-500"
-      }`}
+      className={`cards-cont flex flex-wrap overflow-y-scroll justify-center items-start h-[100%] lg:h-auto lg:overflow-hidden w-full  lg:w-[80%]  p-4`}
     >
       {skeleton ? (
         <WorkspaceSkeleton />

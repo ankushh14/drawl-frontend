@@ -26,14 +26,15 @@ import useTheme from "./hooks/useTheme";
 import ForgotPasswordValidator from "./utils/validation/ForgotPasswordValidator";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import MainLoader from "./utils/loaders/MainLoader";
-
+import { getThemeStyles } from "./styles/theme";
 
 function App() {
   const Client_id = import.meta.env.VITE_GOOGLE_CLIENT_ID;
   const workspace = import.meta.env.VITE_WORKSPACES;
   const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
 
-  const { login, updateStatus, logout,status } = useAuth();
+  const { login, updateStatus, logout, status } = useAuth();
 
   const refreshAccessToken = useCallback(async () => {
     updateStatus(STATUS.PENDING);
@@ -47,10 +48,11 @@ function App() {
 
   useEffect(() => {
     refreshAccessToken();
-    setInterval(() => {
-      refreshAccessToken();
-    },
-    //ACCESS TOKEN LIFE
+    setInterval(
+      () => {
+        refreshAccessToken();
+      },
+      //ACCESS TOKEN LIFE
     );
   }, [refreshAccessToken]);
 
@@ -79,24 +81,26 @@ function App() {
         </Route>
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="*" element={<Navigate to="/404" replace />} />
-      </>
-    )
+      </>,
+    ),
   );
 
   return (
     <GoogleOAuthProvider clientId={`${Client_id}`}>
       <Toaster />
       <main
-        className={`w-full min-h-screen h-full 
-      ${
-        darkMode
-          ? "bg-[#212529] text-white  shadow-white"
-          : "bg-white text-black shadow-slate-500"
-      }`}
+        className={`relative w-full min-h-screen h-full overflow-hidden transition-colors duration-500 ${theme.page}`}
       >
-        <RouterProvider router={router} />
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute top-[-20%] left-[-10%] w-[400px] h-[400px] bg-purple-500/10 blur-[120px] rounded-full" />
+          <div className="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] bg-indigo-500/10 blur-[120px] rounded-full" />
+        </div>
 
-        {status === STATUS.PENDING && <MainLoader/>}
+        <div className="relative z-10">
+          <RouterProvider router={router} />
+        </div>
+
+        {status === STATUS.PENDING && <MainLoader />}
       </main>
     </GoogleOAuthProvider>
   );

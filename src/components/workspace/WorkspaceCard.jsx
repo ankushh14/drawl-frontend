@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { MdGroup, MdOutlineDoubleArrow } from "react-icons/md";
+import { MdGroup } from "react-icons/md";
 import { getProfiles, leaveWorkspace } from "../../api/workspace";
 import { useCallback, useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
@@ -15,33 +15,22 @@ export default function WorkspaceCard({ workspace }) {
   const { token, user } = useAuth();
   const { darkMode } = useTheme();
   const { setUpdateWorkspaceCount } = useWorkspacesUpdate();
+
   const [profiles, setProfiles] = useState([]);
   const [submenu, setSubmenu] = useState(false);
-  const [members, setMembers] = useState(false);
-  const [actualMembers] = useState([
-    ...workspace.members,
-    workspace.owner + " (owner)",
-  ]);
-  const [about, setAbout] = useState(false);
+  const [view, setView] = useState("main");
+
   const workspaceRoute = import.meta.env.VITE_WORKSPACES;
 
-  const dotsDivRef = useClickAway(() => {
-    setSubmenu(false);
-  });
+  const dotsDivRef = useClickAway(() => setSubmenu(false));
 
   const handleNavigate = () => {
     navigate(`/${workspaceRoute}/${workspace.ID}`);
   };
+
   const getProfileData = useCallback(async () => {
-    let requestBody = {
-      workspaceID: workspace.ID,
-    };
-    const data = await getProfiles(requestBody, token);
-    if (data.valid) {
-      return setProfiles(data.data);
-    } else {
-      return;
-    }
+    const data = await getProfiles({ workspaceID: workspace.ID }, token);
+    if (data.valid) setProfiles(data.data);
   }, [workspace, token]);
 
   useEffect(() => {
@@ -49,173 +38,153 @@ export default function WorkspaceCard({ workspace }) {
   }, [getProfileData]);
 
   const handleLeave = async () => {
-    let requestBody = {
-      userEmail: user.email,
-      workspaceID: workspace.ID,
-    };
-    const response = await leaveWorkspace(requestBody, token);
+    const response = await leaveWorkspace(
+      { userEmail: user.email, workspaceID: workspace.ID },
+      token,
+    );
+
     if (response.valid) {
       showToastMessage(response.message, response.info);
-      return setUpdateWorkspaceCount((prev) => !prev);
+      setUpdateWorkspaceCount((prev) => !prev);
     } else {
-      return showToastMessage("Some error occured", response.info);
+      showToastMessage("Some error occured", response.info);
     }
   };
 
   return (
     <div
-      className={`card w-[300px] relative h-[330px]  m-4  rounded flex flex-col justify-between shadow shadow-inherit cursor-pointer  overflow-y-auto no-scrollbar transition-all duration-500 ease-in-out [perspective:1000px] [transform-Style:preserve-3d] 
-      ${members || about ? "[transform:rotateY(180deg)]" : ""}
+      className={`w-[300px] h-[220px] m-4 rounded-2xl overflow-hidden transition-all duration-300
       ${
         darkMode
-          ? "bg-[#393f45] text-white shadow-slate-800"
-          : "bg-white text-black shadow-slate-500"
-      }
-      `}
+          ? "bg-white/5 border border-white/10 hover:bg-white/10"
+          : "bg-white border border-gray-200 hover:shadow-md"
+      }`}
     >
-      <div
-        className={`card-main w-full flex-col flex space-y-4 p-2 px-4 top-0 left-0 
-        transition-[visibility,position,opacity] duration-500
-        ${
-          members || about
-            ? "opacity-0 invisible static"
-            : "visible opacity-100 absolute"
-        }`}
-      >
-        <div className="card-header w-full py-1 flex justify-between items-center">
-          <h1 className="w-full font-bold">{workspace.name}</h1>
-          <div
-            className="dots-div flex flex-col relative px-2"
-            onClick={() => setSubmenu((prev) => !prev)}
-            ref={dotsDivRef}
-          >
-            <span
-              className={`w-[0.15rem] h-[0.15rem] ${
-                darkMode ? "bg-white" : "bg-black"
-              } m-[0.08rem] rounded-full`}
-            ></span>
-            <span
-              className={`w-[0.15rem] h-[0.15rem] ${
-                darkMode ? "bg-white" : "bg-black"
-              } m-[0.08rem] rounded-full`}
-            ></span>
-            <span
-              className={`w-[0.15rem] h-[0.15rem] ${
-                darkMode ? "bg-white" : "bg-black"
-              } m-[0.08rem] rounded-full`}
-            ></span>
+      {view === "main" && (
+        <div className="h-full flex flex-col justify-between p-4">
+          <div className="flex justify-between items-start">
             <div
-              className={`absolute w-[100px] flex flex-col cursor-pointer shadow-sm shadow-slate-500 rounded-md p-2 text-xs top-5 right-2 text-inherit transition-all duration-300 
-              ${submenu ? "visible opacity-100" : "invisible opacity-0"}
-              ${darkMode ? "bg-slate-400" : "bg-white"}`}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm
+              ${
+                darkMode
+                  ? "bg-gradient-to-br from-purple-500 to-indigo-500"
+                  : "bg-gradient-to-br from-purple-500 to-indigo-600"
+              }`}
             >
-              <div
-                className="w-full border-b border-slate-500 text-center p-1"
-                onClick={() => setAbout(true)}
-              >
-                About
+              {workspace.name?.substring(0, 2).toUpperCase()}
+            </div>
+
+            <div
+              className="relative p-2"
+              onClick={() => setSubmenu((prev) => !prev)}
+              ref={dotsDivRef}
+            >
+              <div className="flex flex-col gap-[2px]">
+                <span
+                  className={`w-[3px] h-[3px] rounded-full ${darkMode ? "bg-white" : "bg-black"}`}
+                />
+                <span
+                  className={`w-[3px] h-[3px] rounded-full ${darkMode ? "bg-white" : "bg-black"}`}
+                />
+                <span
+                  className={`w-[3px] h-[3px] rounded-full ${darkMode ? "bg-white" : "bg-black"}`}
+                />
               </div>
-              {user.email !== workspace.owner && (
+
+              <div
+                className={`absolute right-0 top-8 w-[150px] rounded-xl z-20 transition
+                ${submenu ? "opacity-100 visible" : "opacity-0 invisible"}
+                ${
+                  darkMode
+                    ? "bg-[#1a1b1f]/95 border border-white/10"
+                    : "bg-white border border-gray-200 shadow-lg"
+                }`}
+              >
                 <div
-                  className="w-full border-b border-slate-500 text-center p-1"
-                  onClick={handleLeave}
+                  className="px-3 py-2 text-xs cursor-pointer  hover:text-gray-500"
+                  onClick={() => setView("about")}
                 >
-                  Leave
+                  About
                 </div>
-              )}
-              <div
-                className="w-full text-center p-1"
-                onClick={() => setMembers(true)}
-              >
-                Members
+
+                <div
+                  className="px-3 py-2 text-xs cursor-pointer hover:text-gray-500"
+                  onClick={() => setView("members")}
+                >
+                  Members
+                </div>
+
+                {user.email !== workspace.owner && (
+                  <div
+                    className="px-3 py-2 text-xs text-red-500 cursor-pointer  hover:text-red-600"
+                    onClick={handleLeave}
+                  >
+                    Leave
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </div>
-        <div
-          className="card-body w-full flex flex-col"
-          onClick={handleNavigate}
-        >
-          <div className="grp-img-div w-full flex justify-center items-center">
-            <div className="outer-img w-[50%]">
-              <img
-                src="https://www.iconpacks.net/icons/1/free-user-group-icon-296-thumb.png"
-                className="w-full"
-                alt="icon"
-              />
+
+          <div className="mt-3">
+            <h1 className="text-sm font-semibold line-clamp-2">
+              {workspace.name}
+            </h1>
+
+            <p className="text-xs mt-1 opacity-60 line-clamp-2">
+              {workspace.description || "No description provided"}
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between mt-3">
+            <div className="flex -space-x-2">
+              {profiles.slice(0, 4).map((item, index) => (
+                <img
+                  key={index}
+                  src={item}
+                  alt="member"
+                  className="w-8 h-8 rounded-full border-2 border-white dark:border-[#1a1b1f]"
+                />
+              ))}
+            </div>
+
+            <div className="text-xs flex items-center gap-1 opacity-70">
+              <MdGroup size={14} />
+              {workspace.members.length + 1}
             </div>
           </div>
-          <div className="members-pic-div w-full flex justify-center items-center flex-col">
-            <div className="members-pics w-full flex justify-center items-center py-1">
-              {profiles &&
-                profiles.length > 0 &&
-                profiles.slice(0, 3).map((item, index) => {
-                  return (
-                    <img
-                      src={item}
-                      alt="member"
-                      key={index}
-                      className="w-[30px] m-1 rounded-full"
-                    />
-                  );
-                })}
-              {profiles.length > 3 && <span className="ml-1 text-xs">...</span>}
-            </div>
-            <h1 className="text-xs text-inherit flex justify-center items-center">
-              <MdGroup size={17} className="mr-1" />
-              {workspace.members.length + 1 === 1
-                ? `${workspace.members.length + 1} Member`
-                : `${workspace.members.length + 1} Members`}
-            </h1>
-          </div>
-          <div className="enter-workspace-div w-full py-2">
-            <h1 className="text-xs text-inherit w-full flex justify-center items-center">
-              Enter workspace{" "}
-              <MdOutlineDoubleArrow size={17} className="ml-1" />
-            </h1>
+
+          <div className="flex justify-between items-center text-xs mt-3">
+            <span className="opacity-60 truncate">{workspace.owner}</span>
+
+            <button
+              onClick={handleNavigate}
+              className="text-purple-500 hover:underline"
+            >
+              Open →
+            </button>
           </div>
         </div>
-        <div
-          className={`card-footer w-full ${
-            members || about ? "hidden" : "visible"
-          }`}
-        >
-          <h1 className="w-full text-xs font-semibold text-end">
-            - created by {workspace.owner}
-          </h1>
+      )}
+
+      {(view === "about" || view === "members") && (
+        <div className="h-full p-4 flex flex-col">
+          <div className="mb-3 cursor-pointer">
+            <FaArrowLeft size={16} onClick={() => setView("main")} />
+          </div>
+
+          <div className="text-xs flex flex-col gap-2 overflow-y-auto">
+            {view === "about" && (
+              <p>{workspace.description || "No description available"}</p>
+            )}
+
+            {view === "members" &&
+              [...workspace.members, workspace.owner + " (owner)"].map(
+                (item, index) => <span key={index}>{item}</span>,
+              )}
+          </div>
         </div>
-      </div>
-      <div
-        className={`about-div w-full flex-col top-0 left-0 p-3 flex [transform:rotateY(180deg)] transition-[visibility,position,opacity] duration-500 
-        ${
-          about || members
-            ? "visible opacity-100 absolute"
-            : "invisible opacity-0 static"
-        }`}
-      >
-        <div className="back-btn w-full flex justify-start mb-4">
-          <FaArrowLeft
-            size={18}
-            onClick={() => {
-              setAbout(false);
-              setMembers(false);
-            }}
-          />
-        </div>
-        <div className="content-about w-full text-xs text-center flex flex-col">
-          {about
-            ? workspace.description
-            : members
-            ? actualMembers?.map((item, index) => {
-                return (
-                  <span className="w-full text-center p-2" key={index}>
-                    {item}
-                  </span>
-                );
-              })
-            : ""}
-        </div>
-      </div>
+      )}
     </div>
   );
 }

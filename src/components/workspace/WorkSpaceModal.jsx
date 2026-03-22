@@ -1,18 +1,20 @@
 import PropTypes from "prop-types";
 import { IoClose } from "react-icons/io5";
-import InputComp from "../../utils/input/InputComp";
 import { useCallback, useEffect, useState } from "react";
 import useTheme from "../../hooks/useTheme";
 import { IoSearch } from "react-icons/io5";
-import InputIcons from "../../utils/input/InputIcons";
 import { useDebounce } from "@uidotdev/usehooks";
 import { findMembers, createWorkspace } from "../../api/workspace";
 import { useAuth } from "../../hooks/useAuth";
 import { showToastMessage } from "../../utils/toasts/showToast";
 import { useWorkspacesUpdate } from "../../hooks/useWorkspaceCount";
+import { getThemeStyles } from "../../styles/theme";
+import Button from "../ui/button";
+import Input from "../ui/input";
 
 export default function WorkSpaceModal({ openModal }) {
   const { darkMode } = useTheme();
+  const theme = getThemeStyles(darkMode);
   const [name, setName] = useState("");
   const [nameDescription, setNameDescription] = useState("");
   const [description, setDescription] = useState("");
@@ -126,138 +128,127 @@ export default function WorkSpaceModal({ openModal }) {
   return (
     <div
       id="Modal-background"
-      className="Modal-background fixed top-0 left-0 right-0 bottom-0 bg-[#5c5b5b5d] flex justify-center items-center"
+      className={`fixed inset-0 flex items-center justify-center ${theme.overlay}`}
       onClick={modalCloseHandle}
     >
       <div
-        className={`Modal-div w-[95%] md:w-[75%] lg:w-[45%] p-5 ${
-          darkMode ? "bg-[#212529] text-white" : "bg-white text-black"
-        } rounded-md overflow-y-scroll`}
+        className={`w-[95%] md:w-[75%] lg:w-[45%] p-6 rounded-2xl max-h-[85vh] overflow-y-auto ${theme.overlayCard}`}
+        onClick={(e) => e.stopPropagation()}
       >
-        <div className="close-btn w-full flex justify-end">
+        <div className="w-full flex justify-end">
           <IoClose
-            className={`cursor-pointer`}
+            className="cursor-pointer text-lg"
             onClick={() => openModal(false)}
           />
         </div>
-        <form className="w-full" onSubmit={handleSubmit}>
-          <div className="workspace-name w-full">
-            <InputComp
-              label={"Workspace name"}
-              name={"name"}
-              placeholder={"Enter workspace name"}
-              type={"text"}
-              stateVar={name}
-              setStatevar={setName}
-              description={nameDescription}
-              descriptionControlFunc={setNameDescription}
-            />
-          </div>
-          <div className="workspace-description w-full p-2 flex flex-col space-y-3">
-            <label htmlFor="description" className="text-xs w-full">
-              Workspace description
-            </label>
+
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+          <Input
+            label="Workspace name"
+            name="name"
+            placeholder="Enter workspace name"
+            type="text"
+            stateVar={name}
+            setStatevar={setName}
+            description={nameDescription}
+            descriptionControlFunc={setNameDescription}
+          />
+
+          <div className="flex flex-col gap-2">
+            <label className="text-xs">Workspace description</label>
             <textarea
-              name="description"
-              id="description"
-              cols="30"
-              rows="6"
               placeholder="About your workspace..."
-              className={`w-full p-3 bg-inherit border rounded-md text-xs border-slate-500 resize-none outline-none focus:border-2`}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              className={`w-full px-4 py-3 rounded-xl outline-none resize-none transition
+              ${
+                darkMode
+                  ? "bg-white/5 border border-white/10 text-white placeholder:text-gray-400"
+                  : "bg-white border border-gray-300 text-gray-900 placeholder:text-gray-500"
+              }
+              focus:border-purple-500`}
+              rows={5}
             />
           </div>
-          <div className="workspace-members w-full p-2 flex flex-col">
-            <div className="search-div relative">
+
+          <div className="flex flex-col gap-2 relative">
+            <div className="relative">
               <IoSearch
-                className="absolute right-4 text-inherit bottom-[44%]"
-                size={13}
+                className="absolute right-4 top-[2.65rem] -translate-y-1/2"
+                size={16}
               />
-              <InputComp
+              <Input
                 disable={searchDisable}
-                type={"text"}
-                placeholder={"Search for collaborators..."}
-                name={"members"}
-                label={"Collaborators"}
-                required={false}
+                type="text"
+                placeholder="Search for collaborators..."
+                name="members"
+                label="Collaborators"
                 stateVar={individual}
                 setStatevar={setIndividual}
                 description={searchDescription}
                 descriptionControlFunc={setSearchDescription}
                 onKeyDown={handleKeyDown}
               />
+            </div>
+
+            {searchResults.length > 0 && (
               <div
-                className={`search-results-div absolute z-[30] ${
-                  searchResults.length === 0 && "hidden"
-                } ${
-                  !darkMode ? "bg-white text-black" : "bg-[#212529] text-white"
-                } top-20  w-full  flex flex-col  rounded-md border border-slate-500 overflow-y-scroll max-h-[200%] no-scrollbar`}
+                className={`absolute top-[85px] w-full rounded-xl z-30 max-h-[220px] overflow-y-auto ${theme.overlayCard}`}
               >
-                {searchResults.map((item, index) => {
-                  return (
-                    <div
-                      className={` ${
-                        darkMode ? "hover:bg-slate-500" : "hover:bg-slate-200"
-                      } bg-inherit text-inherit border-slate-500 text-xs w-full border-b last:border-b-0 p-2 cursor-pointer flex items-center first:rounded-t-md last:rounded-b-md last:rounded-t-none transition-colors duration-300 `}
-                      onClick={() => handleSelection(item.email)}
-                      key={index}
-                    >
-                      <img
-                        src={item.profile}
-                        className="w-5 h-5 mr-4 rounded-full"
-                        alt="profile"
-                      />
-                      {item.email}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="member-div w-full p-2 flex items-center flex-wrap">
-              {members.map((item, index) => {
-                return (
+                {searchResults.map((item, index) => (
                   <div
-                    className={`${
-                      darkMode ? "bg-white text-black" : "bg-black text-white"
-                    } flex justify-center items-center rounded-md text-xs px-3 pr-1 py-1 m-2`}
                     key={index}
+                    onClick={() => handleSelection(item.email)}
+                    className={`flex items-center gap-3 p-3 text-xs cursor-pointer border-b last:border-none
+                    ${darkMode ? "hover:bg-white/10" : "hover:bg-gray-100"}`}
                   >
-                    <span>{item}</span>
-                    <IoClose
-                      className="ml-2 cursor-pointer"
-                      size={15}
-                      onClick={() => handleDeletion(item)}
+                    <img
+                      src={item.profile}
+                      className="w-6 h-6 rounded-full"
+                      alt="profile"
                     />
+                    {item.email}
                   </div>
-                );
-              })}
+                ))}
+              </div>
+            )}
+
+            <div className="flex flex-wrap gap-2 mt-2">
+              {members.map((item, index) => (
+                <div
+                  key={index}
+                  className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs
+                  ${
+                    darkMode
+                      ? "bg-white/10 text-white"
+                      : "bg-gray-100 text-gray-800"
+                  }`}
+                >
+                  <span>{item}</span>
+                  <IoClose
+                    className="cursor-pointer"
+                    size={14}
+                    onClick={() => handleDeletion(item)}
+                  />
+                </div>
+              ))}
             </div>
           </div>
-          <div className={"password w-full relative"}>
-            <InputComp
-              type={"password"}
-              label={"Password (Optional)"}
-              placeholder={"John_doe123"}
-              name={"password"}
-              required={false}
-              stateVar={password}
-              setStatevar={setPassword}
-              description={passwordDesc}
-              descriptionControlFunc={setPasswordDesc}
-            />
-            <InputIcons type={"password"} />
-          </div>
-          <div className="create-workspace w-full p-2">
-            <button
-              type="submit"
-              className={`${
-                darkMode ? "bg-white text-black" : "bg-black text-white"
-              } border border-black rounded-md px-8 py-3 flex justify-center items-center text-xs w-full active:scale-95 transition-all duration-500`}
-            >
-              Create workspace
-            </button>
-          </div>
+
+          <Input
+            type="password"
+            label="Password (Optional)"
+            placeholder="John_doe123"
+            name="password"
+            stateVar={password}
+            setStatevar={setPassword}
+            description={passwordDesc}
+            descriptionControlFunc={setPasswordDesc}
+          />
+
+          <Button type="submit" className="w-full">
+            Create workspace
+          </Button>
         </form>
       </div>
     </div>

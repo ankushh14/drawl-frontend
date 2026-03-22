@@ -4,13 +4,11 @@ import { useWorkspace } from "../../hooks/useWorkspace";
 import { useAuth } from "../../hooks/useAuth";
 import { useCallback, useEffect, useState } from "react";
 import WorkspaceUtilityBar from "./WorkspaceUtilityBar";
-import useTheme from "../../hooks/useTheme";
 
 export default function Innerworkspacelayout() {
   const { name, owner, members } = useWorkspace();
   const { user } = useAuth();
   const [accessToWorkspace, setAccessToWorkspace] = useState(false);
-  const { darkMode } = useTheme();
   const [online, setOnline] = useState([]);
   const [chatComponent, setChatComponent] = useState(false);
 
@@ -29,21 +27,14 @@ export default function Innerworkspacelayout() {
   return (
     name !== null &&
     accessToWorkspace && (
-      <div
-        className={`w-full h-screen max-h-screen flex flex-col ${
-          darkMode ? "bg-[#212529]" : "bg-white"
-        }`}
-      >
+      <div className={`w-full h-screen max-h-screen flex flex-col`}>
         <WorkspaceUtilityBar
           online={online}
           setChatComponent={setChatComponent}
         />
         <div className="w-full flex flex-1 h-full max-h-[calc(100%-41.6px)]">
           <MainWhiteBoard />
-          <Chatcomponent
-            setOnline={setOnline}
-            chatComponent={chatComponent}
-          />
+          <Chatcomponent setOnline={setOnline} chatComponent={chatComponent} />
         </div>
       </div>
     )

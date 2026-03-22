@@ -1,27 +1,18 @@
-import { useState } from "react";
 import useTheme from "../../hooks/useTheme";
 import SkeletonCard from "./SkeletonCard";
+import { getThemeStyles } from "../../styles/theme";
 
 export default function WorkspaceSkeleton() {
   const { darkMode } = useTheme();
-  const [skeletonArray,] = useState([
-    1,
-    2,
-    3
-  ])
+  const theme = getThemeStyles(darkMode);
   return (
     <div
-      className={`cards-cont flex flex-wrap overflow-y-scroll justify-center h-full lg:h-auto lg:overflow-hidden w-full ${
-        darkMode
-          ? "bg-[#212529] text-white  shadow-white"
-          : "bg-white text-black shadow-slate-500"
-      }`}
+      className={`w-full h-full flex flex-wrap justify-center gap-2 p-4 overflow-y-auto lg:overflow-hidden transition-colors duration-300
+      ${theme.page}`}
     >
-      {
-        skeletonArray.map((item)=>{
-            return <SkeletonCard key={item} />
-        })
-      }
+      {Array.from({ length: 4 }).map((item) => (
+        <SkeletonCard key={item} />
+      ))}
     </div>
   );
 }
