@@ -4,14 +4,11 @@ const handleSocketConnection = (ioSocket) => {
     connectionStatus: "offline",
 
     sendMessage: (message) => {
-      console.log("📤 Sending:", message);
       ioSocket.emit("tldraw-message", JSON.stringify(message));
     },
 
     onReceiveMessage: (callback) => {
-      // Listen for tldraw sync protocol messages
       const handler = (message) => {
-        console.log("📥 Received:", message);
         callback(message);
       };
 
@@ -31,7 +28,6 @@ const handleSocketConnection = (ioSocket) => {
     },
 
     restart: () => {
-      console.log("🔄 Restarting Socket.IO connection...");
       ioSocket.disconnect();
       ioSocket.connect();
     },
